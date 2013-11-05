@@ -3043,6 +3043,12 @@ var AcceptanceModule;
         */
         Acceptance.prototype.getCountInBox = function () {
             var _this = this;
+            if (parseInt(this.type_id) == 10) {
+                this.count_inbox = "1";
+                this.get_count();
+                return true;
+            }
+
             var form = new FormModule.Form();
 
             form.FormCount({

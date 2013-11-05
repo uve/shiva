@@ -407,7 +407,7 @@ module AcceptanceModule {
 	 
 	    	if (parseInt(this.type_id) == 10){
 	    	
-	    		this.count_inbox = 1;
+	    		this.count_inbox = "1";
 	    		this.get_count();
 	    		return true;
 	    	}
