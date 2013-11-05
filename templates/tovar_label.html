@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <style>
+   @media print {
+    .more {
+        page-break-after: always;
+     	padding: 10x;
+    } 
+    
+    .nobreak {
+        page-break-inside: avoid;
+    }
+    
+   } 
+  </style>
+ </head>
+ <body>
+ 
+ 
+ {% for i in range(pages) %} 
+ 
+  <div class="more">
+
+	<b>Наименование: </b>{{ results["name"] }}</br>
+	<b>Партия: </b>{{ results["party"] }}</br>
+	<b>Дата производства: </b>{{ results["production_date"] }}</br>
+	<b>Срок годности: </b>{{ results["best_before"] }}</br>
+	{{ results["prim"] or "" }}</br>
+	</br>
+	<b>Поставщик: </b>{{ results["provider"] }}</br>
+	<b>Ответственный: </b>{{ results["responsible"] }}</br>
+		
+	<img src="/warehouse/prnpart/data/?ids={{ results['ids'] }}&party=party">
+	
+	</div>
+{% end %}
+
+
+</body>
+</html>

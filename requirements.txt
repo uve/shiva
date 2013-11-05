@@ -1,0 +1,6 @@
+﻿- Python 2.7
+- cx_oracle
+- pytils
+- PIL
+- tornado-web
+- TypeScript (requires NodeJS and NMP)

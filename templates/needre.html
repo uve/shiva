@@ -1,0 +1,34 @@
+{% if len(needre)>0 %} 
+<p class="end-page"></p>
+    
+<p class="ast3h1">РЕЕСТР</p>  
+<p class="ast3h3">НОРМАТИВНОЙ ДОКУМЕНТАЦИИ</p>
+<p class="ast3h3" style="margin-bottom: 20px;">на продукцию, реализуемую ООО "ФинСиб СД"</p>  
+
+<table class="ast8" cellspacing=0 cellpadding=0 width="99%"  style="display: table-header-group;">
+	<thead>
+	    <tr>	    
+		    <th>№ п/п</th>	    
+		    <th>Наименование продукции</th>
+		    <th>Номер нормативного документа</th>	    
+		    <th>Срок</th>	    		
+		    <th>Орган, выдавший нормативный документ</th>		    		
+	    </tr>
+	</thead>
+	<tbody>
+	{% for i,item in enumerate(needre,1) %}
+	    <tr>        
+	        <td align="center">{{ i }}</td>        
+	        <td align="left">{{ item["name"] }}</td>
+	      	<td align="left">{{ item["name1"] }}</td>
+	      	<td align="left">{{ item["datas"] }}</td>
+	      	<td align="left">{{ item["vidal"] }}</td>
+	    </tr>
+	{% end %}
+	</tbody>
+</table>
+
+<p class="ast3">Оригиналы (нотариально заверенные копии; копии, заверенные печатью держателя подлиника) находятся по адресу: Новосибирск, ул. Ленина 48.</p>
+<p class="ast3">Специалист по сертификации ВЭД Сувакова Мария.</p>  
+
+{% end %}

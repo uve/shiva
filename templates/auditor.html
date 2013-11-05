@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block report %}
+
+
+
+<p>Товар: <b>[{{ tovar_code }}] {{ tovar_name }}</b></p>
+<p>Товарные остатки: <b>{{ total3 }}</b></p>
+
+<p>Список ячеек с продуктом:</p>
+<table class="ast2" cellspacing=0>
+<thead>
+<tr>
+	<th style="width: 20%;">Адрес Ячейки</th>
+	<th style="width: 20%;">Номер партии</th>
+	<th style="width: 20%;">Штук в коробке</th>
+	<th style="width: 20%;">Штук</th>
+	<th style="width: 20%;">Годен до</th>
+</tr>
+</thead>
+<tbody>
+{% for item in data1  %}
+	<tr>
+		<td align="center">{{ item["name"] }}</td>
+		<td align="center">{{ item["num"] }} </td>
+		<td align="center">{{ item["inbox"] }}</td>
+		<td align="center">{{ item["saldo"] }}</td>
+		<td align="center">{{ item["data"] }}</td>				
+	</tr>	
+{% end %}
+	<tr>
+		<td colspan="3" align="right" style="font-weight: bold; padding-right: 10px;">Всего:</td>
+		<td align="center" style="font-weight: bold; padding-right: 10px;">{{ total1 }}</td>		
+		<td></td>			
+	</tr>	
+</tbody>
+</table>
+
+<p>Список остатков по партиям:</p>
+
+<table class="ast2" cellspacing=0>
+<thead>
+<tr>
+	<th style="width: 20%;">Партия</th>
+	<th style="width: 20%;">Номер партии</th>
+	<th style="width: 20%;">Штук в коробке</th>
+	<th style="width: 20%;">Штук</th>
+	<th style="width: 20%;">Годен до</th>
+</tr>
+</thead>
+<tbody>
+{% for item in data2  %}
+	<tr>
+		<td align="center">{{ item["party"] }}</td>
+		<td align="center">{{ item["num"] }} </td>
+		<td align="center">{{ item["inbox"] }}</td>
+		<td align="center">{{ item["saldo"] }}</td>
+		<td align="center">{{ item["data"] }}</td>		
+		
+	</tr>	
+{% end %}
+	<tr>
+		<td colspan="3" align="right" style="font-weight: bold; padding-right: 10px;">Всего:</td>
+		<td align="center" style="font-weight: bold;">{{ total2 }}</td>		
+		<td></td>			
+	</tr>
+</tbody>
+</table>
+
+
+{% end %}
+

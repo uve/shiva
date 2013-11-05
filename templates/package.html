@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block report %}
+
+<div style="text-align: center; font-weight: bold;">
+	<h2>Упаковочный лист к фактуре № {{ header["num"] }} от: {{ header["date"] }}</h2>	
+</div>
+
+<p style="padding-left: 50px; font-weight: bold;">Клиент: {{ client_to["name_full"] }}</p>
+<p style="padding-left: 50px; font-weight: bold;">Сборщики: </p>
+
+
+<table class="ast2" cellspacing=0>
+<thead>
+<tr>
+    <th width=30>№ п/п</th>
+	<th width=50>Код</th>
+	<th width="50%">Наименование продукта</th>	
+	<th width=50>Кол-во</th>
+	<th width=70>№ поддона</th>
+	<th width=70>№ коробки</th>
+	<th width=70>кол-во коробок</th>
+	<th width=60>Вес</th>
+</tr>
+</thead>
+<tbody>
+{% for i, item in enumerate(data, 1)  %}
+	<tr>
+	    <td align=center >{{ i }}</td>
+		<td align=center >{{ item.values["code"] or "" }}</td>
+		<td align=left >{{ item.values["name"] or "" }}</td>
+		<td align=center >{{ item.values["valume"] or "" }}</td>
+		<td align=center >{{ item.values["part"] or "" }}</td>
+		<td align=center >{{ item.values["mesto"] or "" }}</td>
+		<td align=center >{{ item.values["box"] or "" }}</td>
+		<td align=center >{{ item.values["weight"] or "" }}</td>			
+	</tr>	
+{% end %}
+</tbody>
+</table>
+
+
+<p><b>Итого строк: {{ len(data) }}</b></p>
+<p><b>Итого штук: {{ total_valume }}</b></p>
+<p><b>Итого вес: {{ total_weight }}</b></p>
+
+{% end %}
+

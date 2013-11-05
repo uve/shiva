@@ -1,0 +1,136 @@
+﻿<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Language" content="ru">
+    <link rel="stylesheet" type="text/css" href="{{ static_url('css/mobile.css') }}">
+  
+    <script src="{{ static_url('release.js') }}"></script>
+    
+       
+       
+</head>
+
+<body>
+
+<div id="loading" style="background-image: url({{ static_url('img/preloader1.gif') }});"></div>
+
+
+<!-- Универсальная форма с 1 кнопкой для сообщений пользователю -->
+<div id="ErrorMessage1" class="MsgDiv win">
+    <h2 align=center>Ошибка</h2>
+    <hr>
+    <br>
+    <h1 id="ErrorMessageText1" align=center></h1>
+	<div class="FooterDIV1">
+	    <input id="btnErrorMessage1OK" class='HugeBottomBtn' type="button" value="OK">
+    </div>
+</div>
+
+
+
+<!-- Универсальная форма с 1 кнопкой для сообщений пользователю -->
+<div id="form-1">
+	<h2 id="caption-1"></h2>
+    <hr>
+    <h1 id="text-1"></h1>
+    <div id="options-1"></div>
+    <div id="select-calendar"><span style="width: 42%;">год</span><span style="width: 23%;">месяц</span><span style="width: 30%;">число</span><select id="select-year"  class="hugetext centered" size=1></select><select id="select-month" class="hugetext centered" size=1></select><select id="select-date"  class="hugetext centered" size=1></select>	    
+    </div>
+	<div id="buttons-1"></div>	        	
+</div>
+
+
+
+
+<!-- Универсальная форма для ввода количества чего-либо с 2 кнопками --> 
+<div id="form-5" class="win centered">
+	<h2 id="caption-5"></h2>
+    <hr>
+    </br>
+    <h1 id="text-5"></h1>
+    </br>
+    <input id="value-5" name="value-5" value="" class="hugetext centered" type="text" size="12" maxlength="12">
+    <p id="error-5" class="warningtext"></p>
+    </br>
+    </br>
+	<div id="buttons-5"></div>	
+</div>
+
+
+
+<!-- Универсальная форма для ввода/сканирования штрихкода -->
+<DIV id="EnterBarcode" class="DivStyle1 win centered">
+	<h2 id="caption-2"></h2>
+    <hr>
+    <h1 id="text-2"></h1>    
+    </br>
+    <INPUT id="InputBarcode" value="" class="hugetext" type="text" size=15 maxlength=15><BR>
+   	<P id="EnterBarcodeErrText" class="warningtext"></P><BR>
+    <DIV class="FooterDIV2">
+        <INPUT id="btnEnterBarcodeOK" class="HugeBtn" type="button" value="Принять">
+        <INPUT id="btnEnterBarcodeCancel" class="HugeBtn" type="button" value="Отменить">
+    </DIV>
+</DIV>
+
+
+<!-- Универсальная форма для меню, состоящего из кнопок-->
+<DIV id="MenuForm" class="DivStyle1 win centered"></DIV>
+
+<div id="sound_element"></div>
+
+
+<!-- подключаем ActiveX-компонент сканера штрихкодов -->
+<OBJECT id="DatalogicScanner1" CLASSID="CLSID:89B5002E-9DB1-4AA9-A18B-10202D5342A6" VIEWASTEXT>
+<PARAM NAME="_cx" VALUE="5080">
+<PARAM NAME="_cy" VALUE="5080">
+<PARAM NAME="bScanEnabled" VALUE="False">
+</OBJECT>
+      
+
+<script>
+
+
+    //FOR_TESTING = true; 
+    FOR_TESTING = false;
+    
+    TORNADO_HASH = "{{ TORNADO_HASH }}";    
+    IS_RELOAD = false;
+    
+    CURRENT_RC   = "{{ CURRENT_RC }}";
+    
+    // Creating ActiveX Object For Scanner Setup
+    SCAN_PARAM_CONTINUOUS_MODE=67108870;
+    SCAN_PARAM_DISABLE=0;
+    SCAN_PARAM_ENABLE=1;
+    SE_READER_PR_CLASS_ID=5;
+    
+    
+    
+    try {
+	    oScannerSetup = new ActiveXObject("DLCEBarcodeScanner.DatalogicScannerSetup");
+	    Device = new ActiveXObject("DLCEDevice.DatalogicDevice.1");    
+    }
+    catch(e){
+    	oScannerSetup = new Object();
+    	Device = new Object();
+    }
+    	
+    
+    //status = false; 
+    var status = new Boolean(false); /* False - юзер занят и не может получать задания, true - юзер свободен*/		     	
+	
+    // Сделаем ActiveX-объект сканера невидимым
+    DatalogicScanner1.style.visibility = "hidden";
+	DatalogicScanner1.style.width = 1;
+    DatalogicScanner1.style.height = 1;
+	
+    var main = new MainModule.Main();   
+    main.init();
+    
+   
+</script>
+  
+    
+        
+</body>
+</html>

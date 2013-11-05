@@ -1,0 +1,179 @@
+<div class="gost-header">
+	<p>Унифицированная форма № ТОРГ-13</p>
+	<p>Утверждена постановлением Госкомстата</p>
+	<p>России от 25.12.98 № 132</p>
+</div>
+<table class="ast4" cellspacing=0>
+<tbody>
+<tr>
+<td align="center" width="80%">
+	<p style="font-size: 12px !important; font-weight: bold !important;">{{ client["name"] }}</p>
+	<p style="border-top: 1px solid black; margin-bottom: 20px; !important;">организация</p>
+	
+	<table class="ast7" style="font-size: 12px !important; text-align: center !important;" cellpadding=5>
+	<tbody>
+	    <tr>
+	    	<td align="center" style="border: 0 !important;"></td>
+	        <td align="center">Номер</td>    
+	        <td align="center">Дата</td>
+	    </tr>
+	    <tr>
+	    	<td align="center" style="border: 0 !important;"><b>НАКЛАДНАЯ</b></td>
+	        <td align="center">{{ header["numb_in"] }}</td>    
+	        <td align="center">{{ ot }}</td>
+	    </tr>	
+	</tbody>
+	</table>	
+</td>
+<td align="right" width="20%">    
+    
+<table class="ast5" cellpadding=3>
+<tbody>
+    <tr>
+        <th></th>    
+        <td>Код</td>
+    </tr>
+    <tr>
+        <th>Форма по ОКУД</th>    
+        <td>{{ client["okud"] }}</td>
+    </tr>
+    <tr>
+        <th>по ОКПО</th>    
+        <td>{{ client["okpo"] }}</td>
+    </tr>
+    <tr>
+        <th>Вид деятельности по ОКДП</th>    
+        <td></td>
+	</tr>   
+    <tr>
+        <th>Вид операции</th>    
+        <td></td>
+    </tr>            
+</tbody>
+</table>
+    
+    
+</td>
+    </tr>            
+</tbody>
+</table>    
+    
+<p class="ast1h2">внутреннее перемещение, передачу товаров, тары</p>
+
+
+<table class="ast8" cellspacing=0 cellpadding=0 width="99%">
+<thead>
+    <tr>
+	    <td colspan=2 align="center">Отправитель</td>
+	    <td colspan=2 align="center">Получатель</td>
+	    <td colspan=2 align="center">Корреспондирующий счет</td>
+	    <td rowspan=1 width="10%"></td>		
+    </tr>
+    <tr>
+	    <td align="center">структурное подразделение</td>
+	    <td align="center">вид деятельности</td>
+	    <td align="center">структурное подразделение</td>
+	    <td align="center">вид деятельности</td>
+	    <td align="center">счет,субсчет</td>
+	    <td align="center">код аналитического учета</td>
+	    <td></td>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+    	<td>{{ client["name"] }}</td>
+    	<td></td> 
+    	<td>{{ client["sname"] }}</td>
+    	<td></td>
+    	<td></td>
+    	<td></td>
+    	<td></td>
+    </tr>
+</tbody>
+</table>    	
+    	    
+    
+<table class="ast8" cellspacing=0 cellpadding=0 width="99%"  style="display: table-header-group;">
+<thead>
+    <tr>	    
+	    <th colspan=2 width="42%">Товар</th>	    
+	    <th rowspan=2>Сорт</th>
+	    <th colspan=2>Ед. изм.</th>	    
+	    <th colspan=4>Отпущено</th>	    		
+	    <th colspan=2>По учетным ценам</th>		
+	    		
+    </tr>
+    <tr>
+	    <td width="40%">наименование, характеристика, сорт, артикул</td>
+	    <td>код</td>
+	    <td>наим.</td>	    	    
+	    <td>код по ОКЕЙ</td>
+	    <td>в 1 месте</td>	
+	    <td>штук</td>		
+	    <td>брутто</td>
+	    <td>нетто</td>		
+	    <td>цена, руб.коп.</td>
+	    <td>сумма, руб.коп.</td>		
+    </tr>
+    <tr>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th>6</th>
+        <th>7</th>
+        <th>8</th>
+        <th>9</th>
+        <th>10</th>
+        <th>11</th>
+    </tr>
+</thead>
+<tbody>
+{% for i,item in enumerate(data,1) %}
+    <tr>        
+        <td align="left">{{ item.values["name"] }}</td>
+        <td></td>
+        <td></td>
+        <td align="center">{{ item.values["npack"] }}</td>
+        <td></td>
+        <td></td>
+        <td align="right">{{ int(item.values["valume"]) }}</td>
+        <td></td>
+        <td></td>        
+        <td align="right">{{ item.values["price"] }}</td>
+        <td align="right">{{ item.values["summ"] }}</td>      
+    </tr>
+{% end %}
+	<tr>
+		<th colspan=6 align="right">ИТОГО </th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>                
+        <td align="right">{{ sum(item.values["summ"] for item in data) }}</td>   		
+	</tr>
+	<tr class="no-border" border=0>
+		<th colspan=6 align="right">ВСЕГО по накладной </th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>                
+        <td align="right">{{ sum(item.values["summ"] for item in data) }}</td>   	  		
+	</tr>	
+</tbody>
+</table>
+
+
+<table class="ast6" style="margin-top: 20px;" border="0" cellspacing=0 cellpadding=2 width="99%">
+<tbody>
+	<tr><td>Отпустил ___<span style="text-decoration: underline;">директор {{ client["name"] }}</span>______ _______________ ___<span style="text-decoration: underline;">{{ client["chief"] }}</span>__ товар и тару по количеству и надлежащему качеству на сумму</td></tr>
+	<tr><td><span style="margin-left: 50px;">должность</span><span style="margin-left: 150px;">подпись</span></td></tr>
+	<tr><td style="border-bottom: 1px solid black;">{{ m_summ_words }}</td></tr>
+	<tr><td>Получил _____________________    _______________________    ___________________</td></tr>	
+	<tr><td><span style="margin-left: 50px;">должность</span><span style="margin-left: 50px;">подпись</span></td></tr>
+	
+</tbody>
+</table>
+	
+

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block report %}
+
+{% for i,assembly in enumerate(data, 1) %}
+
+		<table class="ast1">
+			<tr>
+				<td colspan=2 class="ast1h1">{{ assembly["depart_name"] }} {{ i }}/{{ len(data) }}</td>
+				<td rowspan=3 align=right><img width="170mm" height="80mm" src="{{ assembly["bar_url"] }}"></td>
+			</tr>
+			<tr>
+				<td colspan=2 class="ast1h2">Сборочный № {{ header["num"] }} {{ header["date"] }}</td>
+			</tr>
+			<tr>
+				<td class="ast1h3">Клиент: {{ header["client_to_cls.name"] }}</td>
+				<td class="ast1h4">Город: {{ header["client_to_cls.region_cls.name"] }}</td>
+			</tr>
+		</table>
+		
+		
+		<table class="ast2" cellspacing=0>
+		<thead>
+			<tr>
+				<th>№</th>
+				<th style="width: 10%;">Адрес</th>
+				<th colspan=2>Количество</th>
+				<th>Партия</th>
+				<th>Код</th>
+				<th>Наименование продукта</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for index,item in enumerate(assembly["data"], 1) %}
+			<tr>
+				<td style="text-align: center;">{{ index }}</td>
+				<td style="text-align: center;">{{ item.values["tpname"] or ""}}</td>
+				<td style="text-align: center;">{{ item.values["valume"] or "" }}</td>
+				<td style="text-align: center;">{{ item.values["valume_box"] or "" }}</td>
+				<td style="text-align: center;">{{ item.values["num"] or "" }}</td>
+				<td style="text-align: center;">{{ item.values["code"] or "" }}</td>
+				<td>{{ item.values["name"] or "" }}</td>		
+			</tr>	
+		{% end %}
+		</tbody>
+ 		</table>
+ 		
+
+		<table class="ast3 {% if i != len(data) %}end-page{% end %}">  <!--   -->
+			<tr>
+				<td>Строк: {{ len(assembly["data"]) }}</td>
+				<td>Коробок: {{ assembly["count_b"] }}</td>
+				<td>Штук: {{ assembly["count_i"] }}</td>
+			</tr>
+		</table>
+		
+		<br />	
+	
+{% end %}
+
+
+<p style="page-break-before: avoid;">
+<br />
+<b>Максимальный номер места коробочной сборки: </b>{{ max_number }}<br />
+</p>
+
+{% end %}

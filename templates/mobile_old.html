@@ -1,0 +1,786 @@
+﻿<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Language" content="ru">
+    <link rel="stylesheet" type="text/css" href="/static/css/mobile.css">
+    
+    
+    <script src="/static/jquery-1.4.2.min.js"></script>
+    <script src="/static/shiva_mbl_root.js"></script>
+    <script src="/static/shiva_mbl_messages.js"></script>
+    <script src="/static/shiva_mbl_acceptance.js"></script>
+    <script src="/static/shiva_mbl_allocation.js"></script>
+    <script src="/static/shiva_mbl_moving.js"></script>
+    <script src="/static/shiva_mbl_orderbatching.js"></script>
+    
+    
+    <script src="/static/shiva_mbl_manualmodes.js"></script> 
+    
+    
+    <script src="/static/release.js"></script>
+    
+    
+   
+    
+<script>
+
+
+    //FOR_TESTING = true; 
+    FOR_TESTING = false;
+
+    // Creating ActiveX Object For Scanner Setup
+    SCAN_PARAM_CONTINUOUS_MODE=67108870;
+    SCAN_PARAM_DISABLE=0;
+    SCAN_PARAM_ENABLE=1;
+    SE_READER_PR_CLASS_ID=5;
+    
+    try {
+	    oScannerSetup = new ActiveXObject("DLCEBarcodeScanner.DatalogicScannerSetup");
+	    Device = new ActiveXObject("DLCEDevice.DatalogicDevice.1");    
+    }
+    catch(e){
+    	oScannerSetup = new Object();
+    	Device = new Object();
+    }
+    	
+
+    OLDPARTYFLAG = 0;					// константа - признак старой, уже известной партии
+    NEWPARTYFLAG = 1;					// константа - признак новой, ещё неизвестной партии
+	BTCACCEPTMODE = 1;					// константа - признак приёмки на отдел БТК
+    NORMALACCEPTMODE = 0;				// константа - признак приёмки на склад
+	MANUALMODEON = 1;					// константа - ручной режим включен
+	CLEANCELLMODE = 0;					// константа - режим очистки ячеек (инвентаризация)
+    FREEALLOCATION = 0;					// константа - режим свободного размещения
+
+
+    /*Ported all types*/
+    BCTUSER = 1; 						// константа - режим ввода ШК пользователя 
+    BCTPALLET = 2;						// константа - режим ввода ШК паллеты
+    BCTCELL = 3;						// константа - режим ввода ШК ячейки
+    BCTDELIVERY = 5;						// константа - режим ввода ШК ячейки
+    BCTPARTY = 7;						// константа - режим ввода ШК партии
+    
+    									// константы для функции SendFail()
+    ERR_ANOTHER	= 0;					// иная ошибка
+    ERR_UNKNOWNCELL = 1;				// неизвестная ячейка
+    ERR_EMPTYCELL = 2;					// ячейка пустая или заблокированная
+    ERR_FULLCELL = 3;					// ячейка занята
+    ERR_PALLET_NOT_BINDED_TO_CELL = 4;	// нет привязки паллеты к ячейке
+    ERR_PALLET_NOT_MATCHED_CELL = 5;	// паллета не соответствует ячейке
+    ERR_NO_THIS_PARTY_IN_CELL = 6;		// нет такой партии в ячейке
+    ERR_UNKNOWNPARTY = 7;				// неизвестная партия
+    ERR_INVALIDCOUNT = 8;				// неверное количество коробок на паллете
+    
+    curr_ErrorCode = 0;                 // текущий код ошибки
+    
+    // текущий пользователь и его атрибуты
+    user_name = "";						// имя текущего пользователя
+    user_depart = "";					// подразделение, в котором работает этот пользователь
+    user_role = "";						// роль этого пользователя (Администратор, Приёмщик, Карщик, etc.)
+    user_task = -1;						// ID текущей задачи, которую исполняет пользователь в данный момент
+    user_task_type = -1;				// тип текущей задачи (совпадает с sw_types_task.id)
+    user_task_status = 0;				// статус текущей задачи: 0 - нет задачи,
+    									// 1 - получено сообщение о задаче,
+    									// 2 - выполняется
+    									// 3 - завершена, надо отправлять подтверждение на сервер
+
+    curr_ItemID = 0;					// TOVAR.ID текущего товара
+    curr_ItemCode = "";                 // текущий код товара
+    curr_ItemName = "";                 // название текущего товара
+    curr_ItemBarcode = "";              // ШК текущего товара
+    curr_PartyBarcode = "";             // ШК текущей партии
+    
+    curr_PalletBarcode = "";            // ШК текущей паллеты
+    curr_CellBarcode = "";              // ШК текущей ячейки
+    curr_CellName = "";                 // Обозначение адреса ячейки, типа "81-60-1" 
+    curr_BarcodeType = "";              // тип ШК (на всякий случай)
+    
+    curr_TargetCellBarcode = "";		// ШК текущей целевой ячейки (при перемещении)
+    curr_TargetCellID = 0;				// ID текущей целевой ячейки
+    curr_TargetCellName = "";			// Обозначение адреса целевой ячейки, типа "81-60-1"
+    
+    curr_ExpirationDay = 0;				// срок годности(день) у текущей партии
+    curr_ExpirationMonth = 0;			// срок годности(месяц) у текущей партии
+    curr_ExpirationYear = 0;			// срок годности(год) у текущей партии
+    
+    curr_PartyNumber = "";              // Номер партии  
+
+    curr_HeaderDoc = -1;		        // текущая фактура
+    curr_OrderPart = -1;				// номер части сборочного листа
+    
+    curr_pos_count = 0;					// ткеущее число обработанных позиций в листе сборки(приёмки)
+    all_pos_count = 0;					// общее число позиций в листе сборки
+    all_items_count = 0;				// общее количество штук товара (передаётся в SW_TASK.ID3 в начале приёмки)
+    curr_items_count = 0;				// текущее кол-во принятых штук в процессе приёмки
+    
+    curr_CountOnPallet = -1;            // число коробок на паллете
+    curr_CountInBox = -1;				// число единиц товара в коробке
+    curr_PartyMode = -1;                // режим приемки паллеты(есть такая партия или ещё нет такой партии?)
+    curr_BTCMode = -1;					// режим работы (приёмки, погрузки, etc) c БТК(1-БТК, 0-обычный)
+    curr_AllocationMode = -1;			// режим размещения паллет по ячейкам: 
+    									// 0 - свободное размещение
+    									// 1 - известен адрес 
+    
+    curr_AllocationInfo = '';			// информация о текущем размещении - куда везти, то есть. 
+    									
+    curr_IsManualMode = -1;				// режим работы - ручной(1) или по заданию(0) от Халка
+    
+    curr_InventoryMode = -1;            // режим инвентаризации(
+    	                                // 0 - очистка ячейки
+    	                                // 1 - привязка партии
+    	                                // 2 - добавление партии
+    	                                
+    NeedMoveList = new Array();			// Массив для накопления пакета адресов для подтоварки     	                                
+
+    WatchReload = new ReloadApp(10, 3000000);
+                                        // настраиваем периодическую перезагрузку всего приложения
+                                        // через 10 входов на главную или 5 минут (300 секунд)
+
+    main_debug_info = "";				// служебная информация, которая может быть выдана в окне DEBUG_INFO
+
+    task = false;
+    
+    
+
+    var loc = window.location.href;
+    
+	
+
+// Авторизация по штрихкоду - вызывается из обработчика событий от сканера
+function SendAuthRequest(bcode)
+{
+    $.ajax({
+        type: "POST",
+        url: "/auth",
+        data: ({barcode: bcode}),
+        dataType: "json",
+        success: function(msg){ //dataFilter
+            var resp = eval(msg);
+            if (resp.error) {
+            	DoMessageBox1('<h2 align=center>Ошибка</h2><hr><br><h3 align=center>'+resp.error+'</h3>',
+                        "ОК", function(){openWin("LoginWindow");});
+            	return 0;
+            }
+            user_name = resp.user_name;
+            user_depart = resp.depart_name;
+            user_role = resp.role_name;
+            user_task_status = 0; // пока что нет никакой задачи
+       		user_task = 0;
+       		user_task_type = 0;
+       		// Убрать этот обработчик события
+       		
+       		ScannerDetach(OnAuthScan);
+
+
+
+            // включим таймер с некоторым интервалом (милисекунды)
+            if (window.IntervalID != null) clearInterval(IntervalID);
+            // А интервал на данный момент - 5 секунд 
+            IntervalID = setInterval(DoGetNewMessage, 5000);
+            // перейдём к главному окну №2
+            DoFrontWindow2();
+        },
+        error: function(msg){
+            user_name = '';
+            user_depart = '';
+            user_role = '';
+        }
+    });
+} 
+ 
+// обработчик событий для сканера в режиме авторизации
+function OnAuthScan()
+{
+	
+    var barcode = DatalogicScanner1.sLabelText;
+           
+    SendAuthRequest(barcode);
+}
+
+function DoLogout()
+{
+    $.ajax({
+        type: "POST",
+        url: "/logout", 
+        data: " "
+    });
+    user_name = "";
+    user_depart = "";
+    user_role = "";
+    user_task = 0;
+    user_task_status = 0;
+    user_task_type = 0;
+    openWin("FrontWindow1");
+    if (window.IntervalID != null) clearInterval(IntervalID);
+}
+
+// главное окно, которое показывается сразу после авторизации
+function DoFrontWindow2()
+{
+	WatchReload.Run();
+	curr_IsManualMode = 0;
+    openWin("FrontWindow2");
+    NewInnerText("FrontWindow2AuthInfo",
+        "<H2>"+user_name+"</H2><I>"+user_role+"</I><BR>"+user_depart+"<HR><BR><BR>");
+} 
+
+// проверим, пришло ли какое сообщение
+function DoGetNewMessage()
+{
+	// TODO: Сначала проверим, сколько осталось заряда в батарее
+	if (user_task_status > 1 || curr_IsManualMode == MANUALMODEON) {
+		// если сейчас исполняется какая-либо задача или ручной режим,
+		// пользователь занят и ему лучше не мешать
+		return 0;
+	}
+    $.ajax({
+        type: "POST",
+        url: "/mbl/messages",
+        data: ({CMD: 'GETMESSAGE',USERTASK: user_task}),
+        dataType: "json",
+        success: function(msg){ // TODO: почему-то со словарём не канает dataFilter!
+            var resp = eval(msg);
+            var msg_count = resp.MSGCOUNT;
+            var cmd = resp.CMD;
+            if (cmd == 'PASS') {
+            	// Всё нормально, работаем дальше. Сервер разрешил ;)
+            	return 0;
+            }
+            if (cmd == 'CANCEL' && user_task_status == 1) {
+                // если была назначена задача, но еще не начата - значит надо свернуть окошко
+            	try{
+            		Device.BlinkGreenLed(10,20,true,true);
+            	}catch(e){}
+            	user_task = 0;
+            	user_task_type = 0;
+            	user_task_status = 0;
+            	DoFrontWindow2();
+            	return 0;
+            }
+             // если есть новые сообщения и нет выполняющихся задач - назначаем!
+            if (cmd == 'NEW' && user_task_status == 0) { 
+                user_task = resp.TASK_ID;
+                user_task_type = resp.TASK_TYPE;
+                var msg_text = resp.TEXT;
+
+                if (user_task_type == 4 || user_task_type == 5 || user_task_type == 10) {
+            	    curr_HeaderDoc = resp.ID1;
+            	    all_items_count = resp.ID3; // общее число штук товара в фактуре приёмки
+                }
+                else if (user_task_type == 6){ // перемещения
+                	curr_CellName = resp.SOURCECELLNAME;
+                	curr_CellBarcode = resp.SOURCECELLBARCODE;
+                	curr_TargetCellBarcode = resp.TARGETCELLBARCODE;
+                	curr_TargetCellName = resp.TARGETCELLNAME;
+                }	
+                else if (user_task_type == 7){ // перемещения
+                	curr_CellName = resp.SOURCECELLNAME;
+                	curr_CellBarcode = resp.SOURCECELLBARCODE;
+                	curr_TargetCellBarcode = resp.TARGETCELLBARCODE;
+                	curr_TargetCellName = resp.TARGETCELLNAME;
+                }	
+                else if (user_task_type == 9){ // перемещения
+                	//curr_CellName = resp.SOURCECELLNAME;
+                	//curr_CellBarcode = resp.SOURCECELLBARCODE;
+                	//curr_TargetCellBarcode = resp.TARGETCELLBARCODE;
+                	curr_TargetCellName = resp.TARGETCELLNAME;
+                }	                
+                else if (user_task_type == 1 || user_task_type == 11 || user_task_type == 12) { // покоробочная сборка
+                	curr_HeaderDoc = resp.ID1; // фактура
+                	curr_OrderPart = resp.ID2; // номер части сборочного листа
+                	                	
+                } else {
+                	// TODO: тут будет обработка иных и прочих типов задач
+            	    curr_HeaderDoc = 0;
+                }
+   
+
+            	
+                // TODO: проверяем user_task_type - это может быть задача,
+                // а может быть просто сообщение (в перспективе)
+                DoNewTask(msg_text);    // перейдём к форме новой задачи
+            }
+        },
+        error: function(msg){
+        	// TODO: по-хорошему, надо бы сделать учёт попыток обращения или типа того
+        	DoMessageBox1("<BR><BR><h2 align=center>Ошибка при обращении к серверу</h2>",
+                          "ОК", DoFrontWindow2)
+            }
+    });	
+}
+
+// открыть форму с уведомлением и описанием новой задачи
+function DoNewTask(text)
+{
+	user_task_status = 1;
+    // перейдём в форму уведомления о новой задаче
+    openWin("NewTask");
+    // помигаем зеленой лампочкой
+	try{
+		Device.BlinkGreenLed(50,20,true,true);
+	}catch(e){}
+    // отобразим текст задания и проиграем звук
+    NewInnerText("NewTaskDetails", text+"<bgsound src='/static/beam.wav' loop=1>");
+    NewInnerText("UserAndRoleText", user_name+" ("+user_role+")");
+    NewInnerText("NewTaskDetails", text);
+    // запустить циклическое уведомление о новом задании
+    //IntervalRemindID = setInterval(DoRemind, 5000);
+}
+
+// сигнал циклического уведомления о новой задаче
+function DoRemind()
+{
+	try{
+		Device.BlinkGreenLed(50,20,true,true);
+	}catch(e){}
+	//NewInnerText("NewTaskDetails", text+"<bgsound src='/static/sndAuthReq.wav' loop=1>");
+}
+
+</script>
+
+
+
+
+<script>
+
+$(document).ready(function(){
+	
+
+	// -----------------------------------------------------------------------------
+	// Приём новых заданий и отправка сообщений
+	// -----------------------------------------------------------------------------
+
+	// подтвердить своё участие в задаче
+	$("#btnOKNewTask").click(function(){
+		// не забыть отключить таймер напоминания, если он был включен
+		//if (window.IntervalMindID != null) clearInterval(IntervalMindID);
+	    // переход в форму, соответствующую заданию
+	    switch (user_task_type) {
+	    	case 1: // покоробочная сборка
+	            //BeginTask(DoStartOrderBatching, DoFrontWindow2);
+	    	
+                
+               	task = new OrderBatching();      
+               	task.header_id = curr_HeaderDoc; // фактура 
+               	task.OrderPart = curr_OrderPart; // номер части сборочного листа; 
+               	task.start();                    	                 	      
+                
+                
+	    	    break;
+	    	case 3: // размещение паллеты
+	    	    BeginTask(DoAllocation1, DoFrontWindow2);
+	    	    break;
+	    	case 4: // разгрузка
+	            BeginTask(DoUnloading, DoFrontWindow2);
+	    	    break;
+	    	case 5: // приёмка
+	    	    BeginTask(DoAcceptanceMenu, DoFrontWindow2);
+	    	    break;
+	    	case 6: // перемещение и подтоварка
+	            BeginTask(DoMovingGetSourceCell, DoFrontWindow2);
+	    	    break;
+	    	case 7: // перемещение и подтоварка/ Другой режи
+	            BeginTask(DoMovingGetSourceCell, DoFrontWindow2);
+	    	    break;    
+	    	case 9: // Перемещение сырья на хранение для карщика
+	    		BeginTask(DoAllocation1, DoFrontWindow2);
+	    	    break;
+	    	case 10: // Перемещение сырья на хранение для карщика
+	    		BeginTask(DoAcceptanceMenu, DoFrontWindow2);
+	    	    break;
+	    	case 11: // Перемещение сырья на хранение для карщика
+	    		BeginTask(DoStartOrderBatching, DoFrontWindow2); 
+	    	    break;	    	
+	    	case 12: // покоробочная сборка для другой роли
+	    		BeginTask(DoStartOrderBatching, DoFrontWindow2); 
+	    	    break;	
+	    }
+	});
+	
+	
+// То, что происходит в самом начале, при старте страницы
+function OnLoadSite()
+{
+
+    // Сделаем ActiveX-объект сканера невидимым
+    DatalogicScanner1.style.visibility = "hidden";
+	DatalogicScanner1.style.width = 1;
+    DatalogicScanner1.style.height = 1;2
+    // проверка, авторизован юзер или нет?
+    $.ajax({
+        type: "POST",
+        url: "/auth",                   
+        data: ({auth: 0}),
+        dataType: "json",
+        success: function(msg){
+            var resp = eval(msg);
+            if (!resp || resp.error) {
+            	// Если не авторизован - идём на главную форму #1
+                openWin("FrontWindow1");
+                user_name = '';
+                user_depart = '';
+                user_role = '';
+                return 0;
+            }
+            
+            user_name = resp.user_name;
+            user_depart = resp.depart_name;
+            user_role = resp.role_name;
+            // судя по всему, пользователь авторизован - идём на главную форму #2
+            // TODO: здесь надо сделать загрузку сохраненного состояния (самое подходящее место)
+            openWin("FrontWindow2");
+            // TODO: вынести это обрамление в отдельную функцию, что ли...
+            NewInnerText("FrontWindow2AuthInfo",
+                 "<H2>"+user_name+"</H2><I>"+user_role+"</I><BR>"+user_depart+"<HR><BR><BR>");
+            if (window.IntervalID != null) clearInterval(IntervalID);
+            IntervalID = setInterval(DoGetNewMessage, 10000);
+            
+            /*DoValidCellBarcode();*/
+            //DoExpirationDate();
+
+        }
+    });
+}
+
+// -----------------------------------------------------------------------------
+// Авторизация и всё что с ней сязано
+// -----------------------------------------------------------------------------
+
+// Переход в форму авторизации
+$("#btnDoGetLogin").click(function(){
+    openWin("LoginWindow");
+    // установить свой обработчик события от сканера
+    
+    try{
+  		DatalogicScanner1.attachEvent("LabelScanned", OnAuthScan);
+  		
+    }
+    catch(e){ 
+    	//DatalogicScanner1.sLabelText = "1000300016243";//"1000300016045";
+    	//Питераская
+    	DatalogicScanner1.sLabelText = "1000300010265";//"1000300016045";
+    	OnAuthScan();    	
+    }
+    
+    $("#btnDoCancelLogin").focus();
+});
+
+// Выход из формы авторизации по кнопке "Отмена"
+$("#btnDoCancelLogin").click(function(){
+	
+	
+	ScannerDetach(OnAuthScan);
+
+    openWin("FrontWindow1");
+});
+
+// Завершение сеанса - LOGOUT
+$("#btnDoLogout").click(DoLogout);
+
+// отказаться от выполнения задачи (маловероятно, но такое может быть)
+$("#btnCancelNewTask").click(function(){
+    // вызвать проверку: уверен ли пользователь в отмене
+    DoMessageBox2("<br><br><h3 align=center>Вы действительно уверены, что хотите отказаться от задания?</h3>",
+                "Да, отказаться", "Вернуться",
+        function(){
+            // сообщить об отказе Куда Следует
+            DoPostMessage('NEGATIVE', user_task, '',
+                DoFrontWindow2,
+                function(){}
+            );
+            user_task = -1;
+            user_task_type = -1;
+            user_task_status = 0;
+        },
+        function(){
+            openWin("NewTask");// вернуться обратно, на форму
+        }
+    );
+});
+
+// -----------------------------------------------------------------------------
+// Разгрузка
+// -----------------------------------------------------------------------------
+function DoUnloading()
+{
+	DoMenuBox("<h2>Разгрузка</h2><HR><BR>Приступите к разгрузке." +
+	          "По окончанию нажмите кнопку<BR><B>[Разгрузка закончена]</B>." +
+	          "<BR> Если что-то пошло не так, нажмите<BR><B>[Разгрузка отменена]</B><BR><BR>", [
+        {text:"Разгрузка закончена",
+         func: DoneTask(DoUnloading)},
+        {text:"Разгрузка отменена",
+         func: function(){
+         	    // TODO: Проверка, уверен ли пользователь?
+         	    // Если ДА - Сообщим об окончании работы
+   	         	DoPostMessage('CANCEL', user_task, '',
+                DoFrontWindow2,
+                function(){});
+         }}
+        ]); 
+}
+
+// -----------------------------------------------------------------------------
+// Ручные режимы
+// -----------------------------------------------------------------------------
+
+$("#btnManualModes").click(DoManualModesMenu);
+
+/*
+$("#btnManualModes").click(function(){
+	var task = new InventoryModule.Inventory();
+});
+*/
+
+
+
+// -----------------------------------------------------------------------------
+//  по нажатию на F8 показываем окошко с переменными
+// -----------------------------------------------------------------------------
+$(document).keydown(function(evt){
+	if (evt.which == 119) {
+		if ($("#DebugArea").is(':visible'))	{
+			$("#DebugArea").hide();
+		} else {
+			ShowDebugInfo();
+    	}
+	}
+});
+
+
+// сделаем то, что сделать нужно при запуске веб-приложения
+OnLoadSite();
+
+});
+
+</script>  
+</head>
+
+<body>
+
+
+<div id="loading"></div>
+
+
+<!-- Универсальная форма с 1 кнопкой для сообщений пользователю -->
+<div id="ErrorMessage1" class="MsgDiv win">
+    <h2 align=center>Ошибка</h2>
+    <hr>
+    <br>
+    <h1 id="ErrorMessageText1" align=center></h1>
+	<div class="FooterDIV1">
+	    <input id="btnErrorMessage1OK" class='HugeBottomBtn' type="button" value="OK">
+    </div>
+</div>
+
+
+
+<!-- Универсальная форма с 1 кнопкой для сообщений пользователю -->
+<div id="form-1">
+	<h2 id="caption-1"></h2>
+    <hr>
+    <h1 id="text-1"></h1>
+    <div id="options-1"></div>
+	<div id="buttons-1"></div>	        	
+</div>
+
+
+
+
+<!-- Универсальная форма для ввода количества чего-либо с 2 кнопками --> 
+<div id="form-5" class="DivStyle1 win centered">
+	<h2 id="caption-5"></h2>
+    <hr>
+    </br>
+    <h1 id="text-5"></h1>
+    </br>
+    <input id="value-5" name="value-5" value="" class="hugetext centered" type="text" size="8" maxlength="8">
+    <p id="error-5" class="warningtext"></p>
+    </br>
+    </br>
+	<div id="buttons-5"></div>	
+</div>
+
+
+
+<!-- Универсальная форма с 1 кнопкой для сообщений пользователю -->
+<DIV id="MessageBox1" class="MsgDiv win">
+    <P id="Message1Text"></P>
+	<DIV class="FooterDIV1">
+	    <INPUT id="btnMessageBox1OK" class='HugeBottomBtn' type="button" value="">
+    </DIV>
+</DIV>
+
+
+
+<!-- Универсальная форма с 2 кнопками для сообщений пользователю -->
+<DIV id="MessageBox2" class="MsgDiv win">
+	<P id="Message2Text"></P>
+	<DIV class="FooterDIV2">
+	    <INPUT id="btnMessageBox2OK" class='HugeBottomBtn' type="button">
+	    <INPUT id="btnMessageBox2Cancel" class='HugeBottomBtn' type="button">
+    </DIV>
+</DIV>
+
+<!-- Универсальная форма для ввода количества чего-либо с 2 кнопками --> 
+<DIV id="EnterCountForm" class="DivStyle1 win centered">
+	<P id="EnterCountFormText"></P><HR>
+    <BR><BR>
+    <INPUT id="CountValue" name="CountValue" value="" class="hugetext" type="text" size=8 maxlength=8><BR>
+    <P id="EnterCountFormErrText" class="warningtext"> </P><BR>	
+	<DIV class="FooerDIV2">
+	    <INPUT id="btnEnterCountFormOK" class='HugeBottomBtn' type="button" value="Принять">
+	    <INPUT id="btnEnterCountFormCancel" class='HugeBottomBtn' type="button" value="Отмена">
+    </DIV>	
+</DIV>
+
+<!-- Универсальная форма для ввода/сканирования штрихкода -->
+<DIV id="EnterBarcode" class="DivStyle1 win centered">
+	<h2 id="EnterBarcodeFormText"></h2>
+	<HR><BR><BR>
+    <INPUT id="InputBarcode" value="" class="hugetext" type="text" size=15 maxlength=15><BR>
+   	<P id="EnterBarcodeErrText" class="warningtext"></P><BR>
+    <DIV class="FooterDIV2">
+        <INPUT id="btnEnterBarcodeOK" class="HugeBtn" type="button" value="Принять">
+        <INPUT id="btnEnterBarcodeCancel" class="HugeBtn" type="button" value="Отменить">
+    </DIV>
+</DIV>
+
+<!-- Форма для ввода/сканирования штрихкода при Ручной Подтоварке-->
+<DIV id="EnterBarcodeMI" class="DivStyle1 win centered">
+	ручная подтоварка<br><H3>Ввод штрих-кода<BR>ячейки</H3>
+	<P id="EnterBarcodeMIFormText"></P><HR><BR>
+    <INPUT id="InputBarcodeMI" value="" class="hugetext"
+    type="text" size=15 maxlength=13><BR>
+   	<P id="EnterBarcodeMIErrText" class="warningtext"></P>
+    <DIV class="FooterDIV3">
+        <INPUT id="btnEnterBarcodeMIOK" class="HugeBtn" type="button" value="Продолжить">
+        <INPUT id="btnEnterBarcodeMICancel" class="HugeBtn" type="button" value="Отменить последн.">
+        <INPUT id="btnEnterBarcodeMIClose" class="HugeBtn" type="button" value="Закончить подтоварку">
+    </DIV>
+</DIV>
+
+<!-- Универсальная форма для меню, состоящего из кнопок-->
+<DIV id="MenuForm" class="DivStyle1 win centered"></DIV>
+
+<!-- Главная "страница" #1 -->
+<DIV id = "FrontWindow1" class="DivStyle1 win">
+    <H1 align=center>SHIVA-WMS</H1><BR><BR><HR><BR>
+    <P align=center>Вы не авторизованы в системе. Пожалуйста, авторизуйтесь!
+    <BR><BR>
+    </P>
+    <DIV class="FooterDIV1">
+        <INPUT id="btnDoGetLogin" class='HugeBottomBtn' type="button" value="Авторизация">
+    </DIV>
+</DIV>
+
+<!-- Форма авторизации по штрих-коду на бейджике -->
+<DIV id = "LoginWindow" class="DivStyle2 win centered">
+    <H2>авторизация</H2><HR><BR><BR>
+    Поднесите сканер к своему штрих-коду на бейджике и нажмите грязно-оранжевую кнопку <B>[SCAN]</B>
+    <BR>
+    <DIV class="FooterDIV1">
+        <INPUT id="btnDoCancelLogin" class='HugeBottomBtn' type="button" value="Отмена">
+    </DIV>
+</DIV>
+
+<!-- Главная "страница" #2 -->
+<DIV id = "FrontWindow2" class="DivStyle3 win centered">
+    <P id="FrontWindow2AuthInfo"></P>
+  	<INPUT id="btnManualModes" class="HugeBtn" type="button" value="Ручные режимы"><BR>
+
+	
+	</BR>
+    <DIV class="FooterDIV1">
+        <INPUT id="btnDoLogout" class='HugeBottomBtn' type="button" value="Завершить сеанс">
+    </DIV>
+</DIV>
+
+<!-- Форма нового сообщения -->
+<DIV id="NewTask" class="DivStyle3 win centered">
+	<P id="UserAndRoleText"></P><BR>
+    <H3>Новое задание</H3><HR><BR>
+  	<P id="NewTaskReminder"></P>
+    <P id="NewTaskDetails" class="hugetext"></P><BR>
+    <DIV class="FooterDIV2">
+        <INPUT id="btnOKNewTask" class="HugeBtn" type="button" value="Принять">
+        <INPUT id="btnCancelNewTask" class="HugeBtn" type="button" value="Отменить">
+    </DIV>
+</DIV>
+
+<!-- Форма выбора товара из списка при приёмке товара -->
+<DIV id="ChooseItem1" class="DivStyle3 win">
+    <H2 align=center>выберите товар</H2><HR>
+    <p id="ChooseItem1Caption" align=center></p>
+    <p id="ChooseItemArea1"></p>
+    <DIV class="FooterDIV1" style="top: 86%;">
+        <INPUT id="btnOKChooseItem1" class="NormalBtn" type="button" value="Принять">
+        <INPUT id="btnCancelChooseItem1" class="NormalBtn" type="button" value="Отменить">
+    </DIV>    	
+</DIV>
+
+<!-- Форма ввода срока годности - месяца и года -->
+<DIV id="EnterExpirationDate" class="DivStyle1 win">
+    <H2 align=center>Введите срок годности</H2><HR>
+    <BR>
+    <P align=center>
+    <TABLE WIDTH=80% border=0 cellspacing=6 cellpadding=2>
+    <TR align=center style="padding-bottom: -14px;"><TH>день</TH><TH>месяц</TH><TH>год</TH></TR>
+    <TR align=center>
+   	<TD><INPUT id="ExpirationDay" name="ExpirationDay" value="" class="hugetext2" type="text" size=2 maxlength=2></TD>		    	
+    <TD><INPUT id="ExpirationMonth" name="ExpirationMonth" value="" class="hugetext2" type="text" size=2 maxlength=2></TD>
+    <TD><INPUT id="ExpirationYear" name="ExpirationYear" value="" class="hugetext2" type="text" size=4 maxlength=4></TD>   		
+    </TR>
+    </TABLE>
+    если срок годности неизвестен - оставьте все поля незаполненными
+  	</P>
+    <DIV class="FooterDIV2">
+        <INPUT id="btnOKExpDate" class="HugeBtn" type="button" value="Принять">
+        <INPUT id="btnCancelExpDate" class="HugeBtn" type="button" value="Отменить">
+    </DIV>
+</DIV>
+
+<!-- Форма подтверждения деталей у новой, неизвестной ранее партии -->
+<DIV id="ConfirmPartyAcception" class="DivStyle2 win">
+	<H2 align=center>подтверждение</H2><HR>
+    
+    <p id="ConfirmPartyInfo" align=center >
+    
+    <table width=99% border=0 cellspacing=0 cellpadding=0>
+    <tr style="">   	
+    	<td colspan=2, id="ConfirmInfoItem" style="font-size: 16px; padding-bottom:4px;"></td>
+   	</tr>
+    <tr style="font-size: 14px; padding-bottom:-2px; padding-top:-2px; ">
+    	<td width=68%> срок годности:</td>
+    	<td id="ConfirmInfoEpxDate"></td>
+	</tr>
+    <tr style="font-size:14px; padding-bottom:-2px; padding-top:-2px; ">
+    	<td id="name-volume-in-box">штук в коробке:</td>
+    	<td id="ConfirmInfoCountInBox"></td>
+	</tr>
+    <tr style="font-size:14px; padding-bottom:-2px; padding-top:-2px; ">
+    	<td id="name-volume-in-pallet">коробок на паллете:</td>
+    	<td id="ConfirmInfoCount2"></td>
+	</tr>
+    </table></p>
+	<DIV class="FooterDIV2">
+    <INPUT id="btnOKConfirmParty" class="HugeBtn" type="button" value="Принять">
+    <INPUT id="btnCancelConfirmParty" class="HugeBtn" type="button" value="Отменить">
+    </DIV>
+</DIV>
+
+<!-- окно отображения различной отладочной информации -->
+<div id="DebugArea" class="DebugDiv">
+<p class="centered">DEBUG INFO</p>
+<p id="debug_variables"></p><hr>
+<p id="another_debug_info"><p>  
+</div>
+
+<!-- подключаем ActiveX-компонент сканера штрихкодов -->
+<OBJECT id="DatalogicScanner1" CLASSID="CLSID:89B5002E-9DB1-4AA9-A18B-10202D5342A6" VIEWASTEXT>
+<PARAM NAME="_cx" VALUE="5080">
+<PARAM NAME="_cy" VALUE="5080">
+<PARAM NAME="bScanEnabled" VALUE="False">
+</OBJECT>
+    
+</body>
+</html>

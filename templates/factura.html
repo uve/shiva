@@ -1,0 +1,94 @@
+
+<p class="ast1h2">Счет - фактура № {{ header["numb"] }} от: {{ ot }}</p>
+
+<table class="ast6" border="0" cellspacing=0 cellpadding=2 width="99%">
+<tbody>
+	<tr><td width="10%" colspan="1">Продавец:</td><td width="90%" colspan="9"><b>{{ client["name_full"] }}</b></td></tr>
+	<tr><td width="10%" colspan="1">Адрес:</td><td width="90%" colspan="9"><b>{{ client["adress_ur"] }}</b></td></tr>
+	<tr><td width="20%" colspan="2">ИНН/КПП продавца:</td><td width="80%" colspan="8"><b>{{ client["inn"] }}</b></td></tr>
+	
+	<tr><td width="20%" colspan="2">Грузоотправитель и его адрес:</td>
+		<td width="80%" colspan="8"><b>{{ client_from["name_full"] }}, {{ client_from["adress_ur"] }}, {{ client_from["inn"] }}</b></td></tr>
+		
+	<tr><td width="20%" colspan="2">Грузополучатель и его адрес:</td>
+		<td width="80%" colspan="8"><b>{{ client_to["name_full"] }}, {{ client_to["adress_ur"] }}, {{ client_to["inn"] }}</b></td></tr>
+				
+	<tr><td width="100%" colspan="10">К платежно-расчетному документу № ________________ от ________________________________</td></tr>
+			
+
+	<tr><td width="10%" colspan="1">Покупатель:</td><td width="90%" colspan="9"><b>{{ client_to["name"] }}</b></td></tr>
+	<tr><td width="10%" colspan="1">Адрес:</td><td width="90%" colspan="9"><b>{{ client_to["adress_ur"] }}</b></td></tr>
+	<tr><td width="20%" colspan="2">ИНН/КПП покупателя:</td><td width="80%" colspan="8"><b>{{ client_to["inn"] }}</b></td></tr>	
+					
+
+</tbody>
+</table>	
+   
+
+    
+<table class="ast8" width="99%">
+<thead>
+    <tr>
+	    <th width="40%">Наименование товара</th>
+	    <th>Ед.</th>
+	    <th>Кол-во</th>
+	    <th>Цена</th>
+	    <th>Сумма</th>	
+	    <th>В т.ч акциз</th>		
+	    <th>Налог</th>		
+	    <th>Сумма НДС</th>
+	    <th>Сумма всего</th>
+	    <th>Страна происхождения</th>
+	    <th>Номер ГТД</th>		
+    </tr>
+    <tr>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th>6</th>
+        <th>7</th>
+        <th>8</th>
+        <th>9</th>
+        <th>10</th>
+        <th>11</th>
+    </tr>
+</thead>
+<tbody>
+{% for i,item in enumerate(data,1) %}
+    <tr>
+        <td align="left">{{ item.values["name"] }}</td>        
+        <td align="center">{{ item.values["npack"] }}</td>    
+        <td align="right">{{ int(item.values["valume"]) }}</td>
+        <td align="right">{{ item.values["price"] }}</td>
+        <td align="right">{{ item.values["summ"] }}</td>
+        <td align="right">0</td>
+        <td align="center">18%</td>
+        <td align="right">{{ item.values["nds"] }}</td>
+        <td align="right">{{ item.values["summ_nds"] }}</td>
+        <td></td>
+        <td></td>        
+    </tr>
+{% end %}
+	<tr>
+		<th colspan=7 align="right">ИТОГО </th>        
+        <td align="right">{{ sum(item.values["nds"] for item in data) }}</td>
+        <td align="right">{{ sum(item.values["summ_nds"] for item in data) }}</td>
+        <td></td>
+        <td></td>   		
+	</tr>
+</tbody>
+</table>
+
+
+<table class="ast6" border="0" cellspacing=0 cellpadding=2 width="99%">
+<tbody>
+	<tr><td width="50%"  colspan="1">Руководитель организации: {{ client_from["chief"] }}</td>
+		<td width="50%" colspan="1">Главный бухгалтер: {{ client_from["accountant"] }}</td></tr>
+	<tr><td width="100%" colspan="2">ПРИМЕЧАНИЕ: Первый экземпляр - покупателю, второй экземпляр счет-фактуры и товарной накладной  - вернуть с подписью по адресу: 630004,  г.Новосибирск, а/я  228</td></tr>	
+</tbody>
+</table>
+
+
+

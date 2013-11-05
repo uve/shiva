@@ -1,0 +1,4 @@
+rm -rf *release.js && rm -rf ts/*js* && tsc -sourcemap --out release.js  ts\core.ts ts\form.ts ts\main.ts ts\task.ts ts\inventory\clear_tovar.ts ts\inventory\get_cell_info.ts ts\inventory\get_from_cell.ts ts\inventory\input_product.ts ts\inventory\inventory.ts ts\inventory\manual_increase.ts ts\inventory\moving_pallet.ts ts\inventory\output_product.ts ts\tasks\acceptance.ts ts\tasks\allocation.ts ts\tasks\moving.ts ts\tasks\orderbatching.ts ts\tasks\orderbatching_raw.ts
+
+#rm -rf *release.js && rm -rf ts/*js* && tsc -sourcemap --out release.js ts/*.ts ts/inventory/*.ts ts/tasks/*.ts
+# && java -jar compiler.jar --js release.js --js_output_file release.min.js

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block report %}
+
+<div style="text-align: right; font-weight: bold;">
+	<span style="margin-right: 50px;">Накладная № {{ header["num"] }}/{{ header["id"] }}</span>
+	<span style="margin-right: 50px;">от</span>
+	<span style="margin-right: 50px;">{{ header["date"] }}</span>
+</div>
+
+<p style="padding-left: 50px; font-weight: bold;">От: {{ client_from["name_full"] }}</p>
+<p style="padding-left: 50px; font-weight: bold;">Кому: {{ client_to["name_full"] }}</p>
+
+<table class="ast2" cellspacing=0>
+<thead>
+<tr>
+	<th>Код</th>
+	<th colspan=2>Наименование Товара</th>
+	<th>Ед.</th>
+	<th width=50>Кол-во</th>
+</tr>
+</thead>
+<tbody>
+{% for item in data  %}
+	<tr>
+		<td>{{ item.values["code"] }}</td>
+		<td colspan=2>{{ item.values["ntovar"] }} </td>
+		<td>{{ item.values["kpack"] }} {{ item.values["spack"] }}</td>
+		<td align=right >{{ int(item.values["valume"]) }}</td>		
+	</tr>	
+{% end %}
+</tbody>
+</table>
+
+<p style="text-align: right;"><b>{{ int(total) }}</b></p>
+<p><b>Количество строк: {{ len(data) }}</b></p>
+
+<p style="text-align: right; font-weight: bold;">
+	<span style="border-bottom: 1px solid black; padding-right: 200px; margin-right: 50px;">Сдал: </span>
+    <span style="border-bottom: 1px solid black; padding-right: 200px;">Принял: </span>    	    
+</p>
+{% end %}
+
