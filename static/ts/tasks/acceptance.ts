@@ -405,6 +405,10 @@ module AcceptanceModule {
 	     */    
 	    public getCountInBox() {
 	 
+	    	
+	    	/*
+	    	 * Если принимаем сырье, то не спрашивать количество в упаковке, а отправлять 1
+	    	 */
 	    	if (parseInt(this.type_id) == 10){
 	    	
 	    		this.count_inbox = "1";
