@@ -78,7 +78,7 @@ class BTKConfirmInData(BaseHandler):
         
         if param == "confirm":
             
-            res = self.cursor.callproc("shiva.okInput", [header_id, out])  
+            res = self.cursor.callproc("shiva.okInput", [header_id])  
         
      
             return        
