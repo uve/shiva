@@ -22,11 +22,11 @@ sw_grid1.columns([
     var sw_grid2 = sw_btk.cells("b").attachGrid();
     sw_grid2.columns([
       
-          { type:"ro", sort:"int",  align:"center",  width:"55", label:"ID" },
-          { type:"ro", sort:"int",  align:"center",  width:"55", label:"Код" },
+          { type:"ro", sort:"int",  align:"center",  width:"55", label:["ID","#text_filter"] },
+          { type:"ro", sort:"int",  align:"center",  width:"55", label:["Код","#text_filter"] },
           { type:"ro", sort:"str",  align:"left",   width:"*",  label:"Товар" },
           { type:"ro", sort:"int",  align:"center", width:"60", label:"Кол-во" },
-          { type:"ro", sort:"int",  align:"center", width:"100", label:"Партия" },
+          { type:"ro", sort:"int",  align:"center", width:"100", label:["Партия","#text_filter"] },
           { type:"ro", sort:"int",  align:"center", width:"100", label:"Годен ДО" }
           
     ]);
