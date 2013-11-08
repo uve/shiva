@@ -78,12 +78,7 @@ class BTKConfirmInData(BaseHandler):
         
         if param == "confirm":
             
-<<<<<<< HEAD
-            res = self.cursor.callproc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
-=======
             res = self.cursor.callproc("shiva.okInput", [header_id])  
->>>>>>> 210fa54e852e44a8f8ddfe37ab681891f2f454b5
-        
      
             return        
         
