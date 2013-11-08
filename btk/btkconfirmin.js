@@ -8,8 +8,8 @@ window.Cleaner.push(sw_btk);
 var sw_grid1 = sw_btk.cells("a").attachGrid();
 
 sw_grid1.columns([
-  { type:"ro", sort:"int",  align:"center", width:"80", label:"ID" },  
-  { type:"ro", sort:"str",  align:"center", width:"50",  label:"Номер" },
+  { type:"ro", sort:"int",  align:"center", width:"80", label:["ID","#text_filter"] },  
+  { type:"ro", sort:"str",  align:"center", width:"50",  label:["Номер","#text_filter"] },
   { type:"ro", sort:"date", align:"center", width:"100", label:"Дата" },          
   { type:"ro", sort:"str",  align:"left",   width:"150", label:"От кого" },
   { type:"ro", sort:"str",  align:"left",   width:"*",   label:"Операция" },  
