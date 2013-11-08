@@ -20,7 +20,8 @@ class BTKConfirmIn(BaseHandler):
         loader = template.Loader(os.path.join(ROOT_DIR, 'btk'))
         result = loader.load("btkconfirmin.js").generate()            
         
-        self.write({'def': [ {'type':"button", 'enabled' : 'false', 'text':'Печать', 'img':"print.gif", 'imgdis':"print_dis.gif", 'id': 'id_print', 'action':'do_print'} ],
+        self.write({'def': [ {'type':"button", 'enabled' : 'false', 'text':'Печать', 'img':"print.gif", 'imgdis':"print_dis.gif", 'id': 'id_print', 'action':'do_print'},
+                             {'type':"button", 'text':'Подтвердить', 'id': 'id_confirm', 'action':'do_confirm'} ],
                    'cmd': result })
 
 
@@ -71,4 +72,15 @@ class BTKConfirmInData(BaseHandler):
             output = output.replace('\n', '').replace('\r', '')        
             self.write({"cmd": "self.Incunable(function(doc){ doc.write('%s') })" % output})
             
-            return     
+            return
+        
+        
+        
+        if param == "confirm":
+            
+            res = self.cursor.callproc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
+        
+     
+            return        
+        
+        

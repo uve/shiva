@@ -71,6 +71,13 @@ sw_grid1.columns([
     	
     }
     
+    window.do_confirm = function(){
+    	
+    	self.NetSend("/btk/btkconfirmin/data/confirm?head=" + window.btk_head);
+    	
+        	
+    }
+    
     
     
                        
