@@ -59,6 +59,10 @@ class MovingHandler(BaseHandler):
             
         cell_id = self.get_argument("cell_id", None)
         target_id = self.get_argument("target_id", None)
+        
+        party_id = self.get_argument("party_id", None)
+        value    = self.get_argument("value", None)
+        
 
         user_id = self.session.uid
 
@@ -76,7 +80,17 @@ class MovingHandler(BaseHandler):
             self.cursor.callproc("shiva.MovePalete", [cell_id, target_id])            
 
 
+        if param == 'GetCellForPartyFromBox':
+            out = self.cursor.var(cx_Oracle.CURSOR)          
+            res = self.cursor.callproc("shiva.GetCellForPartyFromBox", [party_id, value, out])      
 
+            code = res[-1].fetchone()
+            
+            if code:                
+                self.write({ 'code': code})
+            else:
+                self.write({ 'error': "Код не найден"})
+                
 
 class BatchingOrders(BaseHandler):
     '''

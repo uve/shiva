@@ -45,17 +45,19 @@ class AcceptionHandler(BaseHandler):
         header_id = self.get_argument("header_id", None)
         
         count = self.get_argument("count", None)
-        if count:
-            count = int(count)
+        #if count:
+        #    count = int(count)
+        count_inbox = self.get_argument("count_inbox", None)
+        
         
         count_all = self.get_argument("count_all", None)
-        if count_all:
-            count_all = int(count_all)
+        #if count_all:
+        #    count_all = int(count_all)
                     
         is_btk = self.get_argument("is_btk", 0)
         
         product_id = self.get_argument("product_id", None)
-        count_inbox = self.get_argument("count_inbox", None) 
+         
         
         
         goden_do = self.get_argument("goden_do", default=None)

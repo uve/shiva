@@ -26,7 +26,7 @@ class InventoryHandler(BaseHandler):
         target_id   = self.get_argument("target_id",   default=None)
         
         
-        count_inbox  = self.get_argument("count_inbox",  default=None)        
+        
         product_id   = self.get_argument("product_id",   default=None)        
         party_number = self.get_argument("party_number", default=None)             
         plus         = self.get_argument("plus",         default=0)
@@ -39,6 +39,9 @@ class InventoryHandler(BaseHandler):
         
         # if count:
         #    count = float(count)
+        
+        count_inbox  = self.get_argument("count_inbox",  default=None)        
+        
             
         product_code = self.get_argument("product_code", default=None)
                        

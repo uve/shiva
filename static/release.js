@@ -1359,6 +1359,9 @@ var InventoryModule;
                 "Перемещение ячейки": function () {
                     var task = new MovingPalletModule.MovingPallet();
                 },
+                "Перемещение Партии Сырья": function () {
+                    var task = new MovingRawModule.MovingRaw();
+                },
                 "Заблокировать ячейку": function () {
                     _this.blockCell();
                 },
@@ -2546,6 +2549,70 @@ var MovingPalletModule;
     })(InventoryModule.Inventory);
     MovingPalletModule.MovingPallet = MovingPallet;
 })(MovingPalletModule || (MovingPalletModule = {}));
+/// <reference path="inventory.ts" />
+var MovingRawModule;
+(function (MovingRawModule) {
+    var MovingRaw = (function (_super) {
+        __extends(MovingRaw, _super);
+        function MovingRaw() {
+            _super.call(this);
+            this.class_name = "MovingRaw";
+
+            this.caption = "Перемещение сырья";
+
+            this.cell_id = "";
+            this.target_id = "";
+
+            this.scanCell();
+        }
+        MovingRaw.prototype.scanCell = function () {
+            var _this = this;
+            this.formCell({
+                text: "Ввод штрих-кода ИСХОДНОЙ ячейки",
+                apply: function (value) {
+                    _this.cell_id = value;
+                    _this.scanParty();
+                },
+                cancel: function () {
+                    _this.stop();
+                }
+            });
+        };
+
+        MovingRaw.prototype.scanParty = function () {
+            var _this = this;
+            this.formParty({
+                apply: function (value) {
+                    _this.party_id = value;
+                    _this.getCell();
+                },
+                cancel: function () {
+                    _this.scanCell();
+                }
+            });
+        };
+
+        MovingRaw.prototype.getCell = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/moving/GetCellForPartyFromBox",
+                data: {
+                    'party_id': this.party_id,
+                    'value': "31"
+                },
+                success: function (resp) {
+                    _this.complete("Паллета перемещена");
+                },
+                error: function () {
+                    _this.stop();
+                }
+            });
+        };
+        return MovingRaw;
+    })(InventoryModule.Inventory);
+    MovingRawModule.MovingRaw = MovingRaw;
+})(MovingRawModule || (MovingRawModule = {}));
 /// <reference path="inventory.ts" />
 var OutputProductModule;
 (function (OutputProductModule) {

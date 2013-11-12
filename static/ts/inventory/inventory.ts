@@ -68,12 +68,19 @@ module InventoryModule {
 					"Очистка ячейки"  : () => {												
 													this.emptyCell(); 
 					},			
+					
 					"Взять из ячейки"  : () => {
 													var task = new GetFromCellModule.GetFromCell();
 					},	
 					"Перемещение ячейки" : () => {				
 													var task = new MovingPalletModule.MovingPallet();
 					},							
+					
+					
+					"Перемещение Партии Сырья"  : () => {
+													var task = new MovingRawModule.MovingRaw();				
+					},		
+					
 					"Заблокировать ячейку"  : () => {				
 													this.blockCell(); 
 					},
@@ -102,6 +109,8 @@ module InventoryModule {
 								this.plus = 3;
 								this.start();							
 							},			
+	
+							
 							"Отгрузка клиенту"  : () => {
 								var task = new OutputProductModule.OutputProduct(); 
 							},				
