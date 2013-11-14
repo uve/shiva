@@ -1,6 +1,5 @@
 var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
 
-
 sw_btk.items[0].setText("Список фактур");
 sw_btk.items[1].setText("Список товаров");
 window.Cleaner.push(sw_btk);
@@ -75,7 +74,6 @@ sw_grid1.columns([
 
     	self.NetSend("/btk/btkconfirmin/data/confirm?head=" + window.btk_head);
 
-        	
     }
     
     
