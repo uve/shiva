@@ -108,7 +108,7 @@ class AcceptionHandler(BaseHandler):
             
                 
         if param == 'end_header':
-            self.cursor.callproc("shiva.OkInput", [header_id, None])
+            self.cursor.callproc("shiva.OkInput", [header_id])
             return
         
         
