@@ -60,6 +60,9 @@ class BTKConfirmInData(BaseHandler):
             res = self.cursor.callproc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
             
             results = fetchone(res[-1])
+            
+            print results
+            
             results["ids"] = party2barcode(results["party"])
             
             pages = 1

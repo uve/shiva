@@ -24,13 +24,11 @@
   <div class="more">
 
 	<b>Наименование: </b>{{ results["name"] }}</br>
-	<b>Партия: </b>{{ results["party"] }}</br>
+	<b>Партия: </b>{{ results["party"] }}&nbsp;&nbsp;&nbsp;<b>Срок годности: </b>{{ results["best_before"] }}</br></br>
 	<b>Дата производства: </b>{{ results["production_date"] }}</br>
-	<b>Срок годности: </b>{{ results["best_before"] }}</br>
 	{{ results["prim"] or "" }}</br>
-	</br>
 	<b>Поставщик: </b>{{ results["provider"] }}</br>
-	<b>Ответственный: </b>{{ results["responsible"] }}</br>
+	<!-- <b>Ответственный: </b>{{ results["responsible"] }}</br>  -->
 		
 	<img src="/warehouse/prnpart/data/?ids={{ results['ids'] }}&party=party">
 	
