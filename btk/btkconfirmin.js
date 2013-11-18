@@ -26,19 +26,66 @@ sw_grid1.columns([
           { type:"ro", sort:"str",  align:"left",   width:"*",  label:"Товар" },
           { type:"ro", sort:"int",  align:"center", width:"60", label:"Кол-во" },
           { type:"ro", sort:"int",  align:"center", width:"100", label:["Партия","#text_filter"] },
-          { type:"ro", sort:"int",  align:"center", width:"100", label:"Годен ДО" }
+          { type:"ro", sort:"int",  align:"center", width:"100", label:"Годен ДО" },
+          { type:"ro", sort:"int",  align:"center", width:"0", label:"cid" },
+          { type:"ro", sort:"int",  align:"center", width:"0", label:"cid" },
+          {
+				label:"Статус партии",
+				width:100,
+				type:"co",
+				options:{
+					{% for item in all_status %} 
+				    	"{{ item['id'] }}":"{{ item['name'] }}",
+				    {% end %}
+				}
+			}
           
     ]);
     window.Cleaner.push(sw_grid2);
                         
                         
+    
+    var col_status = 6;
+    var col_status_name = 8;
+    var status = {
+			 "100":"#BFFFCC", //кондиция
+			 "101":"#ffc9da", //брак
+			 "102":"#FFD191", //аллергены
+			 "103":"#FFF8A6" //карантин		
+	}
+	
 
     sw_grid1.attachEvent("onRowSelect", function(id){
     	self.Toolbars["def"].disableItem('id_print');
     	    	
-        self.load(sw_grid2, "/btk/btkconfirmin/data/list?head="+id);
+    	window.btk_head = id;
+    	
+    	
+    	
+    	    	
+
+        self.load(sw_grid2, "/btk/btkconfirmin/data/list?head="+id, 
         
-        window.btk_head = id;        
+				        function() {
+				        	
+				        	
+				        	sw_grid2.forEachRow(function(id){
+				
+				        		var value = sw_grid2.cells(id,col_status).getValue();        		
+				        		sw_grid2.cells(id,col_status_name).setValue(value);
+				        		
+				        		if (status[value]){
+				        			sw_grid2.setRowTextStyle(id, "background-color: " + status[value]);	
+				        		}
+				        		
+				                 
+				             })
+
+        });
+    
+    
+        
+           
     });
     
     
@@ -48,6 +95,21 @@ sw_grid1.columns([
     	window.btk_party = id;
     });
     
+
+    sw_grid2.attachEvent("onEditCell",function(stage, id,index,value){
+        //called each time when cell changed
+    	if(stage==2){ 
+
+    		if (status[value]){
+    			sw_grid2.setRowTextStyle(id, "background-color: " + status[value]);	
+    		}
+    		
+        	self.NetSend("/btk/btkconfirmin/data/change_status?head=" + window.btk_head
+                    + "&party=" + window.btk_party+ "&status=" + value);
+    	} 
+        return true; 
+    })
+
     
     
     
