@@ -140,7 +140,7 @@ sw_grid1.columns([
     
     window.do_confirm = function(){
 
-    	self.NetSendAsync("/btk/btkconfirmin/data/confirm?head=" + window.btk_head, function(){
+    	self.NetSend("/btk/btkconfirmin/data/confirm?head=" + window.btk_head, false , function(){
     		
     		update();
     	});
