@@ -207,8 +207,8 @@ module CoreModule {
 	    private isValidBarcodeType(barcode: string, expectedType: number)
 	    {
 	    	
-	    	if (barcode.length < 5){
-	    		throw "неправильная длина штрихкода";
+	    	if (barcode.length < 4){
+	    		throw "неправильная длина штрихкода (минимум 4)";
 	    	}
 	    	
 	    	if (!expectedType){

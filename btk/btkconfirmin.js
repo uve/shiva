@@ -15,9 +15,15 @@ sw_grid1.columns([
   { type:"ro", sort:"str",  align:"center", width:"80", label:"Статус" }    
   ]);
 
-    self.load(sw_grid1, "/btk/btkconfirmin/data/head");
 
-
+	function update(){ 
+	
+		self.load(sw_grid1, "/btk/btkconfirmin/data/head");
+	}
+	
+	update();
+	
+	
     var sw_grid2 = sw_btk.cells("b").attachGrid();
     sw_grid2.columns([
       
@@ -134,7 +140,10 @@ sw_grid1.columns([
     
     window.do_confirm = function(){
 
-    	self.NetSend("/btk/btkconfirmin/data/confirm?head=" + window.btk_head);
+    	self.NetSendAsync("/btk/btkconfirmin/data/confirm?head=" + window.btk_head, function(){
+    		
+    		update();
+    	});
 
     }
     

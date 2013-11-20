@@ -6,9 +6,10 @@ module MovingRawModule {
 	
 		public class_name = "MovingRaw";
 	
+		code         : string;
 		caption      : string;
 		cell_id      : string;
-		target_id      : string;	
+		target_id    : string;	
 		
 	 	constructor() {
 	 		

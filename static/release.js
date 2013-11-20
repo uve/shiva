@@ -147,8 +147,8 @@ var CoreModule;
 
         // проверка ШК на внутренний тип
         Barcode.prototype.isValidBarcodeType = function (barcode, expectedType) {
-            if (barcode.length < 5) {
-                throw "неправильная длина штрихкода";
+            if (barcode.length < 4) {
+                throw "неправильная длина штрихкода (минимум 4)";
             }
 
             if (!expectedType) {
@@ -2602,6 +2602,7 @@ var MovingRawModule;
                     'value': "31"
                 },
                 success: function (resp) {
+                    _this.code = resp.code;
                     _this.complete("Паллета перемещена");
                 },
                 error: function () {

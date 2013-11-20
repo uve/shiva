@@ -134,9 +134,6 @@ handlers = [
                 (r"/btk/btkconfirmin/data/([^/]+)", BTKConfirmInData),
                 
                 
-                
-                
-                
                 (r"/group/boxass", BoxAssembleHandler),
                 (r"/group/boxass/data", BoxAssembleDataHandler),
                 (r"/itemzone/itemassembly", ItemAssemblyHandler),
