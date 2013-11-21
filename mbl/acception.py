@@ -39,10 +39,12 @@ class AcceptionHandler(BaseHandler):
     def post(self, param):
 
             
-        cell_id = self.get_argument("cell_id", None)
-        party_id = self.get_argument("party_id", None)
+        cell_id   = self.get_argument("cell_id",   None)
+        party_id  = self.get_argument("party_id",  None)
         pallet_id = self.get_argument("pallet_id", None)
         header_id = self.get_argument("header_id", None)
+        
+        party_number  = self.get_argument("party_number",  None)
         
         count = self.get_argument("count", None)
         #if count:
@@ -115,7 +117,7 @@ class AcceptionHandler(BaseHandler):
             
         if param == 'addnewpallet':        
             # Добавить сушествующую паллету, не бтк            
-            self.cursor.callproc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id,
+            self.cursor.callproc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
                                                 goden_do, is_btk, cell_id])
             return
 
