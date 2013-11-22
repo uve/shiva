@@ -3,23 +3,16 @@
 
 from core.sw_base import BaseHandler
 
-import settings as config
-
-import json
-# from barbam_models import AssemblyList
 
 import os
 from settings import ROOT_DIR
 
 
 from tornado import template
-from settings import TEMPLATE_DIR
 import cx_Oracle
 
 
-import time
-
-from core.common_tools import fetchall, fetchone, fetchall_by_name
+from core.common_tools import fetchall#, fetchone, fetchall_by_name
 
 from avtuk.avtuk_models import RC
 #===  =========================================================
