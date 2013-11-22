@@ -11,6 +11,7 @@ CURRENT_RC   = os.getenv("CURRENT_RC",   "1")
 MAX_SESSIONS = 1#int(os.getenv("MAX_SESSIONS", "1"))
     
  
+ 
 #=== ORACLE =================================================================#
 
 # DB_SID = "ORASCLAD"
