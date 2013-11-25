@@ -1,8 +1,9 @@
 # coding: utf-8
 
 from core.sw_base import BaseHandler
-from avtuk.avtuk_models import User, NotInPeriodException, NotUserException
-from core.sessions import SessionManager
+
+from core.common_tools import fetchone
+from barcode.zek_model import barcode2depart_sid
 
 from core.utils import Storage
 #=============================================================================#
@@ -61,42 +62,40 @@ class AuthHandler(BaseHandler):
 
     def post(self):
         
-        if self.session and self.session.uid:
-            user = User.get(id=self.session.uid)
-          
-        else:                        
-            barcode = self.get_argument("barcode", None)
-            login   = self.get_argument("login", None)
-            passw   = self.get_argument("passw", None)
-                      
-                      
-            try:                        
-                user = User.get_auth(barcode, login, passw)            
-            
-            except NotUserException:
-                self.write({'error':'Пользователь не найден',
-                            'cmd':'self.NetSend("/auth")'})
-                return
-
-            except NotInPeriodException:
-                self.write({'error':'Пользователь не в смене',
-                            'cmd':'self.NetSend("/auth")'})
-                return
-
-            except:
-                self.write({'error':'Проблемы с сервером (auth)',
-                            'cmd':'self.NetSend("/auth")'})
-                raise
+        barcode = self.get_argument("barcode", None)
         
+        depart, user_id = None
+        
+        if barcode:
+            depart, user_id = barcode2depart_sid(barcode)
+            
+        login   = self.get_argument("login", None)
+        passw   = self.get_argument("passw", None)
+        
+                
+        res = self.cursor.callproc("shiva_task.GetUser", [login, passw, user_id, depart])
+               
+        
+        user = fetchone(res[-1])
+        
+        self.write(user)
+        
+        self.set_cookie('rc',   str(user.rc))
+        self.set_cookie('uid',  str(user.id))
+        self.set_cookie('role', str(user.role))
+        
+            
+        '''
         
         if user:
-            self.session = SessionManager(user.id, user.role)
+            self.session = SessionManager(user.id, user.role, user.rc)
             
             self.set_cookie('uid', str(user.id))
             self.set_cookie('role', str(user.role))
+            self.set_cookie('rc', str(user.rc))
         
             self.write({'user_name':user.name, 'depart_name':user.depart_cls.name, 'role_name':user.current_role_cls.name })
-            
+        '''
 
         
 #=============================================================================#

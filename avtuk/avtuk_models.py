@@ -633,6 +633,8 @@ class User(AvtukObject):
     role = Col()
     role_cls = Reference('Role', condition='User.role = Role.id')  # Основная роль
     current_role_cls = Reference('Role', generator='get_current_role')
+    
+    role = Col()
 
     def get_current_role(self):
         return '''SELECT * FROM sw_roles
@@ -654,15 +656,16 @@ class User(AvtukObject):
         Потом или принадлежность к начальству или к текущей смене
         '''
         
-        kw = {'crc': CURRENT_RC}
+        #kw = {'crc': CURRENT_RC}
+        kw = {}
         
         # sql = 'SELECT * FROM sotrud'
         # user = Executor.exec_cls(sql)
         # print 'hello'
         
-        sql = '''SELECT s.id, s.sotrud, s.name, s.depart, s.password, s.visible, s.ip, s.role
+        sql = '''SELECT s.id, s.sotrud, s.name, s.depart, s.password, s.visible, s.ip, s.role, d.rc 
                  FROM sotrud s, depart d
-                 WHERE s.visible=1 AND s.depart = d.depart AND d.rc = :crc'''
+                 WHERE s.visible=1 AND s.depart = d.depart'''# AND d.rc = :crc'''
         
         
         if login:
@@ -675,6 +678,7 @@ class User(AvtukObject):
             kw['depart'], kw['id'] = barcode2depart_sid(barcode)
         else:
             return None
+        
         
         user = Executor.exec_cls(sql, multi=False, cls=cls, **kw)
 
