@@ -49,8 +49,7 @@ class AuthHandler(BaseHandler):
             passw = md5passw(login, str(passw))
                 
         else:
-            self.write({'error':'Пользователь не найден',
-                            'cmd':'self.NetSend("/auth")'})
+            self.write({ 'cmd':'self.NetSend("/auth")'})
             return
         
                         

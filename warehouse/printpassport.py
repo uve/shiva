@@ -150,7 +150,7 @@ class PrintPassportDataHandler(BaseHandler):
             except: de = datetime.datetime.now()
             de = de.date()
 
-            self.write_XML(Header.select_passport(oper, ds, de)
+            self.write_XML(Header.select_passport(oper, ds, de, rc=self.session.rc)
                            .as_grid('id', 'num', 'date', 'client_to_cls.name', 'oper_cls.name', 'status_cls.name',
                                     show={'date':lambda val: val.strftime("%d.%m.%Y")}))
             
