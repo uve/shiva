@@ -2,8 +2,6 @@
 
 from core.sw_base import BaseHandler
 from avtuk.avtuk_models import Report
-# #from settings import CURRENT_RC
-# #
 
 #==============================================================================
 class AdminEdiRepoHandler(BaseHandler):

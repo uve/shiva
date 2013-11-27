@@ -7,8 +7,6 @@ import cx_Oracle
 
 from core.sw_base import BaseHandler
 
-from settings import CURRENT_RC
-
 
 class AcceptionHandler(BaseHandler):
     '''
@@ -69,7 +67,7 @@ class AcceptionHandler(BaseHandler):
   
         if param == 'check_cell':
             
-            self.cursor.execute("select depart from depart where rc=:RC and depart_type=1", RC=CURRENT_RC)                        
+            self.cursor.execute("select depart from depart where rc=:RC and depart_type=1", RC=self.session.rc)                        
 
             rec = self.cursor.fetchone()
             if not rec[0]:

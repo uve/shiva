@@ -13,11 +13,10 @@ from tornado.escape import json_encode, json_decode
 
 from core.sessions import SessionManager#Session, uid2sid
 
-from settings import TORNADO_HASH, STATIC_DIR, MOBILE_USER_AGENTS
+from settings import TORNADO_HASH, STATIC_DIR
 
 from core.utils import Storage
 import logging
-import re
 import cx_Oracle
 
 from tornado.log import app_log, gen_log
@@ -42,7 +41,8 @@ class BaseHandler(RequestHandler):
         
         uid  = self.get_cookie('uid')
         role = self.get_cookie('role')
-        self.session = SessionManager(uid, role)
+        rc   = self.get_cookie('rc')
+        self.session = SessionManager(uid, role, rc)
         
         
 

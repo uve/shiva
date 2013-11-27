@@ -196,7 +196,7 @@ class PrintPassportDataHandler(BaseHandler):
           
                                      
                 ret = {}
-                for i in Executor.exec_cls(sql, rc=config.CURRENT_RC, head=head):
+                for i in Executor.exec_cls(sql, rc=self.session.rc, head=head):
                     try:
                         fname = i.sertfile.decode('utf8')
                         if not fname: raise Exception()

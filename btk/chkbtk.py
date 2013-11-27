@@ -101,7 +101,7 @@ class BTKChkDataHandler(BaseHandler):
         if param == 'head':
             try: oper = int(self.input(oper=0).oper)
             except: oper = 0
-            self.write_XML(Header.select_BTK(oper)
+            self.write_XML(Header.select_BTK(oper, rc=self.session.rc)
                            .as_grid('id', 'num', 'date', 'client_from_cls.name', 'oper_cls.name',
                                     show={'date':lambda val: val.strftime("%d.%m.%Y")}))
 

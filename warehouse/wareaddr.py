@@ -8,8 +8,7 @@ from tornado import template
 import cx_Oracle
 
 import os
-from settings import ROOT_DIR, CURRENT_RC
-
+from settings import ROOT_DIR
 
 from core.common_tools import fetchone, fetchall
 
@@ -24,13 +23,13 @@ class WareAddressHandler(BaseHandler):
         
         out = self.cursor.var(cx_Oracle.CURSOR)
         
-        all_tovar_types = self.cursor.callproc("shiva.GetTovarTypeList", [CURRENT_RC, out])                    
+        all_tovar_types = self.cursor.callproc("shiva.GetTovarTypeList", [self.session.rc, out])                    
         
         # список типов товара
         tovar_types = [{"id": i[0], "type":"button", "text": i[1]} for i in all_tovar_types[-1].fetchall()]
         
         
-        all_storage_types = self.cursor.callproc("shiva.GetStorageTypeList", [CURRENT_RC, out])    
+        all_storage_types = self.cursor.callproc("shiva.GetStorageTypeList", [self.session.rc, out])    
 
         # список типов хранения
         storage_types = [{"id": i[0], "type":"button", "text":i[1]} for i in all_storage_types[-1].fetchall()]                
@@ -63,7 +62,7 @@ class WareAddressHandler(BaseHandler):
             
 
           
-        all_departs = RC.get_current().depart_cls
+        all_departs = RC.get_current(rc=self.session.rc).depart_cls
         # кнопки с департаментами РЦ  
         departs = [{"id":"%s" % i.id, "type":"button", "text":i.name}
                    for i in all_departs]

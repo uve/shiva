@@ -15,11 +15,11 @@ class OpenDayHandler(BaseHandler):
         # кнопки с департаментами РЦ
 
 
-        deps = RC.get_current().depart_cls
+        deps = RC.get_current(rc=self.session.rc).depart_cls
         bdep = [{"id":"dep%s" % i.id, "type":"button", "text":i.name, "action":"do_tool_3"} for i in deps]
         
         
-        period = Period.get_last_smen()
+        period = Period.get_last_smen(rc=self.session.rc)
 
         tsmen = []
         for i in TypeSmena.select():
@@ -228,7 +228,7 @@ class CloseDayHandler(BaseHandler):
     urls = r'/personnel/closeday'
 
     def get(self):
-        period = Period.get_last_smen()
+        period = Period.get_last_smen(rc=self.session.rc)
 
         if not period:
             self.write({'title':'Закрытие смены', 'def':'Нет открытых смен' })

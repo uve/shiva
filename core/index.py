@@ -3,7 +3,7 @@ from core.sw_base import BaseHandler
 from settings import TEMPLATE_DIR, MOBILE_USER_AGENTS
 
 from tornado import template
-from settings import TORNADO_HASH, CURRENT_RC
+from settings import TORNADO_HASH
 
 
 class MainHandler(BaseHandler):
@@ -33,7 +33,7 @@ class MainHandler(BaseHandler):
         default = self.get_template_namespace()
         default.update({ 'is_terminal' : is_terminal,
                          'TORNADO_HASH': TORNADO_HASH,
-                         'CURRENT_RC'  : CURRENT_RC })
+                         'CURRENT_RC'  : self.session.rc })
         
         output = loader.load(page_template).generate(**default)
         

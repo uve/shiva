@@ -13,10 +13,11 @@ def uid2sid(uid, mbl):
 
 class SessionManager(object):
     
-    def __init__(self, uid, role):
+    def __init__(self, uid, role, rc = None):
         
         self.uid  = uid
         self.role = role
+        self.rc   = rc
 
     def kill(self):
         
@@ -25,12 +26,14 @@ class SessionManager(object):
                
         
 class Session(object):
-    def __init__(self, uid, mbl, session_manager, role):
+    def __init__(self, uid, mbl, session_manager, role, rc=None):
         self.uid = int(uid)
         self.mbl = mbl
         self.ses = session_manager
         
         self.role = role
+        
+        self.rc = rc
 
         self.ses.data.setdefault(uid, {})
         self.ses.data[uid].setdefault(mbl, {})

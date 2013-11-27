@@ -111,7 +111,7 @@ class AcceptanceDataHandler(BaseHandler):
 
             if param == 'head':
                 oper = self.request.arguments["oper"][0]
-                self.write_XML(Header.select_accept(opers=oper)
+                self.write_XML(Header.select_accept(opers=oper, rc=self.session.rc)
                                .as_grid('id', 'num', 'date', 'client_from_cls.name', 'oper_cls.name', 'status_cls.name',
                                         show={'date':lambda val: val.strftime("%d.%m.%Y")}))
 

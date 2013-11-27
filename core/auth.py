@@ -5,97 +5,102 @@ from core.sw_base import BaseHandler
 from core.common_tools import fetchone
 from barcode.zek_model import barcode2depart_sid
 
-from core.utils import Storage
+import cx_Oracle
+import os
+from core.sw_base import md5passw
+from settings import ROOT_DIR
+
+from tornado import template
+
+from core.sessions import SessionManager
+
 #=============================================================================#
 class AuthHandler(BaseHandler):
     urls = r'/auth'
 
     def get(self):
+        
+        loader = template.Loader(os.path.join(ROOT_DIR, 'core'))
+        result = loader.load("auth.js").generate()
+       
 
         self.write({'def':'<div id="sw_form" style="position:relative; top:50%; left:50%; margin:-105px 0 0 -115px;" />',
-                    'cmd':'''var swForm = new dhtmlXForm("sw_form", [
-                         {type:"label", label:"Введите ваш штрих-код с бэйджика"},
-                         {type:"input", id:"barcode", name:"barcode", label:"Штрих-код:", value: "", validate:"^([0-9]{12})?$"},
-                         {type:"label", label:"или ваши логин и пароль"}, 
-                         {type:"input", id:"login", name:"login", label:"Логин:", value:""},
-                         {type:"password", name:"passw", label:"Пароль:", value:""},
-            
-                         {type:"button", name:"butt", value:"OK", command:"doLogin"}
-                        ]);
-                        self.SetTitle("Авторизация");
-                        swForm.attachEvent("onButtonClick", function(name, cmd){
-                            self.NetSend("/auth", swForm.Serialize() );
-                        });
-                                               
-                        var frm_barcode = swForm.getInput("barcode");
-                        var frm_login = swForm.getInput("login");
-                        var frm_passw = swForm.getInput("passw");
-                                                                                              
-                        frm_barcode.onkeypress = function(e){
-                            if(e.keyCode==13){
-                                    frm_login.focus();
-                                    frm_barcode.focus();
-                                    self.NetSend("/auth", swForm.Serialize() )
-                            }
-                        }
-                        
-                        frm_login.onkeypress = function(e){
-                            if(e.keyCode==13) frm_passw.focus();
-                        }
- 
-                        frm_passw.onkeypress = function(e){
-                            if(e.keyCode==13){
-                                frm_login.focus();
-                                frm_passw.focus();
-                                self.NetSend("/auth", swForm.Serialize() );
-                            }
-                        } 
-                        
-                        window.Cleaner.push(swForm);'''
-                    })
+                    'cmd':result })
         
-    def input2(self, **defaults):
-        if isinstance(self.request.arguments, dict):
-            defaults.update(self.request.arguments)
-
-        return Storage(defaults)
 
     def post(self):
         
+        
         barcode = self.get_argument("barcode", None)
-        
-        depart, user_id = None
-        
-        if barcode:
-            depart, user_id = barcode2depart_sid(barcode)
-            
         login   = self.get_argument("login", None)
         passw   = self.get_argument("passw", None)
+        user_id = None
+        depart  = None
         
+        
+        if self.session and self.session.uid:
+            user_id = self.session.uid
+            
+        elif barcode:
+            depart, user_id = barcode2depart_sid(barcode)            
+        
+        elif login and passw:
+            login = str(login).upper()
+            passw = md5passw(login, str(passw))
                 
-        res = self.cursor.callproc("shiva_task.GetUser", [login, passw, user_id, depart])
-               
+        else:
+            self.write({'error':'Пользователь не найден',
+                            'cmd':'self.NetSend("/auth")'})
+            return
         
+                        
+        out = self.cursor.var(cx_Oracle.CURSOR)    
+        res = self.cursor.callproc("shiva.Get_User", [login, passw, user_id, depart, out])               
+                        
         user = fetchone(res[-1])
         
+        if not user:
+            self.write({'error':'Пользователь не найден',
+                            'cmd':'self.NetSend("/auth")'})
+            return
+        
+        
+        if not "role" in user:
+        
+            sql = '''SELECT id, name FROM sw_roles
+                  WHERE id = ( SELECT UNIQUE CASE 
+                                 WHEN s.role=1 THEN s.role
+                                 WHEN h.role IS NOT NULL THEN h.role
+                                 WHEN s.role IS NOT NULL THEN s.role  
+                                 ELSE NULL
+                               END
+                               FROM sotrud s
+                               LEFT JOIN sw_role_history h ON s.id=h.sotrud AND h.role_end IS NULL
+                               WHERE s.id=:id AND ROWNUM<=1 )'''
+            
+            self.cursor.execute(sql, id=user["id"])
+
+            user["role"], user["role_name"] = self.cursor.fetchone()
+            
+          
+        self.session = SessionManager(user["id"], user["role"])
+                
+        
+        self.session.rc = user["rc"]
+        
+        
+        
+        self.set_cookie('uid', str(user["id"]))
+        self.set_cookie('role',str(user["role"]))
+        self.set_cookie('rc',  str(user["rc"]))
+        
+        #user["user_name"]   = user["name"]        
+        #user["role_name"]   = user["role_name"]
+        #user["depart_name"] = user[""]
+        
+        #self.write({'user_name':user.name, 'depart_name':user.depart_cls.name, 'role_name':user.current_role_cls.name })
+      
         self.write(user)
-        
-        self.set_cookie('rc',   str(user.rc))
-        self.set_cookie('uid',  str(user.id))
-        self.set_cookie('role', str(user.role))
-        
-            
-        '''
-        
-        if user:
-            self.session = SessionManager(user.id, user.role, user.rc)
-            
-            self.set_cookie('uid', str(user.id))
-            self.set_cookie('role', str(user.role))
-            self.set_cookie('rc', str(user.rc))
-        
-            self.write({'user_name':user.name, 'depart_name':user.depart_cls.name, 'role_name':user.current_role_cls.name })
-        '''
 
         
 #=============================================================================#

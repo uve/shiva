@@ -16,7 +16,7 @@ from tornado.httpclient import HTTPError
 from tornado import template
 import cx_Oracle
 
-from settings import ROOT_DIR, CURRENT_RC
+from settings import ROOT_DIR
 
 
 from core.common_tools import fetchone, fetchall
@@ -46,7 +46,7 @@ class AssemblyHandler(BaseHandler):
         pDepart_type = 3 #pDepart_type – тип департаментов,  в данном случае константа 3 (сборщики)
         
         out = self.cursor.var(cx_Oracle.CURSOR)    
-        res = self.cursor.callproc("shiva.GetSotrudList", [CURRENT_RC, pDepart_type, out])
+        res = self.cursor.callproc("shiva.GetSotrudList", [self.session.rc, pDepart_type, out])
                 
         all_sotrud = res[-1].fetchall()
    
@@ -142,7 +142,7 @@ class AssemblyDataHandler(BaseHandler):
             sotrud = self.session.uid
             
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva.GetHeaderAssemblyList", [None, CURRENT_RC, pFilter, sotrud, out])
+            res = self.cursor.callproc("shiva.GetHeaderAssemblyList", [None, self.session.rc, pFilter, sotrud, out])
                 
             all_results = fetchall(res[-1], count=0)
                 
@@ -152,7 +152,7 @@ class AssemblyDataHandler(BaseHandler):
 
         elif param == 'info':
          
-            self.write(Header.get_item(head).as_json('prim', 'marsh_cls.name')[0])
+            self.write(Header.get_item(head, rc=self.session.rc).as_json('prim', 'marsh_cls.name')[0])
             # self.write({'error': 'test' })
         
             
@@ -190,7 +190,7 @@ class AssemblyDataHandler(BaseHandler):
             errn = []
 
             ret = {}
-            for i in Executor.exec_cls(sql, head=head, rc=config.CURRENT_RC):
+            for i in Executor.exec_cls(sql, head=head, rc=self.session.rc):
                 try:
                     fname = i.sertfile.decode('utf8')
                     if not fname: raise Exception()

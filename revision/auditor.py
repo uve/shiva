@@ -223,7 +223,7 @@ class AuditorDataHandler(BaseHandler):
             
             pRevision = cx_Oracle.NUMBER
 
-            result = self.cursor.callfunc('shiva.MakeTaskRevision', returnType=[tovar, config.CURRENT_RC], parameters=[pRevision])                        
+            result = self.cursor.callfunc('shiva.MakeTaskRevision', returnType=[tovar, self.session.rc], parameters=[pRevision])                        
 
             
             self.write({'info':'Задание на ревизию сформировано'})

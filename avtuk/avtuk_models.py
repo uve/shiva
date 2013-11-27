@@ -11,7 +11,8 @@ from core.sw_base import md5passw
 from barcode.zek_model import barcode2depart_sid
 
 from tornado import template
-from settings import TEMPLATE_DIR, DEFAULT_CLIENT, CURRENT_RC
+from settings import TEMPLATE_DIR, DEFAULT_CLIENT
+
 
 import cx_Oracle
 import pytils
@@ -545,16 +546,11 @@ class Period(AvtukObject):
     date_end = Col(name='data_end')  # Дата окончания смены
     tsmena = Col(default=1)  # Тип смены
     tsmena_cls = Reference('TypeSmena', condition='Period.tsmena = TypeSmena.id')  # Тип смены
-    rc = Col(default=config.CURRENT_RC)  # Код РЦ
+    rc = Col()  # Код РЦ
     current_tasks = Reference('Task', generator='gen_tasks_cls', multi=True)  # Текущие задания
 
     def gen_tasks_cls(self):
-#        t1 = self.date.strftime('%Y-%m-%d %H:%M:%S')
         t2 = (self.date - datetime.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
-#        return '''SELECT * FROM sw_task
-#                  WHERE ( expose_task >=  TO_DATE('%s' ,'YYYY-MM-DD HH24:MI:SS') )
-#                     OR ( expose_task >=  TO_DATE('%s' ,'YYYY-MM-DD HH24:MI:SS') AND end_task IS NULL )
-#                  ORDER BY id''' % (t1, t2)
 
         if config.FOR_TESTING:
             
@@ -568,13 +564,13 @@ class Period(AvtukObject):
             
 
     @classmethod
-    def get_last_smen(cls):
+    def get_last_smen(cls, rc):
         sql = '''SELECT * FROM period
                  WHERE data=(SELECT max(data) FROM period 
                              WHERE data_end IS NULL AND rc=:rc)
                    AND rc=:rc'''
 
-        return cls.get(sql=sql, rc=config.CURRENT_RC)
+        return cls.get(sql=sql, rc=rc)
 
 
 
@@ -590,8 +586,8 @@ class RC(AvtukObject):
     depart_cls = Reference('Department', condition='RC.id = Department.rc', multi=True)
 
     @classmethod
-    def get_current(cls):
-        return cls.get(id=config.CURRENT_RC)
+    def get_current(cls, rc):
+        return cls.get(id=rc)
 
 
 #=============================================================================#
@@ -656,7 +652,6 @@ class User(AvtukObject):
         Потом или принадлежность к начальству или к текущей смене
         '''
         
-        #kw = {'crc': CURRENT_RC}
         kw = {}
         
         # sql = 'SELECT * FROM sotrud'
@@ -926,7 +921,7 @@ class Header(AvtukObject):
     
 
     @classmethod
-    def get_item(cls, item_id=0):
+    def get_item(cls, item_id=0, rc=None):
                         
         sql = '''SELECT h.id, h.oper, h.stage, h.num, h.numb, h.numb_in, h.data, h.status, h.client_from, h.client_to,
                         h.marsh, h.prim, ms.name marsh_name, h.storage, h.os_numb, h.desk, h.prim, h.skin
@@ -937,10 +932,10 @@ class Header(AvtukObject):
         
         
 
-        return cls.select(sql=sql, rc=config.CURRENT_RC, item_id=item_id)  # , depart_type=depart_type)        
+        return cls.select(sql=sql, rc=rc, item_id=item_id)  # , depart_type=depart_type)        
 
     @classmethod
-    def _custom_select(cls, depart_type, opers):
+    def _custom_select(cls, depart_type, opers, rc=None):
         '''
         :depart_type 1-приемка, 3-сборка, 6-БТК,  31- Участок приемки сырья
         :opers дополнительный WHERE
@@ -964,22 +959,22 @@ class Header(AvtukObject):
         elif int(opers) == 3:
             sql = sql + ' AND h.oper in (277,276)'
 
-        return cls.select(sql=sql, rc=config.CURRENT_RC, depart_type=depart_type)
+        return cls.select(sql=sql, rc=rc, depart_type=depart_type)
 
     @classmethod
-    def select_BTK(cls, opers):
-        return cls._custom_select(6, opers)
+    def select_BTK(cls, opers, rc=None):
+        return cls._custom_select(6, opers, rc)
 
     @classmethod
-    def select_accept(cls, opers):
-        return cls._custom_select(1, opers)
+    def select_accept(cls, opers, rc=None):
+        return cls._custom_select(1, opers, rc)
+
+    #@classmethod
+    #def select_assembly(cls, opers, rc=None):
+    #    return cls._custom_select(3, opers, rc)
 
     @classmethod
-    def select_assembly(cls, opers):
-        return cls._custom_select(3, opers)
-
-    @classmethod
-    def select_passport(cls, opers, data_start, data_end):
+    def select_passport(cls, opers, data_start, data_end, rc=None):
         sql = '''SELECT h.id, h.oper, h.stage, h.num, h.data, h.status, h.client_from, h.client_to      
                  FROM header h
                  JOIN depart ON depart.depart IN (SELECT depart FROM depart WHERE rc = :rc AND depart_type = 3)
@@ -996,7 +991,7 @@ class Header(AvtukObject):
         elif  opers == 3:
             sql = sql + ' AND h.oper in (277,276)'
 
-        return cls.select(sql=sql, rc=config.CURRENT_RC, ds=data_start, de=data_end)
+        return cls.select(sql=sql, rc=rc, ds=data_start, de=data_end)
 
 
 

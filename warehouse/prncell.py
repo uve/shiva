@@ -3,7 +3,6 @@
 from core.sw_base import BaseHandler
 from avtuk.avtuk_models import Department
 from barcode.zek_model import cell, cell_size
-from settings import CURRENT_RC
 
 from avtuk.executor import Executor
 
@@ -12,7 +11,7 @@ class PrintCellHandler(BaseHandler):
     urls = r'/warehouse/prncell'
 
     def get(self):
-        deps = Department.select('hide is NULL AND rc=:rc', rc=CURRENT_RC)
+        deps = Department.select('hide is NULL AND rc=:rc', rc=self.session.rc)
         
         
         deps2 = [{"id":"dep%s" % i.id, "type":"button", "text":i.name, "action":"do_tool_6"} for i in deps]

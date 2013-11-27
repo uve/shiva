@@ -48,8 +48,7 @@ if __name__ == "__main__":
     logging.info(' (_-<   \  |\ \ / _` |')
     logging.info(' ___/_| _|_| \_/\__,_|')
     logging.info('"%s"' % config.SHIVA_USER_AGENT)
-    logging.info('Tornado version: %s' % tornado.version)
-    logging.info('CURRENT RC: %s' % (config.CURRENT_RC))
+    logging.info('Tornado version: %s' % tornado.version)    
     logging.info('WMS Server started [port %s]' % (config.SHIVA_PORT))
     
     logging.info('Oracle connection: %s:%s' % (RC_IP, RC_PORT))
