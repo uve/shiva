@@ -49,7 +49,8 @@ class AuthHandler(BaseHandler):
             passw = md5passw(login, str(passw))
                 
         else:
-            self.write({ 'cmd':'self.NetSend("/auth")'})
+            #self.write({ 'cmd':'self.NetSend("/auth")'})
+            self.send_error(500)
             return
         
                         
