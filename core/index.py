@@ -32,8 +32,7 @@ class MainHandler(BaseHandler):
         
         default = self.get_template_namespace()
         default.update({ 'is_terminal' : is_terminal,
-                         'TORNADO_HASH': TORNADO_HASH,
-                         'CURRENT_RC'  : self.session.rc })
+                         'TORNADO_HASH': TORNADO_HASH })
         
         output = loader.load(page_template).generate(**default)
         

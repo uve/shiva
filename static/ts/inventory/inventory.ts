@@ -1,7 +1,6 @@
 module InventoryModule {
 		
 	declare var main;
-	declare var CURRENT_RC;
 	
 	export class Inventory extends TaskModule.Task{
 	
@@ -97,7 +96,7 @@ module InventoryModule {
 			
 			
 			
-			if (CURRENT_RC == 6){
+			if (main.rc == "6"){
 				
 				var msk_buttons = {
 							
@@ -129,7 +128,7 @@ module InventoryModule {
 			
 			
 			
-			if (CURRENT_RC == 1){
+			if (main.rc == "1"){
 				
 				var rc_buttons = {
 							

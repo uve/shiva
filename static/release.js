@@ -1242,9 +1242,10 @@ var MainModule;
                 data: ({ barcode: value }),
                 success: function (resp) {
                     if (resp) {
-                        _this.user_name = resp["user_name"];
-                        _this.user_depart = resp["depart_name"];
+                        _this.user_name = resp["name"];
+                        _this.user_depart = resp["depart"];
                         _this.user_role = resp["role_name"];
+                        _this.rc = resp["rc"];
 
                         _this.main();
                     } else {
@@ -1301,7 +1302,7 @@ var MainModule;
                 }
             };
 
-            if (CURRENT_RC == 1) {
+            if (this.rc == "1") {
                 var rc_buttons = {
                     "Подтоварка": function () {
                         var task = new ManualIncreaseModule.ManualIncrease();
@@ -1373,7 +1374,7 @@ var InventoryModule;
                 }
             };
 
-            if (CURRENT_RC == 6) {
+            if (main.rc == "6") {
                 var msk_buttons = {
                     "Прием ГП с производства": function () {
                         _this.plus = 2;
@@ -1397,7 +1398,7 @@ var InventoryModule;
                 buttons = this.extend(msk_buttons, buttons);
             }
 
-            if (CURRENT_RC == 1) {
+            if (main.rc == "1") {
                 var rc_buttons = {
                     "Отправка паллеты": function () {
                         _this.set_pallet_delivery();

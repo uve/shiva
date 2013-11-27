@@ -3,13 +3,14 @@
 module MainModule {
 	
 	declare var status;
-	declare var CURRENT_RC;	
+		
 	
 	export class Main extends TaskModule.Task{
 			
 	        user_name : string;
 	        user_depart : string;
 	        user_role : string;
+			rc        : string;
 	
 			constructor(){
 				super();
@@ -43,9 +44,10 @@ module MainModule {
 		 	        success: (resp) => {
 		 	        	
 		 	        			if (resp){
-		 	        				this.user_name   = resp["user_name"];
-		 	        				this.user_depart = resp["depart_name"];
+		 	        				this.user_name   = resp["name"];
+		 	        				this.user_depart = resp["depart"];
 		 	        				this.user_role   = resp["role_name"];
+		 	        				this.rc          = resp["rc"];
 					 	            
 			 	        			this.main();
 		 	        			}
@@ -112,7 +114,7 @@ module MainModule {
 				
 				
 				
-				if (CURRENT_RC == 1){
+				if (this.rc == "1"){
 					
 					var rc_buttons = {
 										"Подтоварка"  : () => {									
