@@ -9,7 +9,7 @@ class PersonnelHandler(BaseHandler):
 
     def get(self):
         # кнопки с департаментами РЦ
-        deps = RC.get_current().depart_cls
+        deps = RC.get_current(rc=self.session.rc).depart_cls
         bdep = [{"id":"dep%s" % i.id, "type":"button", "text":i.name, "action":"do_tool_2"} for i in deps]
 
         self.write({'def':[{'type':"text", 'text':"  Подразделение:"},

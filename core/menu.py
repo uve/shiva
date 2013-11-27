@@ -7,5 +7,14 @@ from avtuk.avtuk_models import Menu, User
 class MenuHandler(BaseHandler):
     urls = r'/menu'
     def get(self):
-        role = User.get(id=self.session.uid).current_role_cls.id
-        self.write(dict([(i.name, (i.caption, i.modules_by_role(role))) for i in Menu.select()]))
+                
+        role = self.session.role#User.get(id=self.session.uid).current_role_cls.id
+        
+        all_modules = []
+        for i in Menu.select():
+            item = (i.name, (i.caption, i.modules_by_role(role)))
+            
+            all_modules.append(item)
+            
+        res = dict(all_modules)
+        self.write(res)

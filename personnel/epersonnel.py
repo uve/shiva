@@ -9,7 +9,7 @@ class EditUserHandler(BaseHandler):
 
     def get(self):
         roles = '{value:"0",text:"Не определена"},' + ','.join('{value:"%s",text:"%s"}' % (i.id, i.name) for i in Role.select())
-        deps = RC.get_current().depart_cls
+        deps = RC.get_current(rc=self.session.rc).depart_cls
         deps1 = ','.join('{value:"%s",text:"%s"}' % (i.id, i.name) for i in deps)
         deps2 = [{"id":"dep%s" % i.id, "type":"button", "text":i.name, "action":"do_tool_6"} for i in deps]
 

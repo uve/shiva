@@ -731,7 +731,7 @@ class RoleHistory(AvtukObject):
 class Menu(AvtukObject):
     ''' Список групп модулей '''
     __alias__ = 'tehno'
-    __live__ = 3600
+    __live__ = 0
     __table__ = 'sw_menu'
 
     id = Col(primary=True)
@@ -907,10 +907,7 @@ class Header(AvtukObject):
     pallet_cls = Reference('PastingType', condition='Header.pallet=PastingType.id')  # тип оклейки
 
     PalletHistory_cls = Reference(PalletHistory, condition='PalletHistory.header = Header.id', multi=True)  # Все сотрудники подразделения
-    
-    
-    
-   
+       
     marsh = Col()  #
     marsh_cls = Reference('Marsh', condition='Header.marsh = Marsh.id')
     

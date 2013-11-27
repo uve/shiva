@@ -27,7 +27,7 @@ class Saldo_GapHandler(BaseHandler):
         loader = template.Loader(os.path.join(ROOT_DIR, 'revision'))
         result = loader.load("saldo_gap.js").generate()
        
-        all_departs = RC.get_current().depart_cls
+        all_departs = RC.get_current(rc=self.session.rc).depart_cls
         # кнопки с департаментами РЦ
         
         departs = [{"id":"%s" % i.id, "type":"button", "text":i.name} for i in all_departs]       

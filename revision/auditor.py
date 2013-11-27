@@ -3,10 +3,8 @@
 
 from core.sw_base import BaseHandler
 
-import settings as config
 
 import json
-# from barbam_models import AssemblyList
 
 import os
 from settings import ROOT_DIR
@@ -36,7 +34,7 @@ class AuditorHandler(BaseHandler):
         loader = template.Loader(os.path.join(ROOT_DIR, 'revision'))
         result = loader.load("auditor.js").generate(all_types=all_types)
        
-        all_departs = RC.get_current().depart_cls
+        all_departs = RC.get_current(rc=self.session.rc).depart_cls
         # кнопки с департаментами РЦ
         
         departs = [{"id":"%s" % i.id, "type":"button", "text":i.name} for i in all_departs]       
