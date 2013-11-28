@@ -162,19 +162,19 @@ class PrintPassportDataHandler(BaseHandler):
 
             # Накладная
             if mode == 0:                
-                new_document = Document(self.request.arguments)                
+                new_document = Document(self.request.arguments, rc=self.session.rc)                
                 return self.write(new_document.as_print())                                                   
 
             # Сборочные
             elif mode == 4:
-                new_document = AssemblyList(self.request.arguments)                
+                new_document = AssemblyList(self.request.arguments, rc=self.session.rc)                
                 return self.write(new_document.as_print())                 
                 # self.write({'cmd':'''self.Incunable(function(doc){ doc.write('%s') })''' % AssemblyList(head).dump()})
                 
             # Упаковочный лист
             elif mode == 3:
                 # self.write({'info':'В разработке'})
-                new_document = Package(self.request.arguments)                
+                new_document = Package(self.request.arguments, rc=self.session.rc)                
                 return self.write(new_document.as_print())                      
                 
             # Паспорта качества

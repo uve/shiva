@@ -36,11 +36,11 @@ class AssemblyList(AvtukObject):
     head = 0
     header = None
 
-    def __init__(self, input=None):
+    def __init__(self, input=None, rc=None):
                         
         # .data[0].values
         self.head = int(input["head"])
-        preheader = Header.get_item(item_id=self.head).as_json('id', 'num', 'date', 'client_to_cls.name', 'client_from_cls.name',
+        preheader = Header.get_item(item_id=self.head, rc=rc).as_json('id', 'num', 'date', 'client_to_cls.name', 'client_from_cls.name',
                                                                  'client_to_cls.region_cls.name',
                                     show={'date':lambda val: val.strftime("%d.%m.%Y")})
 
@@ -230,11 +230,11 @@ class Document(AvtukObject):
     client_from = None
     client_to = None
     
-    def __init__(self, input=None):
+    def __init__(self, input=None, rc=None):
                         
         # .data[0].values
         self.head = int(input["head"])
-        m_header = Header.get_item(item_id=self.head)
+        m_header = Header.get_item(item_id=self.head, rc=rc)
         
         preheader = m_header.as_json('id', 'num', 'numb', 'numb_in', 'date',
                                      'client_to', 'client_from', 'client_to_cls.name', 'client_from_cls.name',
@@ -462,11 +462,11 @@ class Package(AvtukObject):
     client_from = None
     client_to = None
     
-    def __init__(self, input=None):
+    def __init__(self, input=None, rc=None):
                         
         # .data[0].values
         self.head = int(input["head"])
-        m_header = Header.get_item(item_id=self.head)
+        m_header = Header.get_item(item_id=self.head, rc=rc)
         
         preheader = m_header.as_json('id', 'num', 'numb', 'numb_in', 'date',
                                      'client_to', 'client_from', 'client_to_cls.name', 'client_from_cls.name',
