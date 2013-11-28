@@ -21,12 +21,15 @@ window.Cleaner.push(sw_grid1);
 var sw_grid2 = new dhtmlXGridObject({
     parent: "sw_grid2",
     columns: [
+              
+      { type:"ro", sort:"str",  align:"center", width:"0",   label:"Id", },        
       { type:"ro", sort:"date", align:"center", width:"100", label:"Дата", },  
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Номер фактуры" },
       { type:"ro", sort:"int",  align:"center", width:"100", label:"В коробке"},
       { type:"ro", sort:"int",  align:"center", width:"100", label:"Коробок"},                          
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Фактура" },
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Сотрудник" },
+      { type:"ro", sort:"int",  align:"center", width:"100",  label:"Тип" }
       
         ]
     });

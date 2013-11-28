@@ -54,7 +54,7 @@ class AuditorHandler(BaseHandler):
                                     <td style="width:400px;"><select style="width:100%;" id="combo_zone1" name="alfa1"></select></td>                                    
                                 </tr>
                                 <tr>
-                                    <td colspan="2"><span>Список ячеек с продуктом:</span></td>
+                                    <td ><span>Список ячеек с продуктом:</span></td>
                                     <td style="padding-left: 10px;"><span>Товарные остатки:</span>  <b id="tovarsaldo"></b>  </td> 
                                 </tr>
                                 <tr><td colspan="2"><div id='sw_grid1' style="width:100%; height:250px;"></div></td></tr>
