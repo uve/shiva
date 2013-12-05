@@ -1,15 +1,17 @@
 # coding: utf-8
 
-import cStringIO, os.path, logging, Image, ImageFilter
+#import cStringIO, os.path, Image, ImageFilter
 from core.sw_base import BaseHandler
 
-import settings as config
+#import settings as config
+import logging
+
 from barcode.zek_model import mm2pix, assembly_bar_label
 
 import urlparse
 import datetime
 
-
+import urllib
 
 from tornado.httpclient import HTTPError
 
@@ -220,6 +222,18 @@ class PrintPassportDataHandler(BaseHandler):
                 if errn: ret['warning'] = ["Не найден паспорт<br/>%s" % i for i in errn]
 
 
+                '''
+                all_good = []
+                for item in good:
+                    value = item["sertfile"]
+                    if not value: continue
+                    #value = value.encode('koi8-r')
+                    value = urllib.quote(value)
+                    
+                    all_good.append(value)
+                    
+                goods = u','.join("'%s'" % i for i in all_good)
+                '''
                 goods = u','.join("'%s'" % i["sertfile"] for i in good)
                 errns = u','.join(u"[%s]" % i.decode('utf8') for i in errn)
                 
