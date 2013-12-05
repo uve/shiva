@@ -25,13 +25,11 @@ module OrderBatchingRawModule {
 		count_total    : string;
 		
 		product_name   : string;
+		packlist_id    : string;
 		
 		scanner;
 		
 	
-	    
-	    
-	    
 	    /**
 	     *   Ввод ШК ячейки с товаром из которой будет браться товар
 	     */

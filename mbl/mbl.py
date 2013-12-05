@@ -104,11 +104,12 @@ class BatchingOrders(BaseHandler):
         
         
         
-        count = self.get_argument("count", None)
-        task_id = self.get_argument("task_id", None)
-        cell_id = self.get_argument("cell_id", None)                 
-        pallet_id = self.get_argument("pallet_id", None)        
-        target_id = self.get_argument("target_id", None)     
+        count       = self.get_argument("count",       None)
+        task_id     = self.get_argument("task_id",     None)
+        cell_id     = self.get_argument("cell_id",     None)                 
+        pallet_id   = self.get_argument("pallet_id",   None)        
+        target_id   = self.get_argument("target_id",   None)     
+        packlist_id = self.get_argument("packlist_id", None)
         
         
         # Для сборки сырья
@@ -136,7 +137,7 @@ class BatchingOrders(BaseHandler):
             res = self.cursor.callproc("shiva.GetCellValFromPackList", [pallet_id, value_cursor, cell_cursor, target_cursor])  
             
             
-            value, count, count_total, product_name = res[-3].fetchone()
+            value, count, count_total, product_name, packlist_id = res[-3].fetchone()
             
             cell_id, cell_name = res[-2].fetchone()
             target_id, target_name = res[-1].fetchone()
@@ -150,6 +151,7 @@ class BatchingOrders(BaseHandler):
                          'target_id':   target_id,
                          'target_name': target_name,
                          'product_name': product_name,
+                         'packlist_id' : packlist_id
                          })
             
             return
@@ -158,7 +160,8 @@ class BatchingOrders(BaseHandler):
         if param == 'ok_cell':
                         
             out = self.cursor.var(cx_Oracle.CURSOR)            
-            res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, cell_id, count, party_id, extra_party_id, out])    
+            res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, packlist_id, cell_id, count,
+                                                                       party_id, extra_party_id, out])    
             
             info = res[-1].fetchone()
             if info and info[0]:

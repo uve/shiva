@@ -17,7 +17,8 @@ from tornado.httpclient import HTTPError
 from avtuk.avtuk_models import Header, Document, AssemblyList, ListAssembly, Package
 
 
-from avtuk.executor import Executor
+from core.common_tools import fetchall_by_name
+
 
 #=== Печать паспортов =========================================================
 class PrintPassportHandler(BaseHandler):
@@ -180,25 +181,30 @@ class PrintPassportDataHandler(BaseHandler):
             # Паспорта качества
             elif mode == 1:
                 sql = '''SELECT distinct p.num, t.name, v.category,
-                                tsclad.getpartysertfile(p.party, :rc) sertfile,
+                                tsclad.getpartysertfile(p.party, %s) sertfile,
                                 SUBSTR(isclad.GetTovarCodeFromModify(t.id), 1, 25) code
                          FROM factura f
                          JOIN tovar t ON f.tovar = t.id
                          LEFT JOIN recordp r on f.id = r.factura
                          JOIN party p on r.party=p.party
                          LEFT JOIN type_tovar v ON t.typet=v.id
-                         WHERE f.header = :head AND v.CATEGORY<>5
-                         ORDER BY category, name'''
+                         WHERE f.header = %s AND v.CATEGORY<>5
+                         ORDER BY category, name''' % (self.session.rc, head)
 
-                good = []
                 errn = []
 
+
+                res = self.cursor.execute(sql)
+                good = fetchall_by_name(res)
+
           
-                                     
                 ret = {}
+                '''                                  
                 for i in Executor.exec_cls(sql, rc=self.session.rc, head=head):
+                    
                     try:
-                        fname = i.sertfile.decode('utf8')
+                        fname = i.sertfile.decode('utf8')                        
+                        
                         if not fname: raise Exception()
 
                         if fname not in self.application.passport_cash:
@@ -206,21 +212,28 @@ class PrintPassportDataHandler(BaseHandler):
                             self.application.passport_cash[fname] = None
 
                         if fname not in good: good.append(fname)
+                        
                     except:
                         errn.append("'%s','%s','%s','%s'" % (i.num, i.code, i.name, '-' if i.sertfile is None else i.sertfile))
                         continue
-
+                '''
                 if errn: ret['warning'] = ["Не найден паспорт<br/>%s" % i for i in errn]
 
 
-                goods = u','.join("'%s'" % i for i in good)
+                goods = u','.join("'%s'" % i["sertfile"] for i in good)
                 errns = u','.join(u"[%s]" % i.decode('utf8') for i in errn)
+                
+                
+                RC_IP = 'http://46.28.129.222/'
 
                 cmd = u'''var fn=[%s]; var er=[%s];
     
                     self.Incunable(function(doc){                
                         for(var i in fn){
-                            doc.write('<img width="%s" height="%s" src="/warehouse/printpassport/data/image?mode=1&fname='+fn[i]+'">');
+                            /*doc.write('<p>' + fn[i] + '</p>');*/
+                            doc.write('<img width="%s" src="%s'+fn[i]+'">');
+                            
+                            
                         }
                         
                         if(!!(fn.length %% 2)){
@@ -245,10 +258,12 @@ class PrintPassportDataHandler(BaseHandler):
                             }                        
                             doc.write('</table>');                        
                         }               
-                    });''' % (goods, errns, int(3.47 * w), int(3.47 * h))
+                    });''' % (goods, errns, int(3.47 * w), RC_IP)
 
                 ret['cmd'] = cmd.encode('utf8')
                 self.write(ret)
+                
+                # doc.write('<img width="%s" height="%s" src="/warehouse/printpassport/data/image?mode=1&fname='+fn[i]+'">');
 
 
             # Отгрузочные этикетки
@@ -282,23 +297,6 @@ class PrintPassportDataHandler(BaseHandler):
             # Накладная
             if mode == 0:
                 self.write({'info':'В разработке'})
-
-            # Паспорта качества
-            elif mode == 1:
-                try:
-                    imgdata = cStringIO.StringIO()
-
-                    fname = os.path.join(config.SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
-                    im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-
-                    im.save(imgdata, format='jpeg')
-                    imgdata.seek(0)
-                    self.write(imgdata.read())
-
-                    self.set_header("Content-Type", "image/jpeg")
-                except Exception, e:
-                    logging.error(e)
-                    raise HTTPError(404)
 
             # Отгрузочные этикетки
             elif mode == 2:

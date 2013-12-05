@@ -23,6 +23,7 @@ module OrderBatchingModule {
 		count_total    : string;
 		
 		product_name   : string;
+		packlist_id    : string;
 		
 		scanner;
 		
@@ -115,6 +116,7 @@ module OrderBatchingModule {
 	            	 		this.count	      = resp.count;         // Сколько уже собрано
 	            	 		this.count_total  = resp.count_total;   // Сколько всего нужно собрать
 	            	 		this.product_name = resp.product_name;
+	            	 		this.packlist_id  = resp.packlist_id;
 		        	  
 	            	 		
 			        		if (resp["cell_id"]){
@@ -260,8 +262,9 @@ module OrderBatchingModule {
 			                cell_id:     this.cell_id,
 			                count:       this.value, 
 			                
-			                party_id:       this.party_id,
-			                extra_party_id: this.extra_party_id,
+			                party_id:        this.party_id,
+			                extra_party_id : this.extra_party_id,
+			                packlist_id    : this.packlist_id 
 			    },	                    
 	            success: () => { this.add_again(); },
 	            error:   () => { this.get_cell(); }
