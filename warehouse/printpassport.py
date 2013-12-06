@@ -13,6 +13,10 @@ import datetime
 
 import urllib
 
+from tornado import template
+
+import os
+from settings import ROOT_DIR
 from tornado.httpclient import HTTPError
 
 
@@ -129,6 +133,9 @@ class PrintPassportHandler(BaseHandler):
 
 
 #==============================================================================
+class Passport:
+    pass
+
 class PrintPassportDataHandler(BaseHandler):
     urls = r'/warehouse/printpassport/data/([^/]+)'
 
@@ -193,93 +200,32 @@ class PrintPassportDataHandler(BaseHandler):
                          WHERE f.header = %s AND v.CATEGORY<>5
                          ORDER BY category, name''' % (self.session.rc, head)
 
-                errn = []
-
-
                 res = self.cursor.execute(sql)
                 good = fetchall_by_name(res)
 
           
-                ret = {}
-                '''                                  
-                for i in Executor.exec_cls(sql, rc=self.session.rc, head=head):
-                    
-                    try:
-                        fname = i.sertfile.decode('utf8')                        
-                        
-                        if not fname: raise Exception()
-
-                        if fname not in self.application.passport_cash:
-                            Image.open(os.path.join(config.SHIVA_PASSPORT, fname))
-                            self.application.passport_cash[fname] = None
-
-                        if fname not in good: good.append(fname)
-                        
-                    except:
-                        errn.append("'%s','%s','%s','%s'" % (i.num, i.code, i.name, '-' if i.sertfile is None else i.sertfile))
-                        continue
-                '''
-                if errn: ret['warning'] = ["Не найден паспорт<br/>%s" % i for i in errn]
-
-
-                '''
-                all_good = []
+                
+                all_passports = []
                 for item in good:
-                    value = item["sertfile"]
-                    if not value: continue
-                    #value = value.encode('koi8-r')
-                    value = urllib.quote(value)
+                    name = item["sertfile"]
+                    if not name: continue
                     
-                    all_good.append(value)
+                    new_passport = Passport()
                     
-                goods = u','.join("'%s'" % i for i in all_good)
-                '''
-                goods = u','.join("'%s'" % i["sertfile"] for i in good)
-                errns = u','.join(u"[%s]" % i.decode('utf8') for i in errn)
+                    new_passport.name  = name
+                    new_passport.value = urllib.quote(name.decode('utf-8').encode('koi8-r'))                    
+                    
+                    all_passports.append(new_passport)
+                                                    
                 
-                
-                RC_IP = 'http://46.28.129.222/'
-
-                cmd = u'''var fn=[%s]; var er=[%s];
+                loader = template.Loader(os.path.join(ROOT_DIR, 'warehouse'))
+                cmd = loader.load("printpassport.js").generate(RC_IP='http://46.28.129.222', all_passports=all_passports, width=str(int(3.47 * w)) )            
     
-                    self.Incunable(function(doc){                
-                        for(var i in fn){
-                            /*doc.write('<p>' + fn[i] + '</p>');*/
-                            doc.write('<img width="%s" src="%s'+fn[i]+'">');
-                            
-                            
-                        }
-                        
-                        if(!!(fn.length %% 2)){
-                            doc.write('<div style="height:600px;"><br/></div>');
-                        }                    
-                        
-                        if(er.length){
-                            doc.write('<br/><br/><div>Не найдены паспорта качества:</div><table style="border:1 solid #000;">');
-                            
-                            var hd=['N','Партия','Код','Товар','Паспорт'];
-                            doc.write('<tr>');
-                            for(var i in hd)
-                                doc.write('<td style="border-bottom:1 solid #888; border-right:1 solid #000;">'+hd[i]+'</td>');
-                            doc.write('</tr>');
-                                                
-                            for(var i in er){
-                                doc.write('<tr>');
-                                doc.write('<td style="padding:3px; border-bottom:1 solid #888; border-right:1 solid #000;">'+(1+parseInt(i))+'</td>');
-                                for(var j in er[i])
-                                    doc.write('<td style="border-bottom:1 solid #888; border-right:1 solid #000;">'+er[i][j]+'</td>');
-                                doc.write('</tr>');
-                            }                        
-                            doc.write('</table>');                        
-                        }               
-                    });''' % (goods, errns, int(3.47 * w), RC_IP)
-
+    
+                ret = {}
                 ret['cmd'] = cmd.encode('utf8')
                 self.write(ret)
                 
-                # doc.write('<img width="%s" height="%s" src="/warehouse/printpassport/data/image?mode=1&fname='+fn[i]+'">');
-
-
             # Отгрузочные этикетки
             elif mode == 2:
                 

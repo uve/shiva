@@ -723,3 +723,11 @@ dhtmlXCalendarObject.prototype.langData["ru"] = {
     daysSNames: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
     weekstart: 1
 }
+
+function UrlExists(url)
+{
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status!=404;
+}

@@ -3571,7 +3571,6 @@ var OrderBatchingModule;
                     _this.count = resp.count;
                     _this.count_total = resp.count_total;
                     _this.product_name = resp.product_name;
-                    _this.packlist_id = resp.packlist_id;
 
                     if (resp["cell_id"]) {
                         _this.cell_id = resp.cell_id;
@@ -3685,8 +3684,7 @@ var OrderBatchingModule;
                     cell_id: this.cell_id,
                     count: this.value,
                     party_id: this.party_id,
-                    extra_party_id: this.extra_party_id,
-                    packlist_id: this.packlist_id
+                    extra_party_id: this.extra_party_id
                 },
                 success: function () {
                     _this.add_again();
