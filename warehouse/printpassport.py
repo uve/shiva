@@ -223,7 +223,7 @@ class PrintPassportDataHandler(BaseHandler):
     
     
                 ret = {}
-                ret['cmd'] = cmd.encode('utf8')
+                ret['cmd'] = cmd#.encode('utf8')
                 self.write(ret)
                 
             # Отгрузочные этикетки
