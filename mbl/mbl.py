@@ -161,11 +161,11 @@ class BatchingOrders(BaseHandler):
         if param == 'ok_cell':
                         
             out = self.cursor.var(cx_Oracle.CURSOR)            
-            #res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, packlist_id, cell_id, count,
-            #                                                           party_id, extra_party_id, out])
+            res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, packlist_id, cell_id, count,
+                                                                       party_id, extra_party_id, out])
             
-            res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, cell_id, count,
-                                                                       party_id, extra_party_id, out])    
+            #res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, cell_id, count,
+            #                                                           party_id, extra_party_id, out])    
             
             info = res[-1].fetchone()
             if info and info[0]:
