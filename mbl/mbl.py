@@ -137,8 +137,8 @@ class BatchingOrders(BaseHandler):
             res = self.cursor.callproc("shiva.GetCellValFromPackList", [pallet_id, value_cursor, cell_cursor, target_cursor])  
             
             
-            #value, count, count_total, product_name, packlist_id = res[-3].fetchone()
-            value, count, count_total, product_name = res[-3].fetchone()
+            value, count, count_total, product_name, packlist_id = res[-3].fetchone()
+            #value, count, count_total, product_name = res[-3].fetchone()
             
             cell_id, cell_name = res[-2].fetchone()
             target_id, target_name = res[-1].fetchone()
@@ -152,7 +152,7 @@ class BatchingOrders(BaseHandler):
                          'target_id':   target_id,
                          'target_name': target_name,
                          'product_name': product_name,
-                         #'packlist_id' : packlist_id
+                         'packlist_id' : packlist_id
                          })
             
             return
