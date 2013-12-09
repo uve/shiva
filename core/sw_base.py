@@ -33,6 +33,7 @@ class BaseHandler(RequestHandler):
 
     def initialize(self):
         
+        
         self.set_header("tornado_hash", TORNADO_HASH)
         self.set_header("Cache-control", "public")
         
@@ -43,7 +44,16 @@ class BaseHandler(RequestHandler):
         role = self.get_cookie('role')
         rc   = self.get_cookie('rc')
         self.session = SessionManager(uid, role, rc)
+
+
+    def set_default_headers(self):
+        self.set_header('Access-Control-Allow-Origin', '*')
+        self.set_header('Access-Control-Allow-Methods', '*')
+        self.set_header('Access-Control-Allow-Credentials', 'true')
+        self.set_header('Access-Control-Max-Age', 604800)
+        self.set_header('Access-Control-Allow-Headers', '*')
         
+       
         
 
     def on_finish(self):

@@ -4,10 +4,12 @@ self.Incunable(function(doc){
 	
     {% for item in all_passports %}
     
-	    if (UrlExists('{{ RC_IP }}/{{ item.value }}')){
-	    	doc.write('<img style="page-break-after: always;" width="{{ width }}" src="{{ RC_IP }}/{{ item.value }}">');
-	    }
-	    else{
+    	try{
+    		if (UrlExists('{{ RC_IP }}/{{ item.value }}')){
+    			doc.write('<img style="page-break-after: always;" width="{{ width }}" src="{{ RC_IP }}/{{ item.value }}">');
+    		}
+    	}
+	    catch(e){
 	        er.push('{{ item.name }}');
 	    }        
 	 
