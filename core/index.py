@@ -12,6 +12,8 @@ class MainHandler(BaseHandler):
     def get(self):
         
         #self.cursor.callproc("DBMS_LOCK.sleep", [2])
+        
+        
 
         is_terminal = False
         
