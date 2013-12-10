@@ -28,6 +28,7 @@ class AssemblyList(AvtukObject):
     __table__ = 'sw_header_recordp'
 
  
+ 
     ''' Печать Документов '''
     oper = 0
     ds = datetime.datetime.now().date() 
