@@ -232,6 +232,7 @@ class Document(AvtukObject):
     
     def __init__(self, input=None, rc=None):
                         
+                        
         # .data[0].values
         self.head = int(input["head"])
         m_header = Header.get_item(item_id=self.head, rc=rc)
