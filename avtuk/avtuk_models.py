@@ -230,6 +230,8 @@ class Document(AvtukObject):
     client_from = None
     client_to = None
     
+    
+    
     def __init__(self, input=None, rc=None):
                         
                         
