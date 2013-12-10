@@ -1,12 +1,19 @@
 self.Incunable(function(doc){        
 	
+	var mas=[];
 	var er=[];
 	
     {% for item in all_passports %}
     
     	try{
-    		if (UrlExists('{{ RC_IP }}/{{ item.value }}')){
-    			doc.write('<img style="page-break-after: always;" width="{{ width }}" src="{{ RC_IP }}/{{ item.value }}">');
+    		
+    		var url = '{{ RC_IP }}/{{ item.value }}';
+    		
+    		if (UrlExists(url)){    			
+    			mas.push(url);    			
+    		}
+    		else{
+    			er.push('{{ item.name }}');
     		}
     	}
 	    catch(e){
@@ -14,9 +21,14 @@ self.Incunable(function(doc){
 	    }        
 	 
 	{% end %}
- 
-    
-    /*console.log(er);*/
+	
+	
+	
+	doc.write('<link rel="stylesheet" type="text/css" href="/static/css/default.css" >');
+	
+	for(var j in mas){
+		doc.write('<img class="rotated" src="'+ mas[j] +'">');
+	}
              
     
     if(er.length){

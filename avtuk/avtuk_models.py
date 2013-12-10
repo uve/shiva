@@ -45,9 +45,10 @@ class AssemblyList(AvtukObject):
                                                                  'client_to_cls.region_cls.name',
                                     show={'date':lambda val: val.strftime("%d.%m.%Y")})
 
-        self.header = preheader[0]                 
-    
-        pass
+        if not preheader:
+            return             
+        
+        self.header = preheader[0]
 
     
     
@@ -246,7 +247,10 @@ class Document(AvtukObject):
 
         # preheader = m_header.as_json(show={'date':lambda val: val.strftime("%d.%m.%Y")})
 
-        self.header = preheader[0]        
+        if not preheader:
+            return   
+        
+        self.header = preheader[0]
     
         self.client_from = Client.get(pClient=self.header["client_from"])
         self.client_to = Client.get(pClient=self.header["client_to"])
@@ -434,7 +438,8 @@ class Document(AvtukObject):
              печатать Накладную, которая печатается сейчас поданному пункту            
         '''
         
-        
+        if not self.header:
+            return 
 
                         
         if self.header['numb']:           
@@ -477,9 +482,12 @@ class Package(AvtukObject):
                                     show={'date':lambda val: val.strftime("%d.%m.%Y")})
 
         # preheader = m_header.as_json(show={'date':lambda val: val.strftime("%d.%m.%Y")})
-
-        self.header = preheader[0]        
+        
+        if not preheader:
+            return     
     
+        self.header = preheader[0]
+        
         self.client_from = Client.get(pClient=self.header["client_from"])
         self.client_to = Client.get(pClient=self.header["client_to"])
 

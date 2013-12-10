@@ -46,12 +46,12 @@ class AcceptanceHandler(BaseHandler):
 
                             var sw_grid1 = sw_btk.cells("a").attachGrid();
                             sw_grid1.columns([                            
-  { type:"ro", sort:"int",  align:"right", width:"68",  label:"ID" },
-  { type:"ro", sort:"int",  align:"right", width:"46",  label:"Номер" },
-  { type:"ro", sort:"date", align:"right", width:"66",  label:"Дата" },
+  { type:"ro", sort:"int",  align:"right", width:"68",  label:["ID", "#text_filter"]  },
+  { type:"ro", sort:"int",  align:"right", width:"45",  label:["Номер", "#text_filter"] },
+  { type:"ro", sort:"date", align:"right", width:"66",  label:["Дата", "#text_filter"] },
   { type:"ro", sort:"str",  align:"left",  width:"*",   label:"Поставщик" },
   { type:"ro", sort:"str",  align:"left",  width:"290", label:"Операция" },
-  { type:"ro", sort:"str",  align:"left",  width:"100", label:"Статус" }                            
+  { type:"ro", sort:"str",  align:"left",  width:"100", label:["Статус", "#select_filter"] }                            
                             ]);
 
                             window.Cleaner.push(sw_grid1);
