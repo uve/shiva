@@ -20,17 +20,16 @@ sw_grid1.columns([
 	  { type:"ro", sort:"str",  align:"left",  width:"76", label:["Статус", "#select_filter"]},
 	  { type:"ro", sort:"str",  align:"left",  width:"76",  label:["N отправки"]},
 	  { type:"ro", sort:"str",  align:"left",  width:"0"},
-	
+	  
 	  { type:"ro", sort:"str",  align:"left",  width:"96",  label:["Оклейка", "#select_filter"]},
-	
-	
+	  
 	  { type:"ro", sort:"str",  align:"left",  width:"10"},
 	  { type:"ro", sort:"str",  align:"left",  width:"10"}
 ]);
                             
 sw_grid1.enableMultiselect(true);
 
-                                  
+                                
 window.gts = 1; // ворота
 window.ids = 0;
 

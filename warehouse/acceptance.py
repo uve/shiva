@@ -18,6 +18,11 @@ class AcceptanceHandler(BaseHandler):
 
         gates = [{"id":"gts%s" % i, "type":"button", "text":"%s" % i, "action":"do_tool_2"} for i in range(1, 5)]
         gates[0]['selected'] = "true"
+        
+        
+        prn = [{"id":"prn%s" % k, "type":"button", "text":"%s" % v, "action":"do_tool_4"}
+                 for k, v in enumerate(('Накладная',))]
+                
 
         self.write({'def':[{'type':"button", 'text':'Принять фактуру', 'img':"accept24.png", 'imgdis':"accept24g.png", 'action':'do_tool_1'},
 
@@ -29,6 +34,9 @@ class AcceptanceHandler(BaseHandler):
                            {'type':"text", 'text':"  Ворота №:"},
                            {'id':"btngts", 'type':"buttonSelect", 'text':'1', 'items':gates},
                            {'type':"separator"},
+                           {'type':"separator"},
+                           {'id':"btnprn", 'type':"buttonSelect", 'text':'Печать', 'items':prn},
+                           
                            {'type':"button", 'img':"excel24.png", 'imgdis':"excel24g.png", 'action':'do_tool_csv', 'title':'Сохранить в CSV'}],
 
                     'cmd':'''var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
@@ -95,7 +103,24 @@ class AcceptanceHandler(BaseHandler):
                                 sw_grid2.clearAll();                            
                                 self.LoadGrid(sw_grid1, "/warehouse/acceptance/data/head?oper="+window.ids);
                             }
-                            window.do_tool_3("opr0");'''
+                            window.do_tool_3("opr0");
+                            
+                            // print passport
+                            window.do_tool_4 = function(ids2){
+                                var ids = sw_grid1.getSelectedRowId();
+                                if(!ids) self.AddMessage('Выберите фактуру',2)
+                                else {
+                                    var m=ids2.substr(3);
+                                    var d='';
+                                    //Отгрузочные этикетки
+                                    if(m==2){
+                                        var d=prompt('Диапазон мест разделенные пробелом','').split(' ');
+                                    }
+                                    self.NetSend("/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d);
+                                }                               
+                            };
+                            
+                            '''
                     })
 
 

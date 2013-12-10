@@ -8,7 +8,7 @@ import os
 RC_IP        = os.getenv("RC_IP",        "192.168.0.1")
 RC_PORT      = os.getenv("RC_PORT",      "1521")
 #CURRENT_RC   = os.getenv("CURRENT_RC",   "1")
-MAX_SESSIONS = 10#int(os.getenv("MAX_SESSIONS", "1"))
+MAX_SESSIONS = int(os.getenv("MAX_SESSIONS", "1"))
     
  
  
