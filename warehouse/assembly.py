@@ -52,11 +52,11 @@ class AssemblyHandler(BaseHandler):
    
         
         prn = [{"id":"prn%s" % k, "type":"button", "text":"%s" % v, "action":"do_tool_4"}
-                 for k, v in enumerate(('Накладная',
+                 for k, v in enumerate((#'Накладная',
                                         'Паспорта качества',
                                         'Отгрузочные этикетки',
                                         'Упаковочный лист',
-                                        'Сборочные'))]
+                                        'Сборочные'), 1)]
 
 
         # renderSelect - do not remember last operation in buttonSelect list
