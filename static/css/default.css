@@ -1,3 +1,10 @@
+@media print {
+	
+	
+  @page { margin: 0cm 0cm 0cm 0cm; }
+   
+}
+
 .dhx_dataview_item {
 	width: 100% !important;
 }
@@ -19,17 +26,24 @@
 } 
 */ 
 
-.rotated { 
+
+
+.block-print img { 
 	
    transform: rotate(90deg);
    -moz-transform: rotate(90deg);
    -webkit-transform: rotate(90deg);
    
-   page-break-after: always;
-   
-   margin-left: 100px;
-   max-height: 600px;
-   max-width:  600px;
-   
- }
+   width: 11cm;
+   margin-left: 3cm;
+
+}
+
+
+.block-print a:nth-child(odd)  img{ margin-top: -3cm;}
+.block-print a:nth-child(even) img{ 
+
+    page-break-after: always;
+    margin-top: -4cm;
+}
  

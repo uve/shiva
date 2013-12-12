@@ -1,5 +1,6 @@
 self.Incunable(function(doc){        
 	
+	
 	var mas=[];
 	var er=[];
 	
@@ -26,9 +27,19 @@ self.Incunable(function(doc){
 	
 	doc.write('<link rel="stylesheet" type="text/css" href="/static/css/default.css" >');
 	
+	
+	
+	doc.write('<div class="block-print">');
+	
+	
 	for(var j in mas){
-		doc.write('<img class="rotated" src="'+ mas[j] +'">');
+		//doc.write('<img class="rotated" src="'+ mas[j] +'">');
+		
+		doc.write('<a><img src="'+ mas[j] +'" /></a>');
 	}
+	
+	
+	doc.write('</div');
              
     
     if(er.length){
@@ -49,4 +60,6 @@ self.Incunable(function(doc){
         }                        
         doc.write('</table>');                        
     }               
+    
+    self.progressOn();
 });
