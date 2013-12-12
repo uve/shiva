@@ -61,5 +61,5 @@ self.Incunable(function(doc){
         doc.write('</table>');                        
     }               
     
-    self.progressOn();
+
 });
