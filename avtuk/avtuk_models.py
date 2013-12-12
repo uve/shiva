@@ -356,13 +356,14 @@ class Document(AvtukObject):
         # Номер header.numb_in
         # Дата  tsclad.datatovarheader(header.id)
 
-        datatovarheader = self.cursor.callfunc('tsclad.datatovarheader', returnType=cx_Oracle.DATETIME, parameters=[self.head])
+        try:
+            datatovarheader = self.cursor.callfunc('tsclad.datatovarheader', returnType=cx_Oracle.DATETIME, parameters=[self.head])
+                 
+            ot = datatovarheader.strftime("%d.%m.%Y")
+        except: 
+            ot = ""
         
-        if not datatovarheader:
-            return {'error':'Не найдена фактура'}                  
-        
-        
-        ot = datatovarheader.strftime("%d.%m.%Y")                                   
+                                           
  
         sql = '''select id,name,npack,valume,price,price*valume summ
                  from
@@ -438,12 +439,12 @@ class Document(AvtukObject):
              печатать Накладную, которая печатается сейчас поданному пункту            
         '''
         
-        if not self.header:
-            return 
+        #if not self.header:
+        #    return 
 
                         
-        if self.header['numb']:           
-            if self.header['numb_in']:
+        if 'numb' in self.header:           
+            if 'numb_in' in self.header:
                 return self.print_internal_transfer()
             else:
                 return self.print_bill_and_factura()
@@ -932,16 +933,22 @@ class Header(AvtukObject):
     @classmethod
     def get_item(cls, item_id=0, rc=None):
                         
-        sql = '''SELECT h.id, h.oper, h.stage, h.num, h.numb, h.numb_in, h.data, h.status, h.client_from, h.client_to,
-                        h.marsh, h.prim, ms.name marsh_name, h.storage, h.os_numb, h.desk, h.prim, h.skin
-                 FROM header h
-                 left join mess_for_header ms on ms.id=h.marsh
-                 JOIN depart ON depart.depart IN (SELECT depart FROM depart WHERE rc = :rc AND depart_type = 3)
-                 WHERE depart.depart IN (SELECT depart FROM shema WHERE oper=h.oper) AND h.id =:item_id'''
+        #sql = '''SELECT h.id, h.oper, h.stage, h.num, h.numb, h.numb_in, h.data, h.status, h.client_from, h.client_to,
+        #                h.marsh, h.prim, ms.name marsh_name, h.storage, h.os_numb, h.desk, h.prim, h.skin
+        #         FROM header h
+        #         left join mess_for_header ms on ms.id=h.marsh
+        #         JOIN depart ON depart.depart IN (SELECT depart FROM depart WHERE rc = :rc AND depart_type = 3)
+        #         WHERE depart.depart IN (SELECT depart FROM shema WHERE oper=h.oper) AND h.id =:item_id'''
         
         
+        sql = '''select h.id, h.oper, h.stage, h.num, h.numb, h.numb_in, h.data, h.status, h.client_from, h.client_to,
+                   h.marsh, h.prim, ms.name marsh_name, h.storage, h.os_numb, h.desk, h.prim, h.skin
+                    from header h
+                    left join mess_for_header ms 
+                    on ms.id=h.marsh               
+                    where  h.id =:item_id'''
 
-        return cls.select(sql=sql, rc=rc, item_id=item_id)  # , depart_type=depart_type)        
+        return cls.select(sql=sql, item_id=item_id)  # , depart_type=depart_type)        
 
     @classmethod
     def _custom_select(cls, depart_type, opers, rc=None):

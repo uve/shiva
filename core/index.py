@@ -5,6 +5,7 @@ from settings import TEMPLATE_DIR, MOBILE_USER_AGENTS
 from tornado import template
 from settings import TORNADO_HASH
 
+#import logging
 
 class MainHandler(BaseHandler):
     urls = r'/'
@@ -15,6 +16,8 @@ class MainHandler(BaseHandler):
         
         #self.redirect("http://shiva.ws:12345", True)        
         #return
+        
+        self.request.remote_ip
         
 
         is_terminal = False

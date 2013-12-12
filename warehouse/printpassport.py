@@ -172,8 +172,25 @@ class PrintPassportDataHandler(BaseHandler):
 
             # Накладная
             if mode == 0:                
+                
+                '''
+                out = self.cursor.var(cx_Oracle.CURSOR)                           
+                res = self.cursor.callproc("shiva.header_info", [header_id, out])                  
+                results = res[-].fetchone()
+                
+                результат 
+                         id,  
+                         num,          -- номер
+                         data,          -- дата
+                         client_from, -- от кого
+                         client_to      -- кому
+                 '''
+                
+        
+     
                 new_document = Document(self.request.arguments, rc=self.session.rc)                
-                return self.write(new_document.as_print())                                                   
+                return self.write(new_document.as_print())
+                                                          
 
             # Сборочные
             elif mode == 4:

@@ -149,6 +149,8 @@ class AcceptanceDataHandler(BaseHandler):
 
 
     def post(self, param):
+        
+
         if param == 'gts':
 
             ids = self.get_argument("ids", default=0)
