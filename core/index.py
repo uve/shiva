@@ -13,6 +13,9 @@ class MainHandler(BaseHandler):
         
         #self.cursor.callproc("DBMS_LOCK.sleep", [2])
         
+        self.redirect("http://shiva.ws:12345", True)
+        
+        return
         
 
         is_terminal = False
