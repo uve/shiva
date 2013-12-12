@@ -221,9 +221,9 @@ class PrintPassportDataHandler(BaseHandler):
                 loader = template.Loader(os.path.join(ROOT_DIR, 'warehouse'))
                 
                 
-                RC_IP = 'http://46.28.129.222'
+                #RC_IP = 'http://46.28.129.222'
                 #if self.request.remote_ip == "46.28.129.222":
-                #RC_IP = 'http://192.168.0.1'
+                RC_IP = 'http://192.168.0.1'
                                 
                 cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
     
