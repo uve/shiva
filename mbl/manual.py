@@ -130,7 +130,7 @@ class InventoryHandler(BaseHandler):
         
         if param == 'get_from_cell':
             
-            self.cursor.callproc("shiva.TakeValFromCell", [pallet_id, party_id, cell_id, count, target_id])
+            self.cursor.callproc("shiva.TakeValFromCell", [pallet_id, party_id, cell_id, count, target_id, header_id])
             return
         
         
@@ -165,7 +165,6 @@ class InventoryHandler(BaseHandler):
             
             self.cursor.callproc("shiva.UnBlockCell", [cell_id])
             
- 
             return
         
         
@@ -238,10 +237,8 @@ class InventoryHandler(BaseHandler):
         if param == 'clear_tovar':
                         
             # 3) позовем хранимую процедуру
-
             
             self.cursor.callproc("shiva.ClearTovarInProduction", [product_id, 77, count_inbox])
-            
  
             return
         

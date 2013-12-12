@@ -24,7 +24,7 @@ var CoreModule;
             });
 
             if (id) {
-                (document.getElementById(id)).innerText = this.message;
+                document.getElementById(id).innerText = this.message;
             }
         }
         return Error;
@@ -55,7 +55,7 @@ var CoreModule;
             });
 
             if (id) {
-                (document.getElementById(id)).innerText = this.message;
+                document.getElementById(id).innerText = this.message;
             }
         }
         return Info;
@@ -124,7 +124,7 @@ var CoreModule;
                 this.isValidBarcodeType(value, this.type);
                 this.isEqualExpected(value, this.type, this.expected);
 
-                this.value = this.BarcodeToID(value);
+                this.value = this.BarcodeToID(value); //Если нужно вырезать ID
                 return true;
             } catch (err) {
                 var error = new Error(err, "EnterBarcodeErrText");
@@ -136,6 +136,7 @@ var CoreModule;
             if (!barcode)
                 return "";
 
+            /* Для этих типов не извлекать id-шник */
             if ((this.type == this.BCTUSER) || (this.type == this.BCTCELL) || (!this.type)) {
                 return barcode;
             }
@@ -328,6 +329,7 @@ var CoreModule;
                 if (xmlhttp.readyState != 4)
                     return;
 
+                //clearTimeout(timeout) // очистить таймаут при наступлении readyState 4
                 if (TORNADO_HASH != xmlhttp.getResponseHeader("tornado_hash")) {
                     IS_RELOAD = true;
                 }
@@ -337,6 +339,7 @@ var CoreModule;
                 }
 
                 if (xmlhttp.status == 200) {
+                    // Все ок
                     if (xmlhttp.responseText) {
                         var result = eval('(' + xmlhttp.responseText + ')');
 
@@ -361,6 +364,7 @@ var CoreModule;
 
                     settings.success(result);
                 } else {
+                    //handleError(xmlhttp.statusText) // вызвать обработчик ошибки с текстом ответа
                     if (settings.hidden) {
                         return false;
                     }
@@ -415,7 +419,7 @@ var FormModule;
             var found = [];
             var elements = document.getElementsByTagName("*");
             for (var i = 0; i < elements.length; i++) {
-                var names = (elements[i]).className.split(' ');
+                var names = elements[i].className.split(' ');
                 for (var j = 0; j < names.length; j++) {
                     if (names[j] == className)
                         found.push(elements[i]);
@@ -427,9 +431,9 @@ var FormModule;
         Form.prototype.open = function (item) {
             var elements = this.getElementsByClassName('win');
             for (var i = 0; i < elements.length; i++) {
-                if ((elements[i]).style.display == 'block') {
-                    (elements[i]).style.display = 'none';
-                    this.parent_id = (elements[i]).getAttribute("id");
+                if (elements[i].style.display == 'block') {
+                    elements[i].style.display = 'none';
+                    this.parent_id = elements[i].getAttribute("id");
                     /*
                     console.log("this.parent_id");
                     console.log(this.parent_id);
@@ -459,9 +463,9 @@ var FormModule;
 
             this.open(this.id);
 
-            (document.getElementById("ErrorMessageText1")).innerHTML = settings.text;
+            document.getElementById("ErrorMessageText1").innerHTML = settings.text;
 
-            (document.getElementById("form-1")).className = "win error";
+            document.getElementById("form-1").className = "win error";
 
             var buttonOK = document.getElementById("btnErrorMessage1OK");
 
@@ -498,29 +502,29 @@ var FormModule;
             //     maxlength - максимальная длина строки, содержащей ШК (по умолчанию = 13)
             //     apply - JS-код обработчика, навешиваемый на событие onclick кнопки #1
             //     cancel - JS-код обработчика, навешиваемый на событие onclick кнопки #2
-            (document.getElementById("EnterBarcode")).style.backgroundColor = "";
+            document.getElementById("EnterBarcode").style.backgroundColor = "";
 
             if (settings.backgroundColor) {
-                (document.getElementById("EnterBarcode")).style.backgroundColor = settings.backgroundColor;
+                document.getElementById("EnterBarcode").style.backgroundColor = settings.backgroundColor;
             }
 
-            (document.getElementById("caption-2")).innerHTML = "";
-            (document.getElementById("caption-2")).style.display = "none";
-            (document.getElementById("text-2")).innerHTML = "";
-            (document.getElementById("text-2")).style.display = "none";
+            document.getElementById("caption-2").innerHTML = "";
+            document.getElementById("caption-2").style.display = "none";
+            document.getElementById("text-2").innerHTML = "";
+            document.getElementById("text-2").style.display = "none";
 
             if (settings.caption) {
-                (document.getElementById("caption-2")).innerHTML = settings.caption;
-                (document.getElementById("caption-2")).style.display = "block";
+                document.getElementById("caption-2").innerHTML = settings.caption;
+                document.getElementById("caption-2").style.display = "block";
             }
 
             if (settings.text) {
-                (document.getElementById("text-2")).innerHTML = settings.text;
-                (document.getElementById("text-2")).style.display = "block";
+                document.getElementById("text-2").innerHTML = settings.text;
+                document.getElementById("text-2").style.display = "block";
             }
 
             //(<HTMLElement>document.getElementById("EnterBarcodeFormText")).innerHTML = settings.text;
-            (document.getElementById("EnterBarcodeErrText")).innerHTML = "";
+            document.getElementById("EnterBarcodeErrText").innerHTML = "";
 
             // откроем форму и отобразим поясняющий текст
             this.open("EnterBarcode");
@@ -539,6 +543,9 @@ var FormModule;
                 //buttonOK.focus();
                 _this.scanner.detach();
 
+                //buttonOK.setAttribute("disabled", "disabled");
+                //buttonCancel.setAttribute("disabled", "disabled");
+                // разрешён переход на функцию apply сразу по вводу ШК
                 if (settings.ApplyOnScan) {
                     settings.apply(input.value);
                 }
@@ -609,7 +616,8 @@ var FormModule;
 
                 if (month == 4 || month == 6 || month == 9 || month == 11)
                     days = 30;
-else if (month == 2) {
+                else if (month == 2) {
+                    //Do not forget leap years!!!
                     if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) {
                         days = 29;
                     } else {
@@ -660,40 +668,40 @@ else if (month == 2) {
             // откроем форму и отобразим поясняющий текст
             this.open("form-1");
 
-            this.value = "";
+            this.value = ""; // !!!!
 
-            (document.getElementById("caption-1")).innerHTML = "";
-            (document.getElementById("caption-1")).style.display = "none";
-            (document.getElementById("text-1")).innerHTML = "";
-            (document.getElementById("text-1")).style.display = "none";
-            (document.getElementById("options-1")).innerHTML = "";
-            (document.getElementById("options-1")).style.display = "none";
+            document.getElementById("caption-1").innerHTML = "";
+            document.getElementById("caption-1").style.display = "none";
+            document.getElementById("text-1").innerHTML = "";
+            document.getElementById("text-1").style.display = "none";
+            document.getElementById("options-1").innerHTML = "";
+            document.getElementById("options-1").style.display = "none";
 
-            (document.getElementById("select-calendar")).style.display = "none";
+            document.getElementById("select-calendar").style.display = "none";
 
-            (document.getElementById("form-1")).style.backgroundColor = "";
-            (document.getElementById("form-1")).className = "win ";
+            document.getElementById("form-1").style.backgroundColor = "";
+            document.getElementById("form-1").className = "win ";
 
             if (settings.caption) {
-                (document.getElementById("caption-1")).innerHTML = settings.caption;
-                (document.getElementById("caption-1")).style.display = "block";
+                document.getElementById("caption-1").innerHTML = settings.caption;
+                document.getElementById("caption-1").style.display = "block";
             }
 
             if (settings.text) {
-                (document.getElementById("text-1")).innerHTML = settings.text;
-                (document.getElementById("text-1")).style.display = "block";
+                document.getElementById("text-1").innerHTML = settings.text;
+                document.getElementById("text-1").style.display = "block";
             }
 
             if (settings.className) {
-                (document.getElementById("form-1")).className += settings.className;
+                document.getElementById("form-1").className += settings.className;
             }
 
             if (settings.backgroundColor) {
-                (document.getElementById("form-1")).style.backgroundColor = settings.backgroundColor;
+                document.getElementById("form-1").style.backgroundColor = settings.backgroundColor;
             }
 
             if (settings.options) {
-                (document.getElementById("options-1")).style.display = "block";
+                document.getElementById("options-1").style.display = "block";
 
                 var all_options = document.getElementById("options-1");
 
@@ -738,15 +746,15 @@ else if (month == 2) {
                 /*
                 all_options.appendChild(select);
                 */
-                (document.getElementById("options-1")).style.display = "block";
+                document.getElementById("options-1").style.display = "block";
             }
 
             if (settings.input) {
                 var all_options = document.getElementById("options-1");
 
-                (document.getElementById("options-1")).style.display = "block";
+                document.getElementById("options-1").style.display = "block";
 
-                var input = (document.createElement("input"));
+                var input = document.createElement("input");
 
                 input.className = "input-1";
 
@@ -789,7 +797,7 @@ else if (month == 2) {
             var buttons_count = 0;
 
             for (var item in settings.buttons) {
-                var button = (document.createElement("input"));
+                var button = document.createElement("input");
 
                 button.type = "button";
                 button.className = "HugeBtn";
@@ -819,7 +827,7 @@ else if (month == 2) {
         Form.prototype.FormCount = function (settings) {
             // откроем форму и отобразим поясняющий текст
             this.open("form-5");
-            (document.getElementById("caption-5")).innerHTML = settings.text;
+            document.getElementById("caption-5").innerHTML = settings.text;
 
             var input = document.getElementById("value-5");
 
@@ -841,7 +849,7 @@ else if (month == 2) {
             all_buttons.innerHTML = "";
 
             // Принять
-            var button = (document.createElement("input"));
+            var button = document.createElement("input");
             button.type = "button";
             button.className = "HugeBtn";
             button.value = "Принять";
@@ -851,7 +859,7 @@ else if (month == 2) {
             all_buttons.appendChild(button);
 
             // Отмена
-            var button = (document.createElement("input"));
+            var button = document.createElement("input");
             button.type = "button";
             button.className = "HugeBtn";
             button.value = "Отмена";
@@ -883,7 +891,7 @@ var TaskModule;
             this.BCTDELIVERY = 5;
             this.BCTPARTY = 7;
 
-            status = false;
+            status = false; // статус - выполняется
         }
         Task.prototype.menu = function (args) {
             var form = new FormModule.Form();
@@ -1287,7 +1295,7 @@ var MainModule;
 
         Main.prototype.main = function () {
             var _this = this;
-            status = true;
+            status = true; /* Пользователь может принимать задания */
 
             var form = new FormModule.Form();
 
@@ -1400,6 +1408,9 @@ var InventoryModule;
 
             if (main.rc == "1") {
                 var rc_buttons = {
+                    "Подтоварка штучной сборки": function () {
+                        var task = new PodtovarkaShtukaModule.PodtovarkaShtuka();
+                    },
                     "Отправка паллеты": function () {
                         _this.set_pallet_delivery();
                     },
@@ -1435,7 +1446,7 @@ var InventoryModule;
             this.count = 0;
 
             if (!this.plus) {
-                this.plus = 0;
+                this.plus = 0; // Признак привязки.
             }
 
             this.scanCell();
@@ -1494,6 +1505,9 @@ var InventoryModule;
                 },
                 success: function (resp) {
                     if (resp["is_new"]) {
+                        /****
+                        *  Ввод типа партии, товара, срока годности  и т.д.
+                        */
                         if (!_this.product_id) {
                             _this.getCode();
                         } else {
@@ -1960,6 +1974,155 @@ var InventoryModule;
     })(TaskModule.Task);
     InventoryModule.Inventory = Inventory;
 })(InventoryModule || (InventoryModule = {}));
+/// <reference path="../inventory/inventory.ts" />
+var PodtovarkaShtukaModule;
+(function (PodtovarkaShtukaModule) {
+    var PodtovarkaShtuka = (function (_super) {
+        __extends(PodtovarkaShtuka, _super);
+        function PodtovarkaShtuka() {
+            _super.call(this);
+            this.class_name = "PodtovarkaShtuka";
+
+            this.caption = "Подтоварка штучной сборки";
+            this.cell_id = "";
+            this.party_id = "";
+            this.pallet_id = "";
+            this.header_id = "";
+            this.count = 0;
+
+            this.get_header();
+        }
+        PodtovarkaShtuka.prototype.get_header = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/new_sborka_for_shtuka",
+                data: {},
+                success: function (resp) {
+                    _this.header_id = resp.header_id;
+
+                    _this.scanCell();
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.scanCell = function () {
+            var _this = this;
+            this.formCell({
+                apply: function (value) {
+                    _this.cell_id = value;
+                    _this.scanPallet();
+                },
+                cancel: function () {
+                    _this.stop();
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.scanPallet = function () {
+            var _this = this;
+            this.formPallet({
+                apply: function (value) {
+                    _this.pallet_id = value;
+                    _this.scanParty();
+                },
+                cancel: function () {
+                    _this.scanCell();
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.scanParty = function () {
+            var _this = this;
+            this.formParty({
+                apply: function (value) {
+                    _this.party_id = value;
+                    _this.getCount();
+                },
+                cancel: function () {
+                    _this.scanPallet();
+                }
+            });
+        };
+
+        /**
+        *   Ввод количества коробок
+        *
+        */
+        PodtovarkaShtuka.prototype.getCount = function () {
+            var _this = this;
+            var msg = "Введите количество КОРОБОК";
+
+            var form = new FormModule.Form();
+
+            form.FormCount({
+                caption: this.caption,
+                text: msg,
+                default_value: this.count,
+                min_value: 0,
+                max_value: 1000,
+                apply: function (value) {
+                    _this.count = value;
+                    _this.add_box();
+                },
+                cancel: function () {
+                    _this.scanParty();
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.add_box = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/add_factura_for_shtuka",
+                data: {
+                    cell_id: this.cell_id,
+                    party_id: this.party_id,
+                    pallet_id: this.pallet_id,
+                    header_id: this.header_id,
+                    count: this.count
+                },
+                success: function () {
+                    _this.get_mode();
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.get_mode = function () {
+            var _this = this;
+            this.menu({
+                caption: "Выберите режим",
+                buttons: {
+                    "Взять ещё с ячейки": function () {
+                        _this.party_id = "";
+                        _this.count = 0;
+                        _this.scanParty();
+                    },
+                    "Завершить подтоварку": function () {
+                        _this.end_factura();
+                    }
+                }
+            });
+        };
+
+        PodtovarkaShtuka.prototype.end_factura = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/end_factura_for_shtuka",
+                data: {
+                    header_id: this.header_id
+                },
+                success: function () {
+                    _this.complete();
+                }
+            });
+        };
+        return PodtovarkaShtuka;
+    })(InventoryModule.Inventory);
+    PodtovarkaShtukaModule.PodtovarkaShtuka = PodtovarkaShtuka;
+})(PodtovarkaShtukaModule || (PodtovarkaShtukaModule = {}));
 /// <reference path="inventory.ts" />
 var ClearTovarModule;
 (function (ClearTovarModule) {
@@ -2376,7 +2539,7 @@ var InputProductModule;
                         _this.count_inbox = 0;
 
                         _this.plus = 0;
-                        _this.scanCell();
+                        _this.scanCell(); // Party ???
                     },
                     "Приостановить приёмку": function () {
                         _this.stop();
@@ -3112,6 +3275,9 @@ var AcceptanceModule;
         */
         Acceptance.prototype.getCountInBox = function () {
             var _this = this;
+            /*
+            * Если принимаем сырье, то не спрашивать количество в упаковке, а отправлять 1
+            */
             if (parseInt(this.type_id) == 10) {
                 this.count_inbox = "1";
                 this.get_count();
@@ -3292,8 +3458,7 @@ var AllocationModule;
                 url: "/mbl/alloc/set_place",
                 data: {
                     cell_id: this.cell_id,
-                    pallet_id: this.pallet_id
-                },
+                    pallet_id: this.pallet_id },
                 success: function () {
                     _this.complete("Паллета была успешно размещена");
                 },
@@ -3438,7 +3603,7 @@ var MovingModule;
                         _this.palletMove();
                     },
                     "Ячейка была занята": function () {
-                        _this.nextCell();
+                        _this.nextCell(); // получим новый адрес
                     }
                 }
             });
@@ -3567,9 +3732,9 @@ var OrderBatchingModule;
                     pallet_id: this.pallet_id
                 },
                 success: function (resp) {
-                    _this.value = resp.value;
-                    _this.count = resp.count;
-                    _this.count_total = resp.count_total;
+                    _this.value = resp.value; // Сколько нужно взять
+                    _this.count = resp.count; // Сколько уже собрано
+                    _this.count_total = resp.count_total; // Сколько всего нужно собрать
                     _this.product_name = resp.product_name;
                     _this.packlist_id = resp.packlist_id;
 
@@ -3787,7 +3952,7 @@ var OrderBatchingRawModule;
                 text: "С адреса: " + this.cell_name + "</br>взято сырья:" + this.value,
                 buttons: {
                     "Продолжить": function () {
-                        _this.scan_party();
+                        _this.scan_party(); ///  отличие от обычной сборки
                     },
                     "Вернуться": function () {
                         _this.getCount();

@@ -103,6 +103,10 @@ from expimp.exportcell import ExportCellHandler, ExportCellDataHandler
 from expimp.importtovar import ImportTovarHandler
 # from expimp.create_tovar import CreateTovarHandler
 
+
+from mbl.sborka import Terminal_Sborka
+
+
 from tornado import web
 from settings import STATIC_DIR
 
@@ -163,6 +167,8 @@ handlers = [
                 (r"/mbl/items", ItemListHandler),
                 
                 (r"/mbl/valid", ManualValidation),
+                
+                (r"/sborka/(.*)", Terminal_Sborka),
                 
                 (r"/menu", MenuHandler),
                 (r"/personnel/alltsk", AllTaskHandler),

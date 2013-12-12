@@ -64,6 +64,7 @@ module InventoryModule {
 													this.plus = 1;
 													this.start();		
 					},			
+					
 					"Очистка ячейки"  : () => {												
 													this.emptyCell(); 
 					},			
@@ -132,6 +133,13 @@ module InventoryModule {
 				
 				var rc_buttons = {
 							
+						
+							"Подтоварка штучной сборки" : () => {
+								
+											var task = new PodtovarkaShtukaModule.PodtovarkaShtuka(); 	
+							},		
+
+						
 							"Отправка паллеты" : () => {  /* RC */
 								
 								this.set_pallet_delivery();
