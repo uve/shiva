@@ -24,7 +24,7 @@ class AllocationHandler(BaseHandler):
         if param == 'get_place':
                 
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva.GetPlaceForPallet", [pallet_id, out])
+            res = self.proc("shiva.GetPlaceForPallet", [pallet_id, out])
                 
             target_id, target_name = res[-1].fetchone()
             self.write({ 'target_name': target_name, 'target_id': target_id})
@@ -34,7 +34,7 @@ class AllocationHandler(BaseHandler):
             
             # if inp.cellbarcode == 'BTC': Place = 0; # режим БТК - он такой, да
             
-            self.cursor.callproc("shiva.SetPalletToPlace", [pallet_id, cell_id])
+            self.proc("shiva.SetPalletToPlace", [pallet_id, cell_id])
 
 
 class MovingHandler(BaseHandler):
@@ -69,7 +69,7 @@ class MovingHandler(BaseHandler):
 
         if param == 'next_cell':
             out = self.cursor.var(cx_Oracle.CURSOR)            
-            res = self.cursor.callproc("shiva.SetCellStoreError", [user_id, cell_id, target_id, out])
+            res = self.proc("shiva.SetCellStoreError", [user_id, cell_id, target_id, out])
             
             target_id, target_name = res[-1].fetchone()
             self.write({ 'target_name': target_name, 'target_id': target_id})
@@ -77,12 +77,12 @@ class MovingHandler(BaseHandler):
 
         if param == 'moved':                         
  
-            self.cursor.callproc("shiva.MovePalete", [cell_id, target_id])            
+            self.proc("shiva.MovePalete", [cell_id, target_id])            
 
 
         if param == 'GetCellForPartyFromBox':
             out = self.cursor.var(cx_Oracle.CURSOR)          
-            res = self.cursor.callproc("shiva.GetCellForPartyFromBox", [party_id, value, out])      
+            res = self.proc("shiva.GetCellForPartyFromBox", [party_id, value, out])      
 
             code = res[-1].fetchone()
             
@@ -121,7 +121,7 @@ class BatchingOrders(BaseHandler):
                     
         if param == "bind_pallet":
 
-            self.cursor.callproc("shiva.PalletToPackList", [task_id, pallet_id])                
+            self.proc("shiva.PalletToPackList", [task_id, pallet_id])                
             return
         
         
@@ -134,7 +134,7 @@ class BatchingOrders(BaseHandler):
             target_cursor = self.cursor.var(cx_Oracle.CURSOR)
             
             
-            res = self.cursor.callproc("shiva.GetCellValFromPackList", [pallet_id, value_cursor, cell_cursor, target_cursor])  
+            res = self.proc("shiva.GetCellValFromPackList", [pallet_id, value_cursor, cell_cursor, target_cursor])  
             
             
             value, count, count_total, product_name, packlist_id = res[-3].fetchone()
@@ -161,10 +161,10 @@ class BatchingOrders(BaseHandler):
         if param == 'ok_cell':
                         
             out = self.cursor.var(cx_Oracle.CURSOR)            
-            res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, packlist_id, cell_id, count,
+            res = self.proc("shiva.OkCellValFromPackList", [pallet_id, packlist_id, cell_id, count,
                                                                        party_id, extra_party_id, out])
             
-            #res = self.cursor.callproc("shiva.OkCellValFromPackList", [pallet_id, cell_id, count,
+            #res = self.proc("shiva.OkCellValFromPackList", [pallet_id, cell_id, count,
             #                                                           party_id, extra_party_id, out])    
             
             info = res[-1].fetchone()
@@ -176,7 +176,7 @@ class BatchingOrders(BaseHandler):
             
         if param == 'set_pallet':
             
-            self.cursor.callproc("shiva.SetPalletToDelivery", [pallet_id, target_id])                 
+            self.proc("shiva.SetPalletToDelivery", [pallet_id, target_id])                 
             return
             
                 
@@ -210,7 +210,7 @@ class CellFail(BaseHandler):
                 # cell_tuple = barcode2cellinfo(inp.cell_barcode)
                 cell_tuple = inp.cell_barcode
                 
-                self.cursor.execute("select shiva.GetCellFromAddress(:Dep, :C1, :C2, :C3) from dual",
+                self.execute("select shiva.GetCellFromAddress(:Dep, :C1, :C2, :C3) from dual",
                          Dep=cell_tuple[0],
                          C1=cell_tuple[1],
                          C2=cell_tuple[2],
@@ -228,7 +228,7 @@ class CellFail(BaseHandler):
                 cell_id = 0
 
             # 2) собственно, вызов функции
-            self.cursor.execute("begin shiva.SetFailCell(:SOTRUD, :CELL, :PALLET, :PARTY, :VALUME, :TYPEBLOCK); end;",
+            self.execute("begin shiva.SetFailCell(:SOTRUD, :CELL, :PALLET, :PARTY, :VALUME, :TYPEBLOCK); end;",
                             SOTRUD=self.session.uid,
                             PALLET=inp.pallet,
                             CELL=cell_id,
@@ -265,7 +265,7 @@ class TaskHandler(BaseHandler):
   
         
         if status == "check":
-            res = self.cursor.callproc("shiva_task.UserTaskGet", [user_id, out])            
+            res = self.proc("shiva_task.UserTaskGet", [user_id, out])            
             task_id, type_id, description, header_id = res[-1].fetchone()
             
             if task_id:                       
@@ -277,23 +277,23 @@ class TaskHandler(BaseHandler):
 
 
         if status == "abort":
-            res = self.cursor.callproc("shiva_task.UserTaskAbort", [task_id, user_id])                      
+            res = self.proc("shiva_task.UserTaskAbort", [task_id, user_id])                      
             return
 
         if status == "apply":
-            res = self.cursor.callproc("shiva_task.UserTaskApply", [task_id, user_id])                      
+            res = self.proc("shiva_task.UserTaskApply", [task_id, user_id])                      
             return
 
         if status == "cancel":
-            res = self.cursor.callproc("shiva_task.UserTaskCancel", [task_id, user_id])                      
+            res = self.proc("shiva_task.UserTaskCancel", [task_id, user_id])                      
             return
         
         if status == "complete":
-            res = self.cursor.callproc("shiva_task.UserTaskComplete", [task_id, user_id])                      
+            res = self.proc("shiva_task.UserTaskComplete", [task_id, user_id])                      
             return    
    
         if status == "getcelldestination":
-            res = self.cursor.callproc("shiva_task.GetCellDestination", [task_id, out])   
+            res = self.proc("shiva_task.GetCellDestination", [task_id, out])   
             result = res[-1].fetchone()
 
             if not result:

@@ -175,7 +175,7 @@ class PrintPassportDataHandler(BaseHandler):
                 
                 '''
                 out = self.cursor.var(cx_Oracle.CURSOR)                           
-                res = self.cursor.callproc("shiva.header_info", [header_id, out])                  
+                res = self.proc("shiva.header_info", [header_id, out])                  
                 results = res[-].fetchone()
                 
                 результат 
@@ -217,7 +217,7 @@ class PrintPassportDataHandler(BaseHandler):
                          WHERE f.header = %s AND v.CATEGORY<>5
                          ORDER BY category, name''' % (self.session.rc, head)
 
-                res = self.cursor.execute(sql)
+                res = self.execute(sql)
                 good = fetchall_by_name(res)
 
           
@@ -238,9 +238,11 @@ class PrintPassportDataHandler(BaseHandler):
                 loader = template.Loader(os.path.join(ROOT_DIR, 'warehouse'))
                 
                 
-                #RC_IP = 'http://46.28.129.222'
-                #if self.request.remote_ip == "46.28.129.222":
+                
+                
                 RC_IP = 'http://192.168.0.1'
+                if self.request.remote_ip == "62.117.67.6":
+                    RC_IP = 'http://46.28.129.222'
                                 
                 cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
     

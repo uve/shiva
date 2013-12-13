@@ -5,12 +5,35 @@ import cx_Oracle
 from settings import RC_IP, RC_PORT, DB_LOGIN, DB_PASSWORD, DB_SID
 #from settings import MAX_SESSIONS
 
+import logging
 
+import time
 from operator import itemgetter
 
 dsn = cx_Oracle.makedsn(RC_IP, RC_PORT, DB_SID)
 
 CLASS_NAME = "CJDEMO3"
+
+
+def callproc(self, args, kwargs):    
+    
+    logging.info("Call Proc: %s \tparams: %s", args[0], args[1:])
+    return self.cursor.callproc(*args, **kwargs)
+    
+    
+    
+def callfunc(self, args, kwargs):    
+    
+    logging.info("Call Func: %s \tparams: %s", args[0], args[1:])
+    return self.cursor.callfunc(*args, **kwargs)    
+    
+    
+    
+def callexec(self, args, kwargs):    
+    
+    #logging.info("Call Execute: %s \tparams: %s", args[0], args[1:])
+    return self.cursor.execute(*args, **kwargs)       
+
 
 
 def init_connection(self):
@@ -25,7 +48,11 @@ def init_connection(self):
         pass
 
     self.cursor = self.db.cursor()
-
+       
+    self.proc    = lambda *a, **k: callproc(self, a, k)
+    self.func    = lambda *a, **k: callfunc(self, a, k)
+    self.execute = lambda *a, **k: callexec(self, a, k)
+    
 
 
 def close_connection(self):

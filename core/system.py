@@ -12,7 +12,7 @@ class SystemMessageHandler(BaseHandler):
         if not self.session:
             return
         
-        self.cursor.execute("select mess, 2 as type from header_message where usr=:user_id", user_id=str(self.session.uid))                        
+        self.execute("select mess, 2 as type from header_message where usr=:user_id", user_id=str(self.session.uid))                        
         result = self.cursor.fetchall()
         
         self.write(result)

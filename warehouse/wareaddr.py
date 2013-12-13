@@ -23,19 +23,19 @@ class WareAddressHandler(BaseHandler):
         
         out = self.cursor.var(cx_Oracle.CURSOR)
         
-        all_tovar_types = self.cursor.callproc("shiva.GetTovarTypeList", [self.session.rc, out])                    
+        all_tovar_types = self.proc("shiva.GetTovarTypeList", [self.session.rc, out])                    
         
         # список типов товара
         tovar_types = [{"id": i[0], "type":"button", "text": i[1]} for i in all_tovar_types[-1].fetchall()]
         
         
-        all_storage_types = self.cursor.callproc("shiva.GetStorageTypeList", [self.session.rc, out])    
+        all_storage_types = self.proc("shiva.GetStorageTypeList", [self.session.rc, out])    
 
         # список типов хранения
         storage_types = [{"id": i[0], "type":"button", "text":i[1]} for i in all_storage_types[-1].fetchall()]                
         
         
-        res = self.cursor.execute("select id,name from vw_iq_status_cell")
+        res = self.execute("select id,name from vw_iq_status_cell")
         all_status = res.fetchall()
         
         all_items = [
@@ -156,7 +156,7 @@ class WareAddressDataHandler(BaseHandler):
         out = self.cursor.var(cx_Oracle.CURSOR)
         
         
-        res = self.cursor.callproc("shiva.GetSaldoList", [pDepart, is_All, is_Block, psw_id, pCellName,
+        res = self.proc("shiva.GetSaldoList", [pDepart, is_All, is_Block, psw_id, pCellName,
                                                           pStorage, pTypeTovar, pCode, pName, pParty, pPartyStatus, out])                
      
         all_results = None
@@ -183,6 +183,6 @@ class WareAddressDataHandler(BaseHandler):
         condition_code = self.get_argument("condition_code", default=None)
 
         
-        result = self.cursor.callproc("shiva.EditPalletPartyCell", [sw_id, addr, box, inbox, code, num, condition_code])
+        result = self.proc("shiva.EditPalletPartyCell", [sw_id, addr, box, inbox, code, num, condition_code])
         
         self.write({"status": result})

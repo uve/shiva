@@ -27,7 +27,7 @@ class AuditorHandler(BaseHandler):
     def get(self):
                                  
 
-        self.cursor.execute("select id, name from tehno.type_tovar where hide=1 order by name")     
+        self.execute("select id, name from tehno.type_tovar where hide=1 order by name")     
         all_types = self.cursor.fetchall()                                        
   
                         
@@ -88,7 +88,7 @@ class AuditorDataHandler(BaseHandler):
         
         if param == 'tovars':
                 
-            self.cursor.execute("select id, code, name from tovar where hide=1 and typet=%s order by name" % typet)     
+            self.execute("select id, code, name from tovar where hide=1 and typet=%s order by name" % typet)     
             results = self.cursor.fetchall()
             
             self.write(results)
@@ -99,7 +99,7 @@ class AuditorDataHandler(BaseHandler):
                         
             if mode == '0':   
  
-                res = self.cursor.callproc("shiva.GetRevisionSaldoCell", [depart, tovar, out])  
+                res = self.proc("shiva.GetRevisionSaldoCell", [depart, tovar, out])  
                 
                 all_results = fetchall(res[-1])
                 
@@ -117,7 +117,7 @@ class AuditorDataHandler(BaseHandler):
                 
                 #data_s = data_e = "26.08.2013"
                 
-                result = self.cursor.callfunc('sclad.GetSaldoTovar', cx_Oracle.NUMBER, parameters=[tovar, depart, data, obor])
+                result = self.func('sclad.GetSaldoTovar', cx_Oracle.NUMBER, parameters=[tovar, depart, data, obor])
                                                                
                 isp = json.dumps(int(result))
                                 
@@ -132,7 +132,7 @@ class AuditorDataHandler(BaseHandler):
                 sql = '''select p.party, p.num, to_char(p.data,'DD.MM.YYYY') data, p.inbox, tsclad.GetPartyOst(p.party,%s) saldo from party p  
                         where p.tovar=%s and tsclad.GetPartyOst(p.party,%s)>0''' % (depart, tovar, depart)                  
 
-                self.cursor.execute(sql)     
+                self.execute(sql)     
                 results = fetchall(self.cursor)                                        
                 
                 self.write(results)
@@ -143,7 +143,7 @@ class AuditorDataHandler(BaseHandler):
         #Список остатков по партиям. Временно отключен!
         elif param == 'cell_history':
                 
-            res = self.cursor.callproc("shiva.getpallethistory", [cell_id, out])  
+            res = self.proc("shiva.getpallethistory", [cell_id, out])  
             
             all_results = fetchall(res[-1])
             
@@ -161,7 +161,7 @@ class AuditorDataHandler(BaseHandler):
             
             sql = "select id, code, name from tovar where id=%s"  % tovar
 
-            self.cursor.execute(sql)        
+            self.execute(sql)        
             result = fetchone(self.cursor)
                 
                            
@@ -179,7 +179,7 @@ class AuditorDataHandler(BaseHandler):
                         p.tovar=%s
                         order by tp.name''' % tovar
     
-            self.cursor.execute(sql)        
+            self.execute(sql)        
             result_mode1 = fetchall_by_name(self.cursor)
             #result_mode1 = Executor.exec_cls(sql, pTovar=tovar, multi=True)            
             
@@ -199,7 +199,7 @@ class AuditorDataHandler(BaseHandler):
             total2 = sum(item["saldo"] for item in result_mode2)   
     
     
-            result = self.cursor.callfunc('isclad.GetTovarSaldoSclad', returnType=cx_Oracle.NUMBER, parameters=[tovar, 1])                                               
+            result = self.func('isclad.GetTovarSaldoSclad', returnType=cx_Oracle.NUMBER, parameters=[tovar, 1])                                               
             total3 = json.dumps(int(result))   
             
             
@@ -221,7 +221,7 @@ class AuditorDataHandler(BaseHandler):
             
             pRevision = cx_Oracle.NUMBER
 
-            result = self.cursor.callfunc('shiva.MakeTaskRevision', returnType=[tovar, self.session.rc], parameters=[pRevision])                        
+            result = self.func('shiva.MakeTaskRevision', returnType=[tovar, self.session.rc], parameters=[pRevision])                        
 
             
             self.write({'info':'Задание на ревизию сформировано'})

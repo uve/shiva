@@ -46,7 +46,7 @@ class AssemblyHandler(BaseHandler):
         pDepart_type = 3 #pDepart_type – тип департаментов,  в данном случае константа 3 (сборщики)
         
         out = self.cursor.var(cx_Oracle.CURSOR)    
-        res = self.cursor.callproc("shiva.GetSotrudList", [self.session.rc, pDepart_type, out])
+        res = self.proc("shiva.GetSotrudList", [self.session.rc, pDepart_type, out])
                 
         all_sotrud = res[-1].fetchall()
    
@@ -126,7 +126,7 @@ class AssemblyDataHandler(BaseHandler):
         if param == 'item':
 
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva.GetHeaderAssemblyList", [header_id, None, None, None, out])
+            res = self.proc("shiva.GetHeaderAssemblyList", [header_id, None, None, None, out])
                 
             all_results = fetchone(res[-1])        
                 
@@ -142,7 +142,8 @@ class AssemblyDataHandler(BaseHandler):
             sotrud = self.session.uid
             
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva.GetHeaderAssemblyList", [None, self.session.rc, pFilter, sotrud, out])
+            
+            res = self.proc("shiva.GetHeaderAssemblyList", [None, self.session.rc, pFilter, sotrud, out])
                 
             all_results = fetchall(res[-1], count=0)
                 
@@ -179,7 +180,7 @@ class AssemblyDataHandler(BaseHandler):
             
         if param == 'gts':                                 
             
-            self.cursor.callproc("shiva.AddShedulerHeader", [header_id, pOkNoParty, self.session.uid])            
+            self.proc("shiva.AddShedulerHeader", [header_id, pOkNoParty, self.session.uid])            
             #self.write({'info':'Сформированы задания на сборку'})
             
             return
@@ -202,7 +203,7 @@ class AssemblyDataHandler(BaseHandler):
             
             
             out = self.cursor.var(cx_Oracle.STRING)    
-            res = self.cursor.callproc("shiva.SetHeaderInfo", [header_id,
+            res = self.proc("shiva.SetHeaderInfo", [header_id,
                                                                pallet,
                                                                os_numb,
                                                                prim,
@@ -227,7 +228,7 @@ class AssemblyDataHandler(BaseHandler):
 
 
             out = self.cursor.var(cx_Oracle.STRING)    
-            res = self.cursor.callproc("tsclad.MakeTotalHeaderNew", [header_id, out])
+            res = self.proc("tsclad.MakeTotalHeaderNew", [header_id, out])
                 
             result = str(res)
             
@@ -237,13 +238,13 @@ class AssemblyDataHandler(BaseHandler):
 
         elif param == 'deconsolidation':            
 
-            result = self.cursor.callproc('tsclad.DelTotalHeaderSclad', [header_id])       
+            result = self.proc('tsclad.DelTotalHeaderSclad', [header_id])       
             self.write({'info':'Расконсолидация выполнена успешно'})
 
                 
         elif param == 'rollback':            
             
-            result = self.cursor.callproc('shiva.RollbackHeader', [header_id, cx_Oracle.NUMBER])       
+            result = self.proc('shiva.RollbackHeader', [header_id, cx_Oracle.NUMBER])       
 
             self.write({'info':'Откат фактуры выполнен успешно'})
                

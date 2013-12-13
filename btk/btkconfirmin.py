@@ -21,7 +21,7 @@ class BTKConfirmIn(BaseHandler):
         
         
         out = self.cursor.var(cx_Oracle.CURSOR)
-        res = self.cursor.callproc("shiva.Get_Iq_Status", [2, out])  
+        res = self.proc("shiva.Get_Iq_Status", [2, out])  
         all_status = fetchall_by_name(res[-1])
          
         
@@ -48,13 +48,13 @@ class BTKConfirmInData(BaseHandler):
 
         if param == "change_status":
             
-            res = self.cursor.callproc("tehno.shiva.SetIqStatusParty", [header_id, party_id, status])           
+            res = self.proc("tehno.shiva.SetIqStatusParty", [header_id, party_id, status])           
             return 
             
           
         if param == "head":
             
-            res = self.cursor.callproc("shiva.GetHeaderInputList", [self.session.uid, out])  
+            res = self.proc("shiva.GetHeaderInputList", [self.session.uid, out])  
             
          
             all_results = fetchall(res[-1])
@@ -65,7 +65,7 @@ class BTKConfirmInData(BaseHandler):
 
         if param == "list":
             
-            res = self.cursor.callproc("shiva.GetFacturaPartyList", [header_id, out])  
+            res = self.proc("shiva.GetFacturaPartyList", [header_id, out])  
             
             all_results = fetchall(res[-1])
             
@@ -75,7 +75,7 @@ class BTKConfirmInData(BaseHandler):
         
         if param == "print":
             
-            res = self.cursor.callproc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
+            res = self.proc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
             
             results = fetchone(res[-1])
             
@@ -99,7 +99,7 @@ class BTKConfirmInData(BaseHandler):
         
         if param == "confirm":
             
-            res = self.cursor.callproc("shiva.OkInputBtk", [header_id])  
+            res = self.proc("shiva.OkInputBtk", [header_id])  
      
             return        
         

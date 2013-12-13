@@ -21,7 +21,7 @@ class Terminal_Sborka(BaseHandler):
         if param == 'new_sborka_for_shtuka':
                 
             out = self.cursor.var(cx_Oracle.STRING)    
-            res = self.cursor.callproc("shiva.NewSborkaForShtuka", [self.session.uid, out])
+            res = self.proc("shiva.NewSborkaForShtuka", [self.session.uid, out])
                 
             header_id = res[-1]
             self.write({ 'header_id': header_id})
@@ -33,7 +33,7 @@ class Terminal_Sborka(BaseHandler):
         if param == 'add_factura_for_shtuka':
                 
             out = self.cursor.var(cx_Oracle.STRING)    
-            self.cursor.callproc("shiva.AddFacturaForShtuka", [header_id, party_id, count, pallet_id, cell_id])
+            self.proc("shiva.AddFacturaForShtuka", [header_id, party_id, count, pallet_id, cell_id])
 
             return
             
@@ -42,6 +42,6 @@ class Terminal_Sborka(BaseHandler):
         if param == 'end_factura_for_shtuka':
                 
             out = self.cursor.var(cx_Oracle.STRING)    
-            self.cursor.callproc("shiva.EndFacturaForShtuka", [header_id])
+            self.proc("shiva.EndFacturaForShtuka", [header_id])
             
             return

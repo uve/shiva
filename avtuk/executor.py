@@ -76,7 +76,7 @@ class AvtukExecutor(object):
         # DB initialization
         init_connection(self)
          
-        self.cursor.execute(sql, **kw)
+        self.execute(sql, **kw)
         self.db.commit()
               
         

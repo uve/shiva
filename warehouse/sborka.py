@@ -54,7 +54,7 @@ class SborkaDataHandler(BaseHandler):
 
             out = self.cursor.var(cx_Oracle.CURSOR)
                         
-            res = self.cursor.callproc("shiva.GetHeaderInwork", [out])                
+            res = self.proc("shiva.GetHeaderInwork", [out])                
          
             all_results = fetchall(res[-1])  
                         
@@ -65,7 +65,7 @@ class SborkaDataHandler(BaseHandler):
 
             sql = "select h.id, h.header, h.usr, h.mess, to_char(done,'DD.MM.YYYY') done from header_message h where h.header=%s order by done desc" % head
                         
-            res = self.cursor.execute(sql)
+            res = self.execute(sql)
             
             all_results = fetchall_by_name(res)
             self.write(all_results)  

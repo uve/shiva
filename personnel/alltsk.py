@@ -176,7 +176,7 @@ class AllTaskDataHandler(BaseHandler):
                 
     
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva_task.GetAllTask", [ds, de, out])
+            res = self.proc("shiva_task.GetAllTask", [ds, de, out])
     
             all_results = []
     
@@ -209,15 +209,15 @@ class AllTaskDataHandler(BaseHandler):
         # user_id - пользователь шивы который остановил задачу
         
         if param == 'task_restart':
-            self.cursor.callproc("shiva_task.UserTaskRestart", [task_id, user_id])   
+            self.proc("shiva_task.UserTaskRestart", [task_id, user_id])   
         
         
         if param == 'task_close':
-            self.cursor.callproc("shiva_task.UserTaskClose",   [task_id, user_id])
+            self.proc("shiva_task.UserTaskClose",   [task_id, user_id])
         
         
         if param == 'task_priority':
-            self.cursor.callproc("shiva_task.SetTaskPriority",   [task_id])
+            self.proc("shiva_task.SetTaskPriority",   [task_id])
             
             
         

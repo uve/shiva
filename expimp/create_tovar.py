@@ -12,4 +12,4 @@ class CreateTovarHandler(BaseHandler):
         name = self.get_argument("name", None)
         articul = self.get_argument("articul", None) 
                    
-        self.cursor.callproc("shiva.AddTovIQ", [code, articul, name])
+        self.proc("shiva.AddTovIQ", [code, articul, name])

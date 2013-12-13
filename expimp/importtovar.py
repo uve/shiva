@@ -73,7 +73,7 @@ class ImportTovarHandler(BaseHandler):
             
             try:
                 item = item.decode('cp1251').encode('utf8')[:80]
-                self.cursor.execute('''begin 
+                self.execute('''begin 
                                     shiva.ImportTovar(str => :pStr);
                                end;''', pStr=item);
             except Exception as e:

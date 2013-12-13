@@ -5,14 +5,18 @@ from settings import TEMPLATE_DIR, MOBILE_USER_AGENTS
 from tornado import template
 from settings import TORNADO_HASH
 
-#import logging
+import logging
 
 class MainHandler(BaseHandler):
     urls = r'/'
 
     def get(self):
         
-        #self.cursor.callproc("DBMS_LOCK.sleep", [2])
+        logging.info("Remote ip: %s", self.request.remote_ip)
+        
+                
+        
+        #self.proc("DBMS_LOCK.sleep", [2])
         
         #self.redirect("http://shiva.ws:12345", True)        
         #return

@@ -55,7 +55,7 @@ class AuthHandler(BaseHandler):
         
                         
         out = self.cursor.var(cx_Oracle.CURSOR)    
-        res = self.cursor.callproc("shiva.Get_User", [login, passw, user_id, depart, out])               
+        res = self.proc("shiva.Get_User", [login, passw, user_id, depart, out])               
                         
         user = fetchone(res[-1])
         
@@ -78,7 +78,7 @@ class AuthHandler(BaseHandler):
                                LEFT JOIN sw_role_history h ON s.id=h.sotrud AND h.role_end IS NULL
                                WHERE s.id=:id AND ROWNUM<=1 )'''
             
-            self.cursor.execute(sql, id=user["id"])
+            self.execute(sql, id=user["id"])
 
             user["role"], user["role_name"] = self.cursor.fetchone()
             

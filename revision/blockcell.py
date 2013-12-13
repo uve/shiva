@@ -38,7 +38,7 @@ class BlockCellDataHandler(BaseHandler):
                      where dend is Null 
                      order by tp.name'''
     
-            self.cursor.execute(sql)
+            self.execute(sql)
     
             all_results = fetchall(self.cursor)
             
@@ -52,7 +52,7 @@ class BlockCellDataHandler(BaseHandler):
             cell_id = self.get_argument("cell_id",  None)
             out = self.cursor.var(cx_Oracle.CURSOR) 
             
-            res = self.cursor.callproc("shiva.GetPalletHistory", [cell_id, out])  
+            res = self.proc("shiva.GetPalletHistory", [cell_id, out])  
             
             all_results = fetchall(res[-1])
             

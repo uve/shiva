@@ -55,7 +55,7 @@ class InventoryHandler(BaseHandler):
         
         if param == 'setparty':
  
-            self.cursor.callproc("shiva.SetPartyCell", [pallet_id, party_id, product_id, count_inbox,
+            self.proc("shiva.SetPartyCell", [pallet_id, party_id, product_id, count_inbox,
                                                  goden_do, party_number,
                                                  cell_id, count, plus, party_status])
             return
@@ -64,7 +64,7 @@ class InventoryHandler(BaseHandler):
 
         if param == 'add_product_to_input':
   
-            self.cursor.callproc("shiva.AddProductToInput", [header_id, pallet_id, party_id, product_id, count_inbox,
+            self.proc("shiva.AddProductToInput", [header_id, pallet_id, party_id, product_id, count_inbox,
                                                  goden_do, party_number,
                                                  cell_id, count, plus, party_status])
                         
@@ -73,18 +73,18 @@ class InventoryHandler(BaseHandler):
         
         if param == 'add_product':
  
-            self.cursor.callproc("shiva.AddProductToOutput", [header_id, cell_id, party_id, count])                
+            self.proc("shiva.AddProductToOutput", [header_id, cell_id, party_id, count])                
             return
         
         
         if param == 'end_input':
                       
-            self.cursor.callproc("shiva.EndInputProduct", [header_id])                
+            self.proc("shiva.EndInputProduct", [header_id])                
             return
         
         if param == 'end_output':
                       
-            self.cursor.callproc("shiva.EndOutputProduct", [header_id])                
+            self.proc("shiva.EndOutputProduct", [header_id])                
             return
 
 
@@ -92,7 +92,7 @@ class InventoryHandler(BaseHandler):
         if param == 'start_input':            
             out = self.cursor.var(cx_Oracle.NUMBER)
             
-            res = self.cursor.callproc("shiva.StartInputProduct", [out])
+            res = self.proc("shiva.StartInputProduct", [out])
             
             self.write({'header_id' : int(res[-1])})
             return
@@ -103,7 +103,7 @@ class InventoryHandler(BaseHandler):
         if param == 'start_output':            
             out = self.cursor.var(cx_Oracle.NUMBER)
             
-            res = self.cursor.callproc("shiva.StartOutputProduct", [client_id, out])
+            res = self.proc("shiva.StartOutputProduct", [client_id, out])
             
             self.write({'header_id' : int(res[1])})
             return
@@ -114,7 +114,7 @@ class InventoryHandler(BaseHandler):
         
         if param == 'all_clients':
                      
-            self.cursor.execute("select client_id as id, name from distribution_center where type=1")
+            self.execute("select client_id as id, name from distribution_center where type=1")
             
             all_results = []
             
@@ -130,7 +130,7 @@ class InventoryHandler(BaseHandler):
         
         if param == 'get_from_cell':
             
-            self.cursor.callproc("shiva.TakeValFromCell", [pallet_id, party_id, cell_id, count, target_id, header_id])
+            self.proc("shiva.TakeValFromCell", [pallet_id, party_id, cell_id, count, target_id, header_id])
             return
         
         
@@ -140,7 +140,7 @@ class InventoryHandler(BaseHandler):
             if not cell_id:
                 raise Exception('Неправильный номер ячейки')
                         
-            self.cursor.callproc("shiva.EmptyCell", [cell_id])
+            self.proc("shiva.EmptyCell", [cell_id])
 
  
             return
@@ -152,7 +152,7 @@ class InventoryHandler(BaseHandler):
             if not cell_id:
                 raise Exception('Неправильный номер ячейки')
             
-            self.cursor.callproc("shiva.BlockCell", [cell_id])
+            self.proc("shiva.BlockCell", [cell_id])
 
             return          
     
@@ -163,7 +163,7 @@ class InventoryHandler(BaseHandler):
             if not cell_id:
                 raise Exception('Неправильный номер ячейки')
             
-            self.cursor.callproc("shiva.UnBlockCell", [cell_id])
+            self.proc("shiva.UnBlockCell", [cell_id])
             
             return
         
@@ -175,7 +175,7 @@ class InventoryHandler(BaseHandler):
                 raise Exception('Неправильный номер партии')
             
                         
-            self.cursor.execute("select count(*) from sw_party where id=:party", party=party_id)
+            self.execute("select count(*) from sw_party where id=:party", party=party_id)
             value = self.cursor.fetchone()[0]
             
             if int(value) > 0:
@@ -191,7 +191,7 @@ class InventoryHandler(BaseHandler):
                        
             out = self.cursor.var(cx_Oracle.CURSOR)
             
-            res = self.cursor.callproc("shiva.getlistbycode", [product_code, out])
+            res = self.proc("shiva.getlistbycode", [product_code, out])
             
             result = res[1].fetchall()
             
@@ -213,7 +213,7 @@ class InventoryHandler(BaseHandler):
         
         if param == 'all_party_status':              
 
-            res = self.cursor.execute("select id,name from vw_iq_status_cell")
+            res = self.execute("select id,name from vw_iq_status_cell")
             
             result = res.fetchall()
             
@@ -238,7 +238,7 @@ class InventoryHandler(BaseHandler):
                         
             # 3) позовем хранимую процедуру
             
-            self.cursor.callproc("shiva.ClearTovarInProduction", [product_id, 77, count_inbox])
+            self.proc("shiva.ClearTovarInProduction", [product_id, 77, count_inbox])
  
             return
         
@@ -246,7 +246,7 @@ class InventoryHandler(BaseHandler):
         # Отправка клиенту 
         if param == 'set_pallet_delivery':
             
-            self.cursor.callproc("shiva.SetPalletDelivery", [delivery_id])
+            self.proc("shiva.SetPalletDelivery", [delivery_id])
             
             return
         
@@ -258,7 +258,7 @@ class InventoryHandler(BaseHandler):
             cell_cursor = self.cursor.var(cx_Oracle.CURSOR)
             
             
-            res = self.cursor.callproc("shiva.setfromitemtodelivery", [delivery_id, cell_cursor, value_cursor])  
+            res = self.proc("shiva.setfromitemtodelivery", [delivery_id, cell_cursor, value_cursor])  
             
             count = res[-1].fetchone()[0]
         
@@ -280,7 +280,7 @@ class InventoryHandler(BaseHandler):
             value_cursor = self.cursor.var(cx_Oracle.CURSOR)
             
             
-            res = self.cursor.callproc("shiva.GetCellInfo", [cell_id, value_cursor])  
+            res = self.proc("shiva.GetCellInfo", [cell_id, value_cursor])  
             
             
             results = fetchall_by_name(res[-1])
@@ -305,14 +305,14 @@ class ManualIncrease(BaseHandler):
         if param == 'add':
                      
             cell_id = self.get_argument("cell_id", default=None)   
-            self.cursor.callproc("shiva.AddNeedMove", [user_id, cell_id])
+            self.proc("shiva.AddNeedMove", [user_id, cell_id])
             return        
         
         
         
         if param == 'complete':
 
-            self.cursor.callproc("shiva.CreateHeaderNeedMove", [user_id])
+            self.proc("shiva.CreateHeaderNeedMove", [user_id])
             return            
 
 
@@ -331,7 +331,7 @@ class ManualValidation(BaseHandler):
         party_id = self.get_argument("party_id", None)
         pallet_id = self.get_argument("pallet_id", None)
         
-        self.cursor.callproc("shiva.IsPartyCellValid", [party_id, cell_id, pallet_id])
+        self.proc("shiva.IsPartyCellValid", [party_id, cell_id, pallet_id])
                  
 
 

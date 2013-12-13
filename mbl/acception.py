@@ -67,21 +67,21 @@ class AcceptionHandler(BaseHandler):
   
         if param == 'check_cell':
             
-            self.cursor.execute("select depart from depart where rc=:RC and depart_type=1", RC=self.session.rc)                        
+            self.execute("select depart from depart where rc=:RC and depart_type=1", RC=self.session.rc)                        
 
             rec = self.cursor.fetchone()
             if not rec[0]:
                 raise Exception('Не найден департамент')
             
             depart_id = int(rec[0])                  
-            self.cursor.callproc("shiva.IsCellValid", [cell_id, depart_id, header_id])
+            self.proc("shiva.IsCellValid", [cell_id, depart_id, header_id])
             return
         
         
             
         if param == 'check_pallet':
                         
-            self.cursor.callproc("shiva.IsPalletValid", [header_id, pallet_id])            
+            self.proc("shiva.IsPalletValid", [header_id, pallet_id])            
             return                 
                             
 
@@ -90,14 +90,14 @@ class AcceptionHandler(BaseHandler):
         if param == 'check_party':
                 
            
-            party_mode = self.cursor.callfunc('shiva.IsPartyNew', returnType=cx_Oracle.NUMBER, parameters=[party_id])
+            party_mode = self.func('shiva.IsPartyNew', returnType=cx_Oracle.NUMBER, parameters=[party_id])
             party_mode = int(party_mode)
                        
             # 0 - старая, известная партия, 1 - новая партия, неизвестная системе
 
             if party_mode == 0:  # если это старая партия - узнаем кол-во в коробке
                 
-                count_inbox = self.cursor.callfunc('shiva.GetPartyInBox', returnType=cx_Oracle.NUMBER, parameters=[party_id])
+                count_inbox = self.func('shiva.GetPartyInBox', returnType=cx_Oracle.NUMBER, parameters=[party_id])
                 count_inbox = int(count_inbox)  # узнаем, сколько штук в коробке у этой партии
                 
                 self.write({"party_mode" : party_mode, 'count_inbox': count_inbox})  # отдадим результат обратно
@@ -108,21 +108,21 @@ class AcceptionHandler(BaseHandler):
             
                 
         if param == 'end_header':
-            self.cursor.callproc("shiva.OkInput", [header_id])
+            self.proc("shiva.OkInput", [header_id])
             return
         
         
             
         if param == 'addnewpallet':        
             # Добавить сушествующую паллету, не бтк            
-            self.cursor.callproc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
+            self.proc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
                                                 goden_do, is_btk, cell_id])
             return
 
             
         if param == 'addnewpallet_oldparty':        
             # Добавить сушествующую паллету, не бтк            
-            self.cursor.callproc("shiva.AddNewPallet_OldParty", [header_id, count, pallet_id, party_id, is_btk, cell_id, count_all])
+            self.proc("shiva.AddNewPallet_OldParty", [header_id, count, pallet_id, party_id, is_btk, cell_id, count_all])
             return
 
 
@@ -130,7 +130,7 @@ class AcceptionHandler(BaseHandler):
             # GETVALUME - узнать сколько принято штук по данной фактуре
             
             out = self.cursor.var(cx_Oracle.CURSOR)    
-            res = self.cursor.callproc("shiva.GetInputValume", [header_id, out])
+            res = self.proc("shiva.GetInputValume", [header_id, out])
                 
             count_input, count_total = res[-1].fetchone()
             self.write({ 'count_input': count_input, 'count_total': count_total})
@@ -140,7 +140,7 @@ class AcceptionHandler(BaseHandler):
             
         if param == 'get_all_products':
 
-            res = self.cursor.execute('''select t.id, t.code, t.name from factura f, tovar t
+            res = self.execute('''select t.id, t.code, t.name from factura f, tovar t
                                where t.id=f.tovar and f.header= :HEADER order by t.name''', HEADER=header_id)
             
             result = res.fetchall()
@@ -176,7 +176,7 @@ class ItemListHandler(BaseHandler):
             try:
                 # 1) Вытащим все записи из базы
 
-                self.cursor.execute('''select t.id, t.code, t.name from factura f, tovar t
+                self.execute('''select t.id, t.code, t.name from factura f, tovar t
                                where t.id=f.tovar and f.header= :HEADER order by t.name''', HEADER=inp.header)
 
                 rec_list = []
@@ -204,7 +204,7 @@ class ItemListHandler(BaseHandler):
             try:
                 # 1) найдём по ШК товар и его ID
                 
-                self.cursor.execute('''select t.id, t.code, t.name from tovar t
+                self.execute('''select t.id, t.code, t.name from tovar t
                     where sclad.IsNewTovarOrMod(t.id) in (0,1) 
                     and SUBSTR(t.barcode, 0, 12) = :BARCODE ''', BARCODE=inp.barcode)
                 rec = self.cursor.fetchone()

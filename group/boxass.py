@@ -100,7 +100,7 @@ class BoxAssembleHandler(BaseHandler):
         if user:
                
             
-            result = self.cursor.callfunc('shiva.GetNeedLabel', returnType=cx_Oracle.NUMBER, parameters=[user.id])                                               
+            result = self.func('shiva.GetNeedLabel', returnType=cx_Oracle.NUMBER, parameters=[user.id])                                               
             isp = int(result)
             
         

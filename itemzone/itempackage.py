@@ -47,7 +47,7 @@ class ItemzoneItempackageHandler(BaseHandler):
 
         else:
             ret = self.cursor.var(cx_Oracle.NUMBER)
-            self.cursor.execute('begin shiva.SetSotrudToPacklist(:idd, :psotrud, :pout); end;',
+            self.execute('begin shiva.SetSotrudToPacklist(:idd, :psotrud, :pout); end;',
                                  idd=alist, psotrud=self.session.uid, pout=ret)
 
             r = ret.getvalue()
@@ -230,7 +230,7 @@ WHERE valume<>0'''
                 except:mas = 0.0
 
                 ret = self.cursor.var(cx_Oracle.NUMBER)
-                self.cursor.execute('begin shiva.AddPackList(:alist, :bar, :cnt, :num, :mas, 0, :ret); end;',
+                self.execute('begin shiva.AddPackList(:alist, :bar, :cnt, :num, :mas, 0, :ret); end;',
                                      alist=alist, bar=bar, cnt=cnt, num=num, mas=mas, ret=ret)
 
                 r = ret.getvalue()

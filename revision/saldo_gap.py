@@ -58,7 +58,7 @@ class Saldo_GapDataHandler(BaseHandler):
             
             out = self.cursor.var(cx_Oracle.CURSOR) 
             
-            res = self.cursor.callproc("shiva.GetSaldoGap", [departs, out])  
+            res = self.proc("shiva.GetSaldoGap", [departs, out])  
             
             all_results = fetchall(res[-1])
             

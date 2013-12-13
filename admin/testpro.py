@@ -11,7 +11,7 @@ class AdminTestproHandler(BaseHandler):
     def get(self):
         try:
             # print 'CU', self.cursor
-            self.cursor.execute('select 1 from dual')
+            self.execute('select 1 from dual')
             for i in self.cursor.fetchall():
                 print 'I', i
 

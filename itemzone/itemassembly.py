@@ -63,7 +63,7 @@ class ItemAssemblyDataHandler(BaseHandler):
         _, uid = barcode2depart_sid(inp.badge)
         idd = barcode2assembly(inp.itemlistbarcode)
         ret = self.cursor.var(cx_Oracle.NUMBER)
-        self.cursor.execute('begin shiva.SetSotrudToRecordp(:idd, :psotrud, :pout); end;',
+        self.execute('begin shiva.SetSotrudToRecordp(:idd, :psotrud, :pout); end;',
                              idd=idd, psotrud=uid, pout=ret)
 
         r = int(ret.getvalue())

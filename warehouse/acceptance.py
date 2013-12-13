@@ -159,7 +159,7 @@ class AcceptanceDataHandler(BaseHandler):
 
             try:
 
-                self.cursor.callproc("shiva.NewInput", [ids, gts])
+                self.proc("shiva.NewInput", [ids, gts])
                             
                 self.write({'info':'Информация сохранена'})
             except:
