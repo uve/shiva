@@ -21,7 +21,7 @@ class MainHandler(BaseHandler):
         #self.redirect("http://shiva.ws:12345", True)        
         #return
         
-        self.request.remote_ip
+        #self.request.remote_ip
         
 
         is_terminal = False
