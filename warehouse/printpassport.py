@@ -231,6 +231,7 @@ class PrintPassportDataHandler(BaseHandler):
                     fname = os.path.join(SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
                     im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
 
+
                     im.save(imgdata, format='jpeg')
                     imgdata.seek(0)
                     self.write(imgdata.read())
