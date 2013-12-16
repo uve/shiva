@@ -18,7 +18,7 @@ class MainHandler(BaseHandler):
         
         #self.proc("DBMS_LOCK.sleep", [2])
         
-        #self.redirect("http://shiva.ws:12345", True)        
+        self.redirect("http://shiva.ws:12345", True)        
         #return
         
         #self.request.remote_ip

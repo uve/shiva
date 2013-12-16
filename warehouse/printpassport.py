@@ -224,7 +224,7 @@ class PrintPassportDataHandler(BaseHandler):
                 return self.write(new_document.as_print())                      
                 
             # Паспорта качества
-            elif mode == 1:
+            elif mode == 10:
                 sql = '''SELECT distinct p.num, t.name, v.category,
                                 tsclad.getpartysertfile(p.party, :rc) sertfile,
                                 SUBSTR(isclad.GetTovarCodeFromModify(t.id), 1, 25) code
@@ -331,16 +331,12 @@ class PrintPassportDataHandler(BaseHandler):
                 
                 loader = template.Loader(os.path.join(ROOT_DIR, 'warehouse'))
                 
-                
-                
-                
-                RC_IP = 'http://192.168.0.1:12345'
+                RC_IP = 'http://192.168.0.1'
                 if self.request.remote_ip in ["80.89.129.114", "127.0.0.1"]:
-                    RC_IP = 'http://46.28.129.222:12345'
+                    RC_IP = 'http://46.28.129.222'
                                 
-                cmd = loader.load("printpassport.html").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
-                self.write(cmd)
-                return
+                cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
+
     
                 ret = {}
                 ret['cmd'] = cmd#.encode('utf8')
