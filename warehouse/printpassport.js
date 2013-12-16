@@ -25,7 +25,7 @@ self.Incunable(function(doc){
 	
 	
 	
-	doc.write('<link rel="stylesheet" type="text/css" href="/static/css/default.css" >');
+	doc.write('<link rel="stylesheet" type="text/css" href="/static/css/default.css?2" >');
 	
 	
 	
