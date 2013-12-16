@@ -8,7 +8,7 @@ self.Incunable(function(doc){
     
     	try{
     		
-    		var url = '{{ RC_IP }}/{{ item.value }}';
+    		var url = '{{ RC_IP }}/{{ item.value }}?{{uniq}}';
     		
     		if (UrlExists(url)){    			
     			mas.push(url);    			

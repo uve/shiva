@@ -5,6 +5,7 @@ from core.sw_base import BaseHandler
 
 #import settings as config
 import logging
+import random 
 
 from barcode.zek_model import mm2pix, assembly_bar_label
 
@@ -335,7 +336,7 @@ class PrintPassportDataHandler(BaseHandler):
                 if self.request.remote_ip in ["80.89.129.114", "127.0.0.1"]:
                     RC_IP = 'http://46.28.129.222'
                                 
-                cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
+                cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)), uniq=random.random())            
 
     
                 ret = {}
