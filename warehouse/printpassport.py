@@ -26,7 +26,7 @@ from avtuk.avtuk_models import Header, Document, AssemblyList, ListAssembly, Pac
 from core.common_tools import fetchall_by_name
 
 import cStringIO, os.path, logging, Image, ImageFilter
-
+from avtuk.executor import Executor
 
 from settings import SHIVA_PASSPORT
 
@@ -223,26 +223,80 @@ class PrintPassportDataHandler(BaseHandler):
                 new_document = Package(self.request.arguments, rc=self.session.rc)                
                 return self.write(new_document.as_print())                      
                 
-                        # Паспорта качества
+            # Паспорта качества
             elif mode == 1:
-                try:
-                    imgdata = cStringIO.StringIO()
+                sql = '''SELECT distinct p.num, t.name, v.category,
+                                tsclad.getpartysertfile(p.party, :rc) sertfile,
+                                SUBSTR(isclad.GetTovarCodeFromModify(t.id), 1, 25) code
+                         FROM factura f
+                         JOIN tovar t ON f.tovar = t.id
+                         LEFT JOIN recordp r on f.id = r.factura
+                         JOIN party p on r.party=p.party
+                         LEFT JOIN type_tovar v ON t.typet=v.id
+                         WHERE f.header = :head AND v.CATEGORY<>5
+                         ORDER BY category, name'''
 
-                    logging.info("Before: %s", inp.fname)
-                    fname = os.path.join(SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
-                    im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+                good = []
+                errn = []
+
+          
+                                     
+                ret = {}
+                for i in Executor.exec_cls(sql, rc=self.session.rc, head=head):
+                    try:
+                        fname = i.sertfile.decode('utf8')
+                        if not fname: raise Exception()
+
+                        if fname not in self.application.passport_cash:
+                            Image.open(os.path.join(SHIVA_PASSPORT, fname))
+                            self.application.passport_cash[fname] = None
+
+                        if fname not in good: good.append(fname)
+                    except:
+                        errn.append("'%s','%s','%s','%s'" % (i.num, i.code, i.name, '-' if i.sertfile is None else i.sertfile))
+                        continue
+
+                if errn: ret['warning'] = ["Не найден паспорт<br/>%s" % i for i in errn]
 
 
-                    im.save(imgdata, format='jpeg')
-                    imgdata.seek(0)
-                    self.write(imgdata.read())
+                goods = u','.join("'%s'" % i for i in good)
+                errns = u','.join(u"[%s]" % i.decode('utf8') for i in errn)
 
-                    self.set_header("Content-Type", "image/jpeg")
-                except Exception, e:
-                    logging.error(e)
-                    raise HTTPError(404)
+                cmd = u'''var fn=[%s]; var er=[%s];
+    
+                    self.Incunable(function(doc){                
+                        for(var i in fn){
+                            doc.write('<img width="%s" height="%s" src="/warehouse/printpassport/data/image?mode=1&fname='+fn[i]+'">');
+                        }
+                        
+                        if(!!(fn.length %% 2)){
+                            doc.write('<div style="height:600px;"><br/></div>');
+                        }                    
+                        
+                        if(er.length){
+                            doc.write('<br/><br/><div>Не найдены паспорта качества:</div><table style="border:1 solid #000;">');
+                            
+                            var hd=['N','Партия','Код','Товар','Паспорт'];
+                            doc.write('<tr>');
+                            for(var i in hd)
+                                doc.write('<td style="border-bottom:1 solid #888; border-right:1 solid #000;">'+hd[i]+'</td>');
+                            doc.write('</tr>');
+                                                
+                            for(var i in er){
+                                doc.write('<tr>');
+                                doc.write('<td style="padding:3px; border-bottom:1 solid #888; border-right:1 solid #000;">'+(1+parseInt(i))+'</td>');
+                                for(var j in er[i])
+                                    doc.write('<td style="border-bottom:1 solid #888; border-right:1 solid #000;">'+er[i][j]+'</td>');
+                                doc.write('</tr>');
+                            }                        
+                            doc.write('</table>');                        
+                        }               
+                    });''' % (goods, errns, int(3.47 * w), int(3.47 * h))
 
-                return
+                ret['cmd'] = cmd.encode('utf8')
+                self.write(ret)
+
+                return 
             # Паспорта качества
             elif mode == 1:
                 
@@ -323,6 +377,28 @@ class PrintPassportDataHandler(BaseHandler):
             # Накладная
             if mode == 0:
                 self.write({'info':'В разработке'})
+                
+
+                        # Паспорта качества
+            elif mode == 1:
+                try:
+                    imgdata = cStringIO.StringIO()
+
+                    logging.info("Before: %s", inp.fname)
+                    fname = os.path.join(SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
+                    im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+
+
+                    im.save(imgdata, format='jpeg')
+                    imgdata.seek(0)
+                    self.write(imgdata.read())
+
+                    self.set_header("Content-Type", "image/jpeg")
+                except Exception, e:
+                    logging.error(e)
+                    raise HTTPError(404)
+
+                return                
 
             # Отгрузочные этикетки
             elif mode == 2:
