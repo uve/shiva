@@ -25,6 +25,11 @@ from avtuk.avtuk_models import Header, Document, AssemblyList, ListAssembly, Pac
 
 from core.common_tools import fetchall_by_name
 
+import cStringIO, os.path, logging, Image, ImageFilter
+
+
+from settings import SHIVA_PASSPORT
+
 
 #=== Печать паспортов =========================================================
 class PrintPassportHandler(BaseHandler):
@@ -111,8 +116,22 @@ class PrintPassportHandler(BaseHandler):
                                     //Отгрузочные этикетки
                                     if(m==2){
                                         var d=prompt('Диапазон мест разделенные пробелом','').split(' ');
+                                                                        
                                     }
-                                    self.NetSend("/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d);
+                                    
+                                    if (m == 1){
+                                    
+                                        var url= "/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d;
+                                        
+                                        window.open(url,'_blank');
+                                        window.open(url);
+                                    }
+                                    else
+                                    {
+                                        self.NetSend("/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d);
+                                    }
+                                    
+                                    
                                 }                                
                             }
 
@@ -204,8 +223,27 @@ class PrintPassportDataHandler(BaseHandler):
                 new_document = Package(self.request.arguments, rc=self.session.rc)                
                 return self.write(new_document.as_print())                      
                 
+                        # Паспорта качества
+            elif mode == 1:
+                try:
+                    imgdata = cStringIO.StringIO()
+
+                    fname = os.path.join(SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
+                    im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+
+                    im.save(imgdata, format='jpeg')
+                    imgdata.seek(0)
+                    self.write(imgdata.read())
+
+                    self.set_header("Content-Type", "image/jpeg")
+                except Exception, e:
+                    logging.error(e)
+                    raise HTTPError(404)
+
+                return
             # Паспорта качества
             elif mode == 1:
+                
                 sql = '''SELECT distinct p.num, t.name, v.category,
                                 tsclad.getpartysertfile(p.party, %s) sertfile,
                                 SUBSTR(isclad.GetTovarCodeFromModify(t.id), 1, 25) code
@@ -240,12 +278,13 @@ class PrintPassportDataHandler(BaseHandler):
                 
                 
                 
-                RC_IP = 'http://192.168.0.1'
-                if self.request.remote_ip == "80.89.129.114":
-                    RC_IP = 'http://46.28.129.222'
+                RC_IP = 'http://192.168.0.1:12345'
+                if self.request.remote_ip in ["80.89.129.114", "127.0.0.1"]:
+                    RC_IP = 'http://46.28.129.222:12345'
                                 
-                cmd = loader.load("printpassport.js").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
-    
+                cmd = loader.load("printpassport.html").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)) )            
+                self.write(cmd)
+                return
     
                 ret = {}
                 ret['cmd'] = cmd#.encode('utf8')

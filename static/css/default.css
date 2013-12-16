@@ -1,9 +1,3 @@
-@media print {
-	
-	
-  @page { margin: 0cm 0cm 0cm 0cm; }
-   
-}
 
 .dhx_dataview_item {
 	width: 100% !important;
@@ -26,24 +20,46 @@
 } 
 */ 
 
+.block-print img { 
+
+	/*display: none;*/	
+
+}
+
+@media print {
+	
+	
+  @page { margin: 0cm 0cm 0cm 0cm;
+  
+  
+   }
+}
+
 
 
 .block-print img { 
+
+   display: block;	
 	
+	/*
    transform: rotate(90deg);
    -moz-transform: rotate(90deg);
    -webkit-transform: rotate(90deg);
+   */
+   /*width: 20cm;*/
+   /*margin-left: 3cm;*/
    
-   width: 11cm;
-   margin-left: 3cm;
 
 }
 
 
-.block-print a:nth-child(odd)  img{ margin-top: -3cm;}
+.block-print a:nth-child(odd)  img{ 
+	/*margin-top: -3cm;*/
+	
+}
 .block-print a:nth-child(even) img{ 
 
     page-break-after: always;
-    margin-top: -4cm;
+    /*margin-top: -4cm;*/
 }
  

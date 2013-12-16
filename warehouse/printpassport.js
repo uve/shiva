@@ -33,9 +33,10 @@ self.Incunable(function(doc){
 	
 	
 	for(var j in mas){
-		//doc.write('<img class="rotated" src="'+ mas[j] +'">');
+		//
 		
 		doc.write('<a><img src="'+ mas[j] +'" /></a>');
+		
 	}
 	
 	
