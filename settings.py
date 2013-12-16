@@ -65,7 +65,7 @@ SHIVA_COOKIE_KEY = "NeZabuduMatRodnuyZXSpectrumDorogoi"
 SHIVA_MAX_ALARM = 100
 # каталог с картинками паспортов качества
 # SHIVA_PASSPORT = "/data/image/image/"
-SHIVA_PASSPORT = "/data/image/image"
+SHIVA_PASSPORT = "/data/image/image2/"
 
 #=== AVTUK ===================================================================#
 AVTUK_MAX_RECORDS = 5000
