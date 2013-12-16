@@ -228,6 +228,7 @@ class PrintPassportDataHandler(BaseHandler):
                 try:
                     imgdata = cStringIO.StringIO()
 
+                    logging.info("Before: %s", inp.fname)
                     fname = os.path.join(SHIVA_PASSPORT, urlparse.unquote(inp.fname).decode('utf8'))
                     im = Image.open(fname).rotate(270).resize(mm2pix((w, h,)), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
 
