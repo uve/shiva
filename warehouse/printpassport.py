@@ -119,7 +119,7 @@ class PrintPassportHandler(BaseHandler):
                                                                         
                                     }
                                     
-                                    if (m == 1){
+                                    if (m == 100){
                                     
                                         var url= "/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d;
                                         
