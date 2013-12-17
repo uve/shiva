@@ -164,7 +164,7 @@ class WareAddressDataHandler(BaseHandler):
         if psw_id:                           
             all_results = fetchone(res[-1])        
         else:
-            all_results = fetchall(res[-1])
+            all_results = fetchall(res[-1], count=1)
                     
         self.write(all_results)         
 
