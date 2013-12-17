@@ -16,6 +16,8 @@ var sw_grid = new dhtmlXGridObject({
 	  { type:"ro", sort:"int",  align:"right", width:"40",  label:"Коробок", style: "color: red;" },  
 	  { type:"ro", sort:"int",  align:"right", width:"46",  label:"Кол-во" },
 	  
+	  { type:"ro", sort:"int",  align:"right", width:"46",  label:"Ожид. расход(в коробках)" },
+	  
 	  
 	  { type:"ro", sort:"str",  align:"right", width:"50",  label:["Партия","#text_filter"] },
 	  { type:"ro", sort:"date", align:"left",  width:"64",  label:"Годен до" },
@@ -319,8 +321,14 @@ var sw_grid = new dhtmlXGridObject({
                                 dt=dt+"&uid="+swForm.ids;
                             }
                             
-                            
+                            /*
                             self.NetSendAsync("/warehouse/wareaddr/data", dt, function(){
+                            	
+                            	window.update();
+                            	  
+                            });*/
+                            
+                            self.load("/warehouse/wareaddr/data", dt, function(){
                             	
                             	window.update();
                             	  

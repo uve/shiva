@@ -2,12 +2,11 @@
 
 import cx_Oracle
 
-from settings import RC_IP, RC_PORT, DB_LOGIN, DB_PASSWORD, DB_SID
+from settings import RC_IP, RC_PORT, DB_LOGIN, DB_PASSWORD, DB_SID, MAX_SESSIONS
 #from settings import MAX_SESSIONS
 
 import logging
 
-import time
 from operator import itemgetter
 
 dsn = cx_Oracle.makedsn(RC_IP, RC_PORT, DB_SID)
@@ -74,7 +73,7 @@ class Pool(object):
     def __new__(cls, *args, **kwargs):
         if not cls._instance or not cls.pool:
             cls._instance = super(Pool, cls).__new__(cls, *args, **kwargs)        
-            cls.pool = cx_Oracle.SessionPool(user=DB_LOGIN, password=DB_PASSWORD, dsn=dsn, min=1, max=4, increment=1, threaded=True)
+            cls.pool = cx_Oracle.SessionPool(user=DB_LOGIN, password=DB_PASSWORD, dsn=dsn, min=1, max=MAX_SESSIONS*2, increment=1, threaded=True)
             cls.pool.timeout = 300
         
         return cls.pool
