@@ -443,8 +443,8 @@ class Document(AvtukObject):
         #    return 
 
                         
-        if 'numb' in self.header:           
-            if 'numb_in' in self.header:
+        if 'numb' in self.header and self.header["numb"]:           
+            if 'numb_in' in self.header and self.header["numb_in"]:
                 return self.print_internal_transfer()
             else:
                 return self.print_bill_and_factura()
