@@ -81,7 +81,8 @@ module GetCellInfoModule {
 			
 			var text = value["tname"] +   
 					   "</br>Коробок:  "   + value["valume"] + 
-					   "</br>В коробке:  " + value["inbox"] + 
+					   "</br>В коробке:  " + value["inbox"] +
+					   "</br>Ожид. расход (в коробках): " + value["future_exps"] +
 					   "</br>Годен до:  "  + value["data"];
 			
 			

@@ -2248,7 +2248,7 @@ var GetCellInfoModule;
             var _this = this;
             var value = this.all_cells[page];
 
-            var text = value["tname"] + "</br>Коробок:  " + value["valume"] + "</br>В коробке:  " + value["inbox"] + "</br>Годен до:  " + value["data"];
+            var text = value["tname"] + "</br>Коробок:  " + value["valume"] + "</br>В коробке:  " + value["inbox"] + "</br>Ожид. расход (в коробках): " + value["future_exps"] + "</br>Годен до:  " + value["data"];
 
             var buttons = {
                 "Отменить": function () {
