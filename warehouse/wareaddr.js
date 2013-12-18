@@ -321,14 +321,8 @@ var sw_grid = new dhtmlXGridObject({
                                 dt=dt+"&uid="+swForm.ids;
                             }
                             
-                            /*
-                            self.NetSendAsync("/warehouse/wareaddr/data", dt, function(){
-                            	
-                            	window.update();
-                            	  
-                            });*/
                             
-                            self.load("/warehouse/wareaddr/data", dt, function(){
+                            self.NetSendAsync("/warehouse/wareaddr/data", dt, function(){
                             	
                             	window.update();
                             	  
