@@ -20,7 +20,7 @@ class AllTaskHandler(BaseHandler):
 
         loader = template.Loader(os.path.join(ROOT_DIR, 'personnel'))
         
-        result = loader.load("alltsk.js").generate()            
+        result = loader.load("alltsk.js").generate(calendar=True)            
     
         self.write({'def':[{'type':"text", 'text':"Дата с:"},
                            {'id':"cal1", 'type':"buttonInput", 'width':60, 'value':st},

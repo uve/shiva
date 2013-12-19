@@ -68,7 +68,7 @@ sw_grid3.columns([
 ]);
 window.Cleaner.push(sw_grid3);
 
-               
+{% if calendar %}               
                     
     var bar = this.Toolbars["def"];
     
@@ -89,58 +89,68 @@ window.Cleaner.push(sw_grid3);
     calendar1.attachEvent("onClick", function (){ window.do_tool_1() });
     calendar2.attachEvent("onClick", function (){ window.do_tool_1() });                            
                     
+            
                     
-                    
-                    // фильтр
-                    window.do_tool_1 = function(ids2){
-                        var d1=calendar1.getDate().valueOf();
-                        var d2=calendar2.getDate().valueOf();                                                            
+    // фильтр
+    window.do_tool_1 = function(ids2){
+        var d1=calendar1.getDate().valueOf();
+        var d2=calendar2.getDate().valueOf();                                                            
 
-                        
-                        self.load(sw_grid1,  "/personnel/alltsk/data/tasks?d1="+d1+"&d2="+d2+"&time="+new Date().getTime(), function() {
+        
+        self.load(sw_grid1,  "/personnel/alltsk/data/tasks?d1="+d1+"&d2="+d2+"&time="+new Date().getTime(), function() {
   
-                        });                            
-                    }
+            });                            
+    }
+                    
 
+{% else %}
 
+  window.do_tool_1 = function(ids2){
+
+    self.load(sw_grid1,  "/personnel/alltsk/data/tasks", function() {
+
+     });
+ }
+
+{% end %}    
 
                       
-                     // возобновить задачу
-                        window.do_tool_task_restart = function(){
-                        var ids = sw_grid1.getSelectedRowId();
-                        if(!ids) self.AddMessage('Выберите задание',2)
-                        else{
-                            dhtmlxAjax.post("/personnel/alltsk/data/task_restart", encodeURI("task_id=" + ids) , function(resp){                           
-                                window.do_tool_1();
-                            });
-                        }                  
-                    }
+     // возобновить задачу
+        window.do_tool_task_restart = function(){
+        var ids = sw_grid1.getSelectedRowId();
+        if(!ids) self.AddMessage('Выберите задание',2)
+        else{
+            dhtmlxAjax.post("/personnel/alltsk/data/task_restart", encodeURI("task_id=" + ids) , function(resp){                           
+                window.do_tool_1();
+            });
+        }                  
+    }
 
-                    // прибить задачу
-                    window.do_tool_task_close = function(){
-                        var ids = sw_grid1.getSelectedRowId();
-                        if(!ids) self.AddMessage('Выберите задание',2)
-                        else{
-                            dhtmlxAjax.post("/personnel/alltsk/data/task_close", encodeURI("task_id=" + ids) , function(resp){
-                                window.do_tool_1();
-                            });
-                        }                             
-                    }
-                    
-                    
-                    window.do_tool_task_priority = function(){
-                        var ids = sw_grid1.getSelectedRowId();
-                        if(!ids) self.AddMessage('Выберите задание',2)
-                        else{
-                            dhtmlxAjax.post("/personnel/alltsk/data/task_priority", encodeURI("task_id=" + ids) , function(resp){
-                                window.do_tool_1();
-                            });
-                        }                             
-                    }
-                    
-                                        
-                    window.do_tool_csv = function(){ self.GridCSV(sw_grid1) }
-                    
-                    window.do_tool_1();
-                    
+    // прибить задачу
+    window.do_tool_task_close = function(){
+        var ids = sw_grid1.getSelectedRowId();
+        if(!ids) self.AddMessage('Выберите задание',2)
+        else{
+            dhtmlxAjax.post("/personnel/alltsk/data/task_close", encodeURI("task_id=" + ids) , function(resp){
+                window.do_tool_1();
+            });
+        }                             
+    }
+    
+    
+    window.do_tool_task_priority = function(){
+        var ids = sw_grid1.getSelectedRowId();
+        if(!ids) self.AddMessage('Выберите задание',2)
+        else{
+            dhtmlxAjax.post("/personnel/alltsk/data/task_priority", encodeURI("task_id=" + ids) , function(resp){
+                window.do_tool_1();
+            });
+        }                             
+    }
+    
+                        
+    window.do_tool_csv = function(){ self.GridCSV(sw_grid1) }
+    
+    window.do_tool_1();
+    
                     
