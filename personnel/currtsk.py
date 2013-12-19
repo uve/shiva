@@ -71,10 +71,7 @@ class CurrentTaskHandler(BaseHandler):
                             });
                         }
                         
-                        window.Cleaner.push(sw_grid1);
-                        
-                        
-                        
+                         window.Cleaner.push(sw_grid1);
                         
                         
                          // возобновить задачу

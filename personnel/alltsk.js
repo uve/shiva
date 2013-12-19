@@ -29,48 +29,65 @@ window.Cleaner.push(sw_grid1);
 sw_grid1.attachEvent("onRowSelect", function(id){
 
     self.load(sw_grid2, "/personnel/alltsk/data/history?task_id="+id);
-    
+        
+    self.load(sw_grid3, "/personnel/alltsk/data/detail?task_id="+id);
  });
 
 
 var tabbar = sw_btk.cells("b").attachTabbar();
        
 tabbar.addTab("a", "История заданий", 100, 0, 0);
-tabbar.addTab("b", "Состав фактуры", 100, 100, 0);
+tabbar.addTab("b", "Состав", 100, 100, 0);
 
 tabbar.setTabActive("a");
 
- var sw_grid2 = tabbar.cells("a").attachGrid();
-                    sw_grid2.columns([
-                      
-                          { type:"ro", sort:"int",  align:"left", width:"0", label:"ID" },
-                          { type:"ro", sort:"str",  align:"left", width:"150", label:"Дата/Время" },
-                          { type:"ro", sort:"str",  align:"left", width:"300", label:"Описание" },
-                          { type:"ro", sort:"str",  align:"left", width:"*", label:"Сотрудник" },
-                          
-                    ]);
-                    window.Cleaner.push(sw_grid2);
-                    
+var sw_grid2 = tabbar.cells("a").attachGrid();
+sw_grid2.columns([
+  
+      { type:"ro", sort:"int",  align:"left", width:"0", label:"ID" },
+      { type:"ro", sort:"int",  align:"left", width:"0", label:"Задача" },
+      { type:"ro", sort:"str",  align:"left", width:"150", label:"Дата/Время" },
+      { type:"ro", sort:"str",  align:"left", width:"300", label:"Описание" },
+      { type:"ro", sort:"str",  align:"left", width:"*", label:"Сотрудник" },
+      
+]);
+window.Cleaner.push(sw_grid2);
+
+var sw_grid3 = tabbar.cells("b").attachGrid();
+sw_grid3.columns([
+  
+      { type:"ro", sort:"int",  align:"center", width:"0",   label:"ID" },
+      { type:"ro", sort:"str",  align:"center", width:"100", label:"Код" },
+      { type:"ro", sort:"str",  align:"left",   width:"*",   label:"Наименование" },
+      { type:"ro", sort:"str",  align:"center", width:"100", label:"Адрес" },
+      { type:"ro", sort:"str",  align:"center", width:"50",  label:"План" },
+      { type:"ro", sort:"str",  align:"center", width:"50",  label:"Факт" },
+      { type:"ro", sort:"str",  align:"center", width:"50",  label:"Место" },
+      { type:"ro", sort:"str",  align:"center", width:"100", label:"Выполнено" }
+      
+]);
+window.Cleaner.push(sw_grid3);
+
                
                     
-                    var bar = this.Toolbars["def"];
-                    
-                    var calendar1 = new dhtmlxCalendarObject( bar.objPull[bar.idPrefix+"cal1"].obj.firstChild );
-                    calendar1.loadUserLanguage("ru");
-                    calendar1.setDateFormat("%d.%m.%Y");
-                    calendar1.hideTime();
-                    calendar1.setDate(new Date());                                                       
-                    window.Cleaner.push(calendar1);
-                                                    
-                    var calendar2 = new dhtmlxCalendarObject( bar.objPull[bar.idPrefix+"cal2"].obj.firstChild );
-                    calendar2.loadUserLanguage("ru");
-                    calendar2.setDateFormat("%d.%m.%Y");
-                    calendar2.hideTime();
-                    calendar2.setDate(new Date());
-                    window.Cleaner.push(calendar2);
-                    
-                    calendar1.attachEvent("onClick", function (){ window.do_tool_1() });
-                    calendar2.attachEvent("onClick", function (){ window.do_tool_1() });                            
+    var bar = this.Toolbars["def"];
+    
+    var calendar1 = new dhtmlxCalendarObject( bar.objPull[bar.idPrefix+"cal1"].obj.firstChild );
+    calendar1.loadUserLanguage("ru");
+    calendar1.setDateFormat("%d.%m.%Y");
+    calendar1.hideTime();
+    calendar1.setDate(new Date());                                                       
+    window.Cleaner.push(calendar1);
+                                    
+    var calendar2 = new dhtmlxCalendarObject( bar.objPull[bar.idPrefix+"cal2"].obj.firstChild );
+    calendar2.loadUserLanguage("ru");
+    calendar2.setDateFormat("%d.%m.%Y");
+    calendar2.hideTime();
+    calendar2.setDate(new Date());
+    window.Cleaner.push(calendar2);
+    
+    calendar1.attachEvent("onClick", function (){ window.do_tool_1() });
+    calendar2.attachEvent("onClick", function (){ window.do_tool_1() });                            
                     
                     
                     

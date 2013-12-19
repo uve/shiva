@@ -45,6 +45,9 @@ class AllTaskDataHandler(BaseHandler):
 
     def get(self, param):
         
+        task_id = self.get_argument("task_id", None)
+        out     = self.cursor.var(cx_Oracle.CURSOR)
+        
         
         if param == "tasks":
             ds = self.get_argument("d1", None)
@@ -72,20 +75,20 @@ class AllTaskDataHandler(BaseHandler):
             
             
             
+        if param == "detail":            
             
-        if param == "history":
+            res = self.proc("shiva_task.task_detail", [task_id, out])
+                                
+            all_results  = fetchall(res[-1])                                         
+            self.write(all_results)   
             
-            task_id = self.get_argument("task_id", None)
-
+                        
+        if param == "history":            
             
-            sql = "select sw.task_id, TO_CHAR(sw.datetime, 'MM.DD.YYYY HH24:MI:SS') datetime, sw.description, s.name from sw_task_history sw LEFT JOIN sotrud s ON sw.user_id = s.id WHERE task_id=%s order by datetime desc" % task_id
-            
-            res = self.execute(sql)
-           
-            all_results = fetchall(res, count=1)
-                    
+            res = self.proc("shiva_task.task_history", [task_id, out])
+                                
+            all_results  = fetchall(res[-1])                                         
             self.write(all_results)         
-        
 
 
     def post(self, param):
