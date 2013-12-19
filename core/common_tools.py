@@ -13,17 +13,26 @@ dsn = cx_Oracle.makedsn(RC_IP, RC_PORT, DB_SID)
 
 CLASS_NAME = "CJDEMO3"
 
+import json
 
 def callproc(self, args, kwargs):    
     
-    logging.info("Call Proc: %s \tparams: %s", args[0], args[1:])
+    params = ", ".join([str(k) for k in args[1:]])
+    logging.info("Call Proc: %s \tparams: %s", args[0], params)
+    
+    self.cursor.callproc('shiva.exec_log', [args[0], params, self.session.uid])
+    
     return self.cursor.callproc(*args, **kwargs)
     
     
     
 def callfunc(self, args, kwargs):    
+        
+    params = ", ".join([str(k) for k in args[1:]])
+    logging.info("Call Func: %s \tparams: %s", args[0], params)
     
-    logging.info("Call Func: %s \tparams: %s", args[0], args[1:])
+    self.cursor.callproc('exec_log', [args[0], params, self.session.uid])
+
     return self.cursor.callfunc(*args, **kwargs)    
     
     
