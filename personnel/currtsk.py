@@ -44,7 +44,7 @@ class CurrentTaskHandler(BaseHandler):
                         
                         sw_grid1.attachEvent("onRowSelect", function(id){
                         
-                            self.LoadGrid(sw_grid2, "/personnel/alltsk/data/history?task_id="+id);
+                            self.load(sw_grid2, "/personnel/alltsk/data/history?task_id="+id);
                             
                          });
 

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from core.sw_base import BaseHandler
-from avtuk.avtuk_models import Menu, User
+from avtuk.avtuk_models import Menu
 
 #=== Меню =====================================================================
 class MenuHandler(BaseHandler):
