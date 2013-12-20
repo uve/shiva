@@ -58,11 +58,11 @@ sw_grid3.columns([
   
       { type:"ro", sort:"int",  align:"center", width:"0",   label:"ID" },
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Код" },
-      { type:"ro", sort:"str",  align:"left",   width:"*",   label:"Наименование" },
+      { type:"ro", sort:"str",  align:"left",   width:"300",   label:"Наименование" },
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Адрес" },
-      { type:"ro", sort:"str",  align:"center", width:"50",  label:"План" },
-      { type:"ro", sort:"str",  align:"center", width:"50",  label:"Факт" },
-      { type:"ro", sort:"str",  align:"center", width:"50",  label:"Место" },
+      { type:"ro", sort:"str",  align:"center", width:"60",  label:"План" },
+      { type:"ro", sort:"str",  align:"center", width:"60",  label:"Факт" },
+      { type:"ro", sort:"str",  align:"center", width:"60",  label:"Место" },
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Выполнено" }
       
 ]);
