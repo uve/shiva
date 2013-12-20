@@ -1,11 +1,15 @@
 
 var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
 
+sw_btk.setAutoSize("b;c", "a;c");
+
 sw_btk.items[0].setText("Все задания");
 sw_btk.items[1].setText("История заданий");
 window.Cleaner.push(sw_btk);
 
 var sw_grid1 = sw_btk.cells("a").attachGrid();
+
+sw_grid1.enableAutoWidth(true,1600,600);
 
 sw_grid1.columns([
       { type:"ro", sort:"int",  align:"right", width:"60",  label:["ID","#text_filter"] },
@@ -15,7 +19,7 @@ sw_grid1.columns([
       { type:"ro", sort:"date", align:"right", width:"105", label:["Постановка","#text_filter"] },
       { type:"ro", sort:"date", align:"right", width:"105", label:["Попытка","#text_filter"] },      
       { type:"ro", sort:"date", align:"right", width:"105", label:["Начало","#text_filter"] },
-      { type:"ro", sort:"date", align:"right", width:"105", label:["Окончание","#text_filter"] }      
+      { type:"ro", sort:"date", align:"right", width:"*", label:["Окончание","#text_filter"] }      
                         ]
                         );
 
@@ -60,6 +64,7 @@ sw_grid3.columns([
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Код" },
       { type:"ro", sort:"str",  align:"left",   width:"300",   label:"Наименование" },
       { type:"ro", sort:"str",  align:"center", width:"100", label:"Адрес" },
+      { type:"ro", sort:"str",  align:"center", width:"100", label:"Партия" },
       { type:"ro", sort:"str",  align:"center", width:"60",  label:"План" },
       { type:"ro", sort:"str",  align:"center", width:"60",  label:"Факт" },
       { type:"ro", sort:"str",  align:"center", width:"60",  label:"Место" },
