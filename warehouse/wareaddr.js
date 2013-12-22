@@ -1,7 +1,6 @@
 var sw_grid = new dhtmlXGridObject({
                         parent: window.app.Panels["def"],       
                         auto_width: true,
-                        auto_height: true,
                         columns:[
                                   
 	  { type:"ch", sort:"str",  align:"left",  width:"20",  label:"Печать" },
