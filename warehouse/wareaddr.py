@@ -83,9 +83,16 @@ class WareAddressHandler(BaseHandler):
                     {"id":"2", "type":"button", "text":"Заблокированные"},
                    ]
                     
+
+        # годен до
+        godenDo = [{"id":"0",    "type":"button", "text":"Не выбрано"},
+                    {"id":"90",  "type":"button", "text":"Истекает не позже 90 дней"},
+                    {"id":"180", "type":"button", "text":"Истекает не позже 180 дней"},
+                   ]                    
+                    
             
         loader = template.Loader(os.path.join(ROOT_DIR, 'warehouse'))
-        result = loader.load("wareaddr.js").generate(departs=departs[0], is_all=is_all[0], is_block=is_block[0], all_status=all_status)            
+        result = loader.load("wareaddr.js").generate(departs=departs[0], is_all=is_all[0], is_block=is_block[0], all_status=all_status, godenDo=godenDo[0])            
     
         self.write({'def':[
                            
@@ -106,6 +113,12 @@ class WareAddressHandler(BaseHandler):
                            {'type':"text", 'text':"Блокировки:"},
                            {'id':'is_block', 'type':"buttonSelect", 'mode':'select', 'selected': '0', 'items':is_block},
                            {'type':"separator"},
+                           
+                           
+                           {'type':"text", 'text':"Срок Годности:"},
+                           {'id':'godenDo', 'type':"buttonSelect", 'mode':'select', 'selected': '0', 'items':godenDo},
+                           {'type':"separator"},
+                      
                       
                       
                           # {'type':"text", 'text':"Типы товара:"},
@@ -152,12 +165,14 @@ class WareAddressDataHandler(BaseHandler):
         pParty       = self.get_argument("dhx_filter[11]", default="")
         pPartyStatus = self.get_argument("dhx_filter[13]", default="")
         
+        godenDo      = self.get_argument("godenDo", default=None)
+        
         
         out = self.cursor.var(cx_Oracle.CURSOR)
         
         
         res = self.proc("shiva.GetSaldoList", [pDepart, is_All, is_Block, psw_id, pCellName,
-                                                          pStorage, pTypeTovar, pCode, pName, pParty, pPartyStatus, out])                
+                                                          pStorage, pTypeTovar, pCode, pName, pParty, pPartyStatus, godenDo, out])                
      
         all_results = None
              

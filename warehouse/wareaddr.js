@@ -4,7 +4,7 @@ var sw_grid = new dhtmlXGridObject({
                         auto_height: true,
                         columns:[
                                   
-	  { type:"ch", sort:"str",  align:"left",  width:"20%",  label:"Печать" },
+	  { type:"ch", sort:"str",  align:"left",  width:"20",  label:"Печать" },
 	  { type:"ro", sort:"str",  align:"left",  width:"0",   label:"ID1" },
 	  { type:"ro", sort:"str",  align:"left",  width:"0",   label:"status" },
 	  
@@ -38,7 +38,8 @@ var sw_grid = new dhtmlXGridObject({
   
     ]});
 
-
+	sw_grid.enableColumnAutoSize(true);
+	
 						var col_checked = 1;
 						var col_block = 2;
 						var col_cell = 3;
@@ -88,6 +89,7 @@ var sw_grid = new dhtmlXGridObject({
                             params["departs"]  = self.Toolbars["def"].getListOptionSelected("departs");
                         	params["is_all"]   = self.Toolbars["def"].getListOptionSelected("is_all");   
                         	params["is_block"] = self.Toolbars["def"].getListOptionSelected("is_block");
+                        	params["godenDo"]  = self.Toolbars["def"].getListOptionSelected("godenDo");
            	
                         	window.sw_grid = sw_grid;
                         	

@@ -1,14 +1,16 @@
 
 var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
 
+sw_btk.setAutoSize("a", "a");
+//sw_btk.style.width = "auto";
 
+console.log(sw_btk);
 
 sw_btk.items[0].setText("Все задания");
 sw_btk.items[1].setText("История заданий");
 window.Cleaner.push(sw_btk);
 
-var sw_grid1 = sw_btk.cells("a").attachGrid();
-
+var sw_grid1 = sw_btk.cells("a").attachGrid({auto_width: true,  auto_height: true});
 
 
 sw_grid1.columns([
@@ -45,7 +47,7 @@ tabbar.addTab("b", "Состав", 100, 100, 0);
 
 tabbar.setTabActive("a");
 
-var sw_grid2 = tabbar.cells("a").attachGrid();
+var sw_grid2 = tabbar.cells("a").attachGrid({auto_width: true,  auto_height: true});
 sw_grid2.columns([
   
       { type:"ro", sort:"int",  align:"left", width:"0", label:"ID" },
