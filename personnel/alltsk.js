@@ -1,7 +1,7 @@
 
 var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
 
-sw_btk.setAutoSize("b;c", "a;c");
+
 
 sw_btk.items[0].setText("Все задания");
 sw_btk.items[1].setText("История заданий");
@@ -9,7 +9,7 @@ window.Cleaner.push(sw_btk);
 
 var sw_grid1 = sw_btk.cells("a").attachGrid();
 
-sw_grid1.enableAutoWidth(true,1600,600);
+
 
 sw_grid1.columns([
       { type:"ro", sort:"int",  align:"right", width:"60",  label:["ID","#text_filter"] },
@@ -158,4 +158,8 @@ window.Cleaner.push(sw_grid3);
     
     window.do_tool_1();
     
+    
+
+
+ 
                     

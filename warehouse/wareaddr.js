@@ -1,8 +1,10 @@
 var sw_grid = new dhtmlXGridObject({
-                        parent: window.app.Panels["def"],                        
+                        parent: window.app.Panels["def"],       
+                        auto_width: true,
+                        auto_height: true,
                         columns:[
                                   
-	  { type:"ch", sort:"str",  align:"left",  width:"20",  label:"Печать" },
+	  { type:"ch", sort:"str",  align:"left",  width:"20%",  label:"Печать" },
 	  { type:"ro", sort:"str",  align:"left",  width:"0",   label:"ID1" },
 	  { type:"ro", sort:"str",  align:"left",  width:"0",   label:"status" },
 	  
@@ -40,7 +42,8 @@ var sw_grid = new dhtmlXGridObject({
 						var col_checked = 1;
 						var col_block = 2;
 						var col_cell = 3;
-						
+					
+
 						
                         window.Cleaner.push(sw_grid);
                         

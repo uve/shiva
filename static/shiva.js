@@ -76,9 +76,16 @@ var ShivaApp = function(){
 	this.Title.hideArrow();
 	this.Title.fixSize(false,true);
 	
+	Layout1.setAutoSize("a", "a");
+	
+	
 	this.Content = Layout1.items[1];
 	this.Content.hideHeader();
 	
+	
+	this.Content.style.width = "auto";
+	
+
 	this.Toolbars = {};
 	this.Panels = {}
 	
