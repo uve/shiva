@@ -37,8 +37,7 @@ var sw_grid = new dhtmlXGridObject({
   
     ]});
 
-	sw_grid.enableColumnAutoSize(true);
-	
+
 						var col_checked = 1;
 						var col_block = 2;
 						var col_cell = 3;
