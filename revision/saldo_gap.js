@@ -5,9 +5,9 @@ var sw_grid1 = new dhtmlXGridObject({
    columns: [
       { type:"ro", sort:"str",  align:"center", width:"80",  label:["Код", "#text_filter"], },  
       { type:"ro", sort:"str",  align:"left"  , width:"*",   label:["Наименование", "#text_filter"] },
-      { type:"ro", sort:"str",  align:"center", width:"100", label:"Товарный остаток"},
-      { type:"ro", sort:"str",  align:"center", width:"100", label:"Партионный остаток"},                                                   
-      { type:"ro", sort:"date", align:"center", width:"100", label:"Остаток в ячейках"},
+      { type:"ro", sort:"int",  align:"center", width:"100", label:"Товарный остаток"},
+      { type:"ro", sort:"int",  align:"center", width:"100", label:"Партионный остаток"},                                                   
+      { type:"ro", sort:"int",  align:"center", width:"100", label:"Остаток в ячейках"},
       
         ]
     });
