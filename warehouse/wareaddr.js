@@ -270,6 +270,9 @@ var sw_grid = new dhtmlXGridObject({
                             }
                                      
                             
+                            console.log("print");
+                            
+                            
                             if (format == "print"){
                             	sw_grid_print.printView("","<script> window.print(); </script>");
                             }

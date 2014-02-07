@@ -33,7 +33,7 @@ class Saldo_GapHandler(BaseHandler):
         departs = [{"id":"%s" % i.id, "type":"button", "text":i.name} for i in all_departs]       
        
         self.write({'def':[
-                           
+                           {'type':"button", 'text':'Печать', 'img':"print.gif", 'imgdis':"print_dis.gif", 'action':'do_print'},
                            {'type':"text", 'text':"Подразделение:"},
                            {'id':'departs', 'type':"buttonSelect",  'mode':'select', 'selected': all_departs[0].id,  'items':departs},
                      ],

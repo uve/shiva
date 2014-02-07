@@ -37,3 +37,9 @@ self.Toolbars["def"].attachEvent("onClick", function(id) {
 });
       
 update();
+
+
+window.do_print = function(){
+		
+		sw_grid1.printView("","<script> window.print(); </script>");      
+}
