@@ -127,7 +127,7 @@ window.Cleaner.push(sw_grid3);
         var ids = sw_grid1.getSelectedRowId();
         if(!ids) self.AddMessage('Выберите задание',2)
         else{
-            dhtmlxAjax.post("/personnel/alltsk/data/task_restart", encodeURI("task_id=" + ids) , function(resp){                           
+            dhtmlxAjax.post("/personnel/alltsk/data/task_restart", encodeURI("task_id=" + ids) , function(loader){                           
             	var result = JSON.parse(loader.xmlDoc.responseText);
             	
             	if (result.error){
@@ -144,7 +144,7 @@ window.Cleaner.push(sw_grid3);
         var ids = sw_grid1.getSelectedRowId();
         if(!ids) self.AddMessage('Выберите задание',2)
         else{
-            dhtmlxAjax.post("/personnel/alltsk/data/task_close", encodeURI("task_id=" + ids) , function(resp){
+            dhtmlxAjax.post("/personnel/alltsk/data/task_close", encodeURI("task_id=" + ids) , function(loader){
             	var result = JSON.parse(loader.xmlDoc.responseText);
             	
             	if (result.error){
