@@ -128,6 +128,12 @@ window.Cleaner.push(sw_grid3);
         if(!ids) self.AddMessage('Выберите задание',2)
         else{
             dhtmlxAjax.post("/personnel/alltsk/data/task_restart", encodeURI("task_id=" + ids) , function(resp){                           
+            	var result = JSON.parse(loader.xmlDoc.responseText);
+            	
+            	if (result.error){
+            		self.AddMessage(result.error, 3);
+            	}            	
+            	
                 window.do_tool_1();
             });
         }                  
@@ -139,6 +145,12 @@ window.Cleaner.push(sw_grid3);
         if(!ids) self.AddMessage('Выберите задание',2)
         else{
             dhtmlxAjax.post("/personnel/alltsk/data/task_close", encodeURI("task_id=" + ids) , function(resp){
+            	var result = JSON.parse(loader.xmlDoc.responseText);
+            	
+            	if (result.error){
+            		self.AddMessage(result.error, 3);
+            	}             	
+            	
                 window.do_tool_1();
             });
         }                             
@@ -147,9 +159,16 @@ window.Cleaner.push(sw_grid3);
     
     window.do_tool_task_priority = function(){
         var ids = sw_grid1.getSelectedRowId();
-        if(!ids) self.AddMessage('Выберите задание',2)
+        if(!ids) self.AddMessage('Выберите задание',2);
         else{
-            dhtmlxAjax.post("/personnel/alltsk/data/task_priority", encodeURI("task_id=" + ids) , function(resp){
+            dhtmlxAjax.post("/personnel/alltsk/data/task_priority", encodeURI("task_id=" + ids) , function(loader){
+            	
+            	var result = JSON.parse(loader.xmlDoc.responseText);
+            	
+            	if (result.error){
+            		self.AddMessage(result.error, 3);
+            	}             	
+            	
                 window.do_tool_1();
             });
         }                             
