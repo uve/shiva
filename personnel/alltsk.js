@@ -4,7 +4,7 @@ var sw_btk = new dhtmlXLayoutObject(self.Panels["def"], "2E");
 sw_btk.setAutoSize("a", "a");
 //sw_btk.style.width = "auto";
 
-console.log(sw_btk);
+//console.log(sw_btk);
 
 sw_btk.items[0].setText("Все задания");
 sw_btk.items[1].setText("История заданий");
