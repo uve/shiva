@@ -109,7 +109,7 @@ class AllTaskDataHandler(BaseHandler):
         
         
         if param == 'task_priority':
-            self.proc("shiva_task.SetTaskPriority",   [task_id])
+            self.proc("shiva_task.SetTaskPriority",   [task_id, user_id])
             
             
         

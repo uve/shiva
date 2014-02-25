@@ -15,7 +15,6 @@ var sw_grid1 = new dhtmlXGridObject({
 
 
 
-
 window.Cleaner.push(sw_grid1);
 
 
