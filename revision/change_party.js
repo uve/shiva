@@ -4,9 +4,12 @@ var sw_grid1 = new dhtmlXGridObject({
    parent: window.app.Panels["def"],
    columns: [
       { type:"ro", sort:"str",  align:"center", width:"80",  label:["Код", "#text_filter"], },  
-      { type:"ro", sort:"str",  align:"left"  , width:"*",   label:["Наименование", "#text_filter"] },
-      { type:"ro", sort:"int",  align:"center", width:"100", label:"Срок годности"},
-      { type:"ro", sort:"int",  align:"center", width:"100", label:["Номер партии", "#text_filter"]},
+      { type:"ro", sort:"str",  align:"left"  , width:"100", label:["Номер партии", "#text_filter"] },
+      
+      { type:"ro", sort:"str",  align:"left", width:"*",   label:["Наименование", "#text_filter"] },
+      
+  	  { type:"ro", sort:"str",  align:"center", width:"100", label:"Срок годности"},
+  
       
         ]
     });
