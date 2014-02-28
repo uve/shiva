@@ -77,6 +77,12 @@ from revision.auditor import AuditorHandler
 from revision.saldo_gap import Saldo_GapDataHandler
 from revision.saldo_gap import Saldo_GapHandler
 
+from revision.change_party import Change_party
+from revision.change_party import Change_party_data
+
+
+
+
 from warehouse.acceptance import AcceptanceDataHandler
 from warehouse.acceptance import AcceptanceHandler
 from warehouse.assembly import AssemblyDataHandler
@@ -199,6 +205,9 @@ handlers = [
                 
                 (r"/revision/saldo_gap", Saldo_GapHandler),
                 (r"/revision/saldo_gap/data/([^/]+)", Saldo_GapDataHandler),
+                
+                (r"/revision/change_party", Change_party),
+                (r"/revision/change_party/data/([^/]+)", Change_party_data),                
                 
                 
                 (r"/system/csv", SystemCSVHandler),
