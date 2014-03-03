@@ -67,20 +67,13 @@ window.do_delete = function(){
 };
 
 window.do_execute = function(){
-	var ids = sw_grid.getSelectedRowId();
-    
-    if (!ids){
-    	app.AddMessage('Выберите ячейку',2) 
-    }
-    else {
-    	
-    	dhtmlxAjax.post("/revision/change_party/data/execute", "value="+ids, function(){
-        	
-        	window.update();
 
-        });
-    }
-    
+	dhtmlxAjax.post("/revision/change_party/data/execute", "value="+ids, function(){
+    	
+    	window.update();
+
+    });
+
 };
 
 window.do_cancel = function(){ self.ShowPanel("def") };
