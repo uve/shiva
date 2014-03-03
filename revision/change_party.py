@@ -28,10 +28,10 @@ class Change_party(BaseHandler):
               
         self.write({'def':[
                            
-                           {'type':"button", 'text':'Выполнить',      'action':'do_execute' },
-                           {'type':"button", 'text':'Добавить',       'action':'do_add',     'img':"add24.png", 'imgdis':"add24g.png"},
+                           {'type':"button", 'text':'Выполнить',      'action':'do_execute', 'img':"play.png",     'imgdis':"play.png" },
+                           {'type':"button", 'text':'Добавить',       'action':'do_add',     'img':"add24.png",    'imgdis':"add24g.png"},
                            {'type':"button", 'text':'Удалить',        'action':'do_delete',  'img':"delete24.png", 'imgdis':"delete24g.png"},
-                           {'type':"button", 'text':'Печать',         'action':'do_print',   'img':"print.gif", 'imgdis':"print_dis.gif"},
+                           {'type':"button", 'text':'Печать',         'action':'do_print',   'img':"print.gif",    'imgdis':"print_dis.gif"},
                        
                       ],
                     'one':[{'type':"button", 'text':'Сохранить', 'img':"accept24.png", 'imgdis':"accept24g.png", 'action':'do_save'},
