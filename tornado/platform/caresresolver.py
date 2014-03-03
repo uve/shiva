@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function, with_statement
 import pycares
 import socket
 
@@ -24,7 +25,7 @@ class CaresResolver(Resolver):
         self.fds = {}
 
     def _sock_state_cb(self, fd, readable, writable):
-        state = ((IOLoop.READ if readable else 0) | 
+        state = ((IOLoop.READ if readable else 0) |
                  (IOLoop.WRITE if writable else 0))
         if not state:
             self.io_loop.remove_handler(fd)
@@ -57,7 +58,7 @@ class CaresResolver(Resolver):
             assert not callback_args.kwargs
             result, error = callback_args.args
             if error:
-                raise Exception('C-Ares returned error %s: %s while resolving %s' % 
+                raise Exception('C-Ares returned error %s: %s while resolving %s' %
                                 (error, pycares.errno.strerror(error), host))
             addresses = result.addresses
         addrinfo = []
@@ -69,7 +70,7 @@ class CaresResolver(Resolver):
             else:
                 address_family = socket.AF_UNSPEC
             if family != socket.AF_UNSPEC and family != address_family:
-                raise Exception('Requested socket family %d but got %d' % 
+                raise Exception('Requested socket family %d but got %d' %
                                 (family, address_family))
             addrinfo.append((address_family, (address, port)))
         raise gen.Return(addrinfo)

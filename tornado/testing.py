@@ -249,7 +249,7 @@ class AsyncTestCase(unittest.TestCase):
                 def timeout_func():
                     try:
                         raise self.failureException(
-                            'Async operation timed out after %s seconds' % 
+                            'Async operation timed out after %s seconds' %
                             timeout)
                     except Exception:
                         self.__failure = sys.exc_info()

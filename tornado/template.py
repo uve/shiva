@@ -21,7 +21,7 @@ Basic usage looks like::
     t = template.Template("<html>{{ myvalue }}</html>")
     print t.generate(myvalue="XXX")
 
-Loader is a class that loads templates from a root directory and caches
+`Loader` is a class that loads templates from a root directory and caches
 the compiled templates::
 
     loader = template.Loader("/home/btaylor")
@@ -56,16 +56,17 @@ interesting. Syntax for the templates::
     {% end %}
 
 Unlike most other template systems, we do not put any restrictions on the
-expressions you can include in your statements. if and for blocks get
-translated exactly into Python, you can do complex expressions like::
+expressions you can include in your statements. ``if`` and ``for`` blocks get
+translated exactly into Python, so you can do complex expressions like::
 
    {% for student in [p for p in people if p.student and p.age > 23] %}
      <li>{{ escape(student.name) }}</li>
    {% end %}
 
 Translating directly to Python means you can apply functions to expressions
-easily, like the escape() function in the examples above. You can pass
-functions in to your template just like any other variable::
+easily, like the ``escape()`` function in the examples above. You can pass
+functions in to your template just like any other variable
+(In a `.RequestHandler`, override `.RequestHandler.get_template_namespace`)::
 
    ### Python code
    def add(x, y):
@@ -75,8 +76,8 @@ functions in to your template just like any other variable::
    ### The template
    {{ add(1, 2) }}
 
-We provide the functions escape(), url_escape(), json_encode(), and squeeze()
-to all templates by default.
+We provide the functions `escape() <.xhtml_escape>`, `.url_escape()`,
+`.json_encode()`, and `.squeeze()` to all templates by default.
 
 Typical applications do not create `Template` or `Loader` instances by
 hand, but instead use the `~.RequestHandler.render` and
@@ -168,6 +169,10 @@ with ``{# ... #}``.
     not escaped::
 
         {% module Template("foo.html", arg=42) %}
+
+    ``UIModules`` are a feature of the `tornado.web.RequestHandler`
+    class (and specifically its ``render`` method) and will not work
+    when the template system is used on its own in other contexts.
 
 ``{% raw *expr* %}``
     Outputs the result of the given expression without autoescaping.
@@ -542,7 +547,7 @@ class _Expression(_Node):
         if not self.raw and writer.current_template.autoescape is not None:
             # In python3 functions like xhtml_escape return unicode,
             # so we have to convert to utf8 again.
-            writer.write_line("_tt_tmp = _tt_utf8(%s(_tt_tmp))" % 
+            writer.write_line("_tt_tmp = _tt_utf8(%s(_tt_tmp))" %
                               writer.current_template.autoescape, self.line)
         writer.write_line("_tt_append(_tt_tmp)", self.line)
 
@@ -700,7 +705,7 @@ def _parse(reader, template, in_block=None, in_loop=None):
             if curly == -1 or curly + 1 == reader.remaining():
                 # EOF
                 if in_block:
-                    raise ParseError("Missing {%% end %%} block for %s" % 
+                    raise ParseError("Missing {%% end %%} block for %s" %
                                      in_block)
                 body.chunks.append(_Text(reader.consume(), reader.line))
                 return body
@@ -779,7 +784,7 @@ def _parse(reader, template, in_block=None, in_loop=None):
         allowed_parents = intermediate_blocks.get(operator)
         if allowed_parents is not None:
             if not in_block:
-                raise ParseError("%s outside %s block" % 
+                raise ParseError("%s outside %s block" %
                                 (operator, allowed_parents))
             if in_block not in allowed_parents:
                 raise ParseError("%s block cannot be attached to %s block" % (operator, in_block))

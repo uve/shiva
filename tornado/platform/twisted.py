@@ -456,6 +456,7 @@ class TwistedIOLoop(tornado.ioloop.IOLoop):
         del self.fds[fd]
 
     def start(self):
+        self._setup_logging()
         self.reactor.run()
 
     def stop(self):
@@ -527,15 +528,17 @@ class TwistedResolver(Resolver):
             resolved_family = socket.AF_INET6
         else:
             deferred = self.resolver.getHostByName(utf8(host))
-            resolved = yield gen.Task(deferred.addCallback)
-            if twisted.internet.abstract.isIPAddress(resolved):
+            resolved = yield gen.Task(deferred.addBoth)
+            if isinstance(resolved, failure.Failure):
+                resolved.raiseException()
+            elif twisted.internet.abstract.isIPAddress(resolved):
                 resolved_family = socket.AF_INET
             elif twisted.internet.abstract.isIPv6Address(resolved):
                 resolved_family = socket.AF_INET6
             else:
                 resolved_family = socket.AF_UNSPEC
         if family != socket.AF_UNSPEC and family != resolved_family:
-            raise Exception('Requested socket family %d but got %d' % 
+            raise Exception('Requested socket family %d but got %d' %
                             (family, resolved_family))
         result = [
             (resolved_family, (resolved, port)),

@@ -72,6 +72,7 @@ class SimpleAsyncHTTPClient(AsyncHTTPClient):
         self.max_clients = max_clients
         self.queue = collections.deque()
         self.active = {}
+        self.waiting = {}
         self.max_buffer_size = max_buffer_size
         if resolver:
             self.resolver = resolver
@@ -89,7 +90,16 @@ class SimpleAsyncHTTPClient(AsyncHTTPClient):
             self.resolver.close()
 
     def fetch_impl(self, request, callback):
-        self.queue.append((request, callback))
+        key = object()
+        self.queue.append((key, request, callback))
+        if not len(self.active) < self.max_clients:
+            timeout_handle = self.io_loop.add_timeout(
+                self.io_loop.time() + min(request.connect_timeout,
+                                          request.request_timeout),
+                functools.partial(self._on_timeout, key))
+        else:
+            timeout_handle = None
+        self.waiting[key] = (request, callback, timeout_handle)
         self._process_queue()
         if self.queue:
             gen_log.debug("max_clients limit reached, request queued. "
@@ -99,8 +109,10 @@ class SimpleAsyncHTTPClient(AsyncHTTPClient):
     def _process_queue(self):
         with stack_context.NullContext():
             while self.queue and len(self.active) < self.max_clients:
-                request, callback = self.queue.popleft()
-                key = object()
+                key, request, callback = self.queue.popleft()
+                if key not in self.waiting:
+                    continue
+                self._remove_timeout(key)
                 self.active[key] = (request, callback)
                 release_callback = functools.partial(self._release_fetch, key)
                 self._handle_request(request, release_callback, callback)
@@ -112,6 +124,22 @@ class SimpleAsyncHTTPClient(AsyncHTTPClient):
     def _release_fetch(self, key):
         del self.active[key]
         self._process_queue()
+
+    def _remove_timeout(self, key):
+        if key in self.waiting:
+            request, callback, timeout_handle = self.waiting[key]
+            if timeout_handle is not None:
+                self.io_loop.remove_timeout(timeout_handle)
+            del self.waiting[key]
+
+    def _on_timeout(self, key):
+        request, callback, timeout_handle = self.waiting[key]
+        self.queue.remove((key, request, callback))
+        timeout_response = HTTPResponse(
+            request, 599, error=HTTPError(599, "Timeout"),
+            request_time=self.io_loop.time() - request.start_time)
+        self.io_loop.add_callback(callback, timeout_response)
+        del self.waiting[key]
 
 
 class _HTTPConnection(object):
@@ -136,7 +164,7 @@ class _HTTPConnection(object):
         with stack_context.ExceptionStackContext(self._handle_exception):
             self.parsed = urlparse.urlsplit(_unicode(self.request.url))
             if self.parsed.scheme not in ("http", "https"):
-                raise ValueError("Unsupported url scheme: %s" % 
+                raise ValueError("Unsupported url scheme: %s" %
                                  self.request.url)
             # urlsplit results have hostname and port results, but they
             # didn't support ipv6 literals until python 2.7.
@@ -162,15 +190,18 @@ class _HTTPConnection(object):
                 # so restrict to ipv4 by default.
                 af = socket.AF_INET
 
+            timeout = min(self.request.connect_timeout, self.request.request_timeout)
+            if timeout:
+                self._timeout = self.io_loop.add_timeout(
+                    self.start_time + timeout,
+                    stack_context.wrap(self._on_timeout))
             self.resolver.resolve(host, port, af, callback=self._on_resolve)
 
     def _on_resolve(self, addrinfo):
+        if self.final_callback is None:
+            # final_callback is cleared if we've hit our timeout
+            return
         self.stream = self._create_stream(addrinfo)
-        timeout = min(self.request.connect_timeout, self.request.request_timeout)
-        if timeout:
-            self._timeout = self.io_loop.add_timeout(
-                self.start_time + timeout,
-                stack_context.wrap(self._on_timeout))
         self.stream.set_close_callback(self._on_close)
         # ipv6 addresses are broken (in self.parsed.hostname) until
         # 2.7, here is correctly parsed value calculated in __init__
@@ -199,10 +230,10 @@ class _HTTPConnection(object):
             # the SSL_OP_NO_SSLv2, but that wasn't exposed to python
             # until 3.2.  Python 2.7 adds the ciphers argument, which
             # can also be used to disable SSLv2.  As a last resort
-            # on python 2.6, we set ssl_version to SSLv3.  This is
+            # on python 2.6, we set ssl_version to TLSv1.  This is
             # more narrow than we'd like since it also breaks
-            # compatibility with servers configured for TLSv1 only,
-            # but nearly all servers support SSLv3:
+            # compatibility with servers configured for SSLv3 only,
+            # but nearly all servers support both SSLv3 and TLSv1:
             # http://blog.ivanristic.com/2011/09/ssl-survey-protocol-support.html
             if sys.version_info >= (2, 7):
                 ssl_options["ciphers"] = "DEFAULT:!SSLv2"
@@ -210,7 +241,7 @@ class _HTTPConnection(object):
                 # This is really only necessary for pre-1.0 versions
                 # of openssl, but python 2.6 doesn't expose version
                 # information.
-                ssl_options["ssl_version"] = ssl.PROTOCOL_SSLv3
+                ssl_options["ssl_version"] = ssl.PROTOCOL_TLSv1
 
             return SSLIOStream(socket.socket(af),
                                io_loop=self.io_loop,
@@ -233,6 +264,8 @@ class _HTTPConnection(object):
 
     def _on_connect(self):
         self._remove_timeout()
+        if self.final_callback is None:
+            return
         if self.request.request_timeout:
             self._timeout = self.io_loop.add_timeout(
                 self.start_time + self.request.request_timeout,
@@ -263,15 +296,21 @@ class _HTTPConnection(object):
                 raise ValueError("unsupported auth_mode %s",
                                  self.request.auth_mode)
             auth = utf8(username) + b":" + utf8(password)
-            self.request.headers["Authorization"] = (b"Basic " + 
+            self.request.headers["Authorization"] = (b"Basic " +
                                                      base64.b64encode(auth))
         if self.request.user_agent:
             self.request.headers["User-Agent"] = self.request.user_agent
         if not self.request.allow_nonstandard_methods:
             if self.request.method in ("POST", "PATCH", "PUT"):
-                assert self.request.body is not None
+                if self.request.body is None:
+                    raise AssertionError(
+                        'Body must not be empty for "%s" request'
+                        % self.request.method)
             else:
-                assert self.request.body is None
+                if self.request.body is not None:
+                    raise AssertionError(
+                        'Body must be empty for "%s" request'
+                        % self.request.method)
         if self.request.body is not None:
             self.request.headers["Content-Length"] = str(len(
                 self.request.body))
@@ -280,7 +319,7 @@ class _HTTPConnection(object):
             self.request.headers["Content-Type"] = "application/x-www-form-urlencoded"
         if self.request.use_gzip:
             self.request.headers["Accept-Encoding"] = "gzip"
-        req_path = ((self.parsed.path or '/') + 
+        req_path = ((self.parsed.path or '/') +
                    (('?' + self.parsed.query) if self.parsed.query else ''))
         request_lines = [utf8("%s %s HTTP/1.1" % (self.request.method,
                                                   req_path))]
@@ -357,7 +396,7 @@ class _HTTPConnection(object):
                 # use them but if they differ it's an error.
                 pieces = re.split(r',\s*', self.headers["Content-Length"])
                 if any(i != pieces[0] for i in pieces):
-                    raise ValueError("Multiple unequal Content-Lengths: %r" % 
+                    raise ValueError("Multiple unequal Content-Lengths: %r" %
                                      self.headers["Content-Length"])
                 self.headers["Content-Length"] = pieces[0]
             content_length = int(self.headers["Content-Length"])
@@ -381,7 +420,7 @@ class _HTTPConnection(object):
             # http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
             if ("Transfer-Encoding" in self.headers or
                     content_length not in (None, 0)):
-                raise ValueError("Response with code %d should not have body" % 
+                raise ValueError("Response with code %d should not have body" %
                                  self.code)
             self._on_body(b"")
             return
@@ -434,7 +473,7 @@ class _HTTPConnection(object):
             self._on_end_request()
             return
         if self._decompressor:
-            data = (self._decompressor.decompress(data) + 
+            data = (self._decompressor.decompress(data) +
                     self._decompressor.flush())
         if self.request.streaming_callback:
             if self.chunks is None:

@@ -127,7 +127,7 @@ class HTTPHeaders(dict):
         if norm_name in self:
             # bypass our override of __setitem__ since it modifies _as_list
             dict.__setitem__(self, norm_name,
-                             native_str(self[norm_name]) + ',' + 
+                             native_str(self[norm_name]) + ',' +
                              native_str(value))
             self._as_list[norm_name].append(value)
         else:
@@ -320,7 +320,11 @@ def parse_body_arguments(content_type, body, arguments, files):
     with the parsed contents.
     """
     if content_type.startswith("application/x-www-form-urlencoded"):
-        uri_arguments = parse_qs_bytes(native_str(body), keep_blank_values=True)
+        try:
+            uri_arguments = parse_qs_bytes(native_str(body), keep_blank_values=True)
+        except Exception as e:
+            gen_log.warning('Invalid x-www-form-urlencoded body: %s', e)
+            uri_arguments = {}
         for name, values in uri_arguments.items():
             if values:
                 arguments.setdefault(name, []).extend(values)

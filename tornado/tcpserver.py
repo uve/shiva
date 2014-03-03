@@ -99,11 +99,11 @@ class TCPServer(object):
                 raise KeyError('missing key "certfile" in ssl_options')
 
             if not os.path.exists(self.ssl_options['certfile']):
-                raise ValueError('certfile "%s" does not exist' % 
+                raise ValueError('certfile "%s" does not exist' %
                                  self.ssl_options['certfile'])
             if ('keyfile' in self.ssl_options and
                     not os.path.exists(self.ssl_options['keyfile'])):
-                raise ValueError('keyfile "%s" does not exist' % 
+                raise ValueError('keyfile "%s" does not exist' %
                                  self.ssl_options['keyfile'])
 
     def listen(self, port, address=""):
@@ -180,7 +180,8 @@ class TCPServer(object):
         between any server code.
 
         Note that multiple processes are not compatible with the autoreload
-        module (or the ``debug=True`` option to `tornado.web.Application`).
+        module (or the ``autoreload=True`` option to `tornado.web.Application`
+        which defaults to True when ``debug=True``).
         When using multiple processes, no IOLoops can be created or
         referenced until after the call to ``TCPServer.start(n)``.
         """

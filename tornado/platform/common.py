@@ -41,7 +41,7 @@ class Waker(interface.Waker):
             connect_address = a.getsockname()  # assigned (host, port) pair
             try:
                 self.writer.connect(connect_address)
-                break  # success
+                break    # success
             except socket.error as detail:
                 if (not hasattr(errno, 'WSAEADDRINUSE') or
                         detail[0] != errno.WSAEADDRINUSE):
