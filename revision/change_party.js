@@ -47,6 +47,8 @@ window.do_add = function(){
     self.ShowPanel("one"); 
 };
 
+
+
 window.do_delete = function(){
 	var ids = sw_grid.getSelectedRowId();
     
@@ -56,6 +58,23 @@ window.do_delete = function(){
     else {
     	
     	dhtmlxAjax.post("/revision/change_party/data/delete", "value="+ids, function(){
+        	
+        	window.update();
+
+        });
+    }
+    
+};
+
+window.do_execute = function(){
+	var ids = sw_grid.getSelectedRowId();
+    
+    if (!ids){
+    	app.AddMessage('Выберите ячейку',2) 
+    }
+    else {
+    	
+    	dhtmlxAjax.post("/revision/change_party/data/execute", "value="+ids, function(){
         	
         	window.update();
 

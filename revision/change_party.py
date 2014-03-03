@@ -28,9 +28,10 @@ class Change_party(BaseHandler):
               
         self.write({'def':[
                            
-                           {'type':"button", 'text':'Добавить',       'action':'do_add',    'img':"add24.png", 'imgdis':"add24g.png"},
-                           {'type':"button", 'text':'Удалить',        'action':'do_delete', 'img':"delete24.png", 'imgdis':"delete24g.png"},
-                           {'type':"button", 'text':'Печать',         'action':'do_print',  'img':"print.gif", 'imgdis':"print_dis.gif"},
+                           {'type':"button", 'text':'Выполнить',      'action':'do_execute' },
+                           {'type':"button", 'text':'Добавить',       'action':'do_add',     'img':"add24.png", 'imgdis':"add24g.png"},
+                           {'type':"button", 'text':'Удалить',        'action':'do_delete',  'img':"delete24.png", 'imgdis':"delete24g.png"},
+                           {'type':"button", 'text':'Печать',         'action':'do_print',   'img':"print.gif", 'imgdis':"print_dis.gif"},
                        
                       ],
                     'one':[{'type':"button", 'text':'Сохранить', 'img':"accept24.png", 'imgdis':"accept24g.png", 'action':'do_save'},
@@ -73,10 +74,22 @@ class Change_party_data(BaseHandler):
             
             self.write({"status": result})     
             
+            
+            
         if param == 'delete':
             
             value  = self.get_argument("value",  default=None)                               
                                           
             result = self.proc("tehno_utils.del_change_party", [value])
             
-            self.write({"status": result})                     
+            self.write({"status": result})
+            
+                            
+            
+        if param == 'execute':
+            
+            value  = self.get_argument("value",  default=None)                               
+                                          
+            result = self.proc("tehno_utils.ChangePartySrok", [value])
+            
+            self.write({"status": result})                    
