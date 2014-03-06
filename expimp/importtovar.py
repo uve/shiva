@@ -72,7 +72,7 @@ class ImportTovarHandler(BaseHandler):
         for item in mas:
             
             try:
-                item = item.decode('cp1251').encode('utf8')[:80]
+                item = item.decode('cp1251').encode('utf8')#[:80]
                 self.execute('''begin 
                                     shiva.ImportTovar(str => :pStr);
                                end;''', pStr=item);
