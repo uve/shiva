@@ -211,8 +211,8 @@ module OrderBatchingModule {
 					text: msg,					
 					apply: (value) => {
 				    	
-						this.value = value;
-				    	this.getConfirm();
+						
+				    	this.getConfirm(value);
 					},
 					cancel: ()=>{ this.scan_cell(); }// переход обратно - на ввод ШК ячейки									
 			});    	
@@ -228,15 +228,16 @@ module OrderBatchingModule {
 	     *   Подтверждение количества погруженных коробок
 	     *   
 	     */   
-	    public getConfirm()
+	    public getConfirm(value)
 		{
 	
 			this.menu({
 				
 				caption: "Подтверждение",
-				text:    "С адреса: "+ this.cell_name + "</br>взято коробок:" + this.value,
+				text:    "С адреса: "+ this.cell_name + "</br>взято коробок:" + value,
 				buttons: { 
 							"Продолжить"  : () => { 
+													 this.value = value;
 							   						 this.ok_cell();
 							},
 							

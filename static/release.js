@@ -658,11 +658,11 @@ var FormModule;
 
         // "меню" с кнопками
         Form.prototype.FormMenu = function (settings) {
-            var _this = this;
             // text - выводимый сверху текст.
             // buttons - массив, каждый элемент которого - структура с полями: текст кнопки и функция,
             // вызываемая по нажатию
             // Также хорошо бы помнить, что много кнопок на экран не вмещается. От силы 5 штук.
+            var _this = this;
             this.id = "form-1";
 
             // откроем форму и отобразим поясняющий текст
@@ -1242,8 +1242,8 @@ var MainModule;
         };
 
         Main.prototype.auth = function (value) {
-            if (typeof value === "undefined") { value = ""; }
             var _this = this;
+            if (typeof value === "undefined") { value = ""; }
             this.ajax({
                 type: "POST",
                 url: "/auth",
@@ -1640,8 +1640,8 @@ var InventoryModule;
         };
 
         Inventory.prototype.getDateValid = function () {
-            var _this = this;
             //this.getPartyStatus();
+            var _this = this;
             var form = new FormModule.Form();
 
             form.FormMenu({
@@ -1666,8 +1666,8 @@ var InventoryModule;
         *
         */
         Inventory.prototype.getCount = function () {
-            var _this = this;
             //this.count = 5;
+            var _this = this;
             var msg = "Введите количество КОРОБОК или всего кг для сырья";
 
             var form = new FormModule.Form();
@@ -1746,7 +1746,6 @@ var InventoryModule;
         };
 
         Inventory.prototype.setParty = function () {
-            var _this = this;
             /*
             pPallet in integer,
             pParty in integer,
@@ -1759,6 +1758,7 @@ var InventoryModule;
             pPlus in integer,
             pRet out varchar2
             */
+            var _this = this;
             this.ajax({
                 type: "POST",
                 url: "/mbl/inventory/setparty",
@@ -3170,8 +3170,8 @@ var AcceptanceModule;
         };
 
         Acceptance.prototype.get_all_products = function () {
-            var _this = this;
             //this.stop("Выбор новой партии не релизован, обратитесь к разработчикам");
+            var _this = this;
             this.ajax({
                 type: "POST",
                 url: "/mbl/acception/get_all_products",
@@ -3811,8 +3811,7 @@ var OrderBatchingModule;
             this.formCount({
                 text: msg,
                 apply: function (value) {
-                    _this.value = value;
-                    _this.getConfirm();
+                    _this.getConfirm(value);
                 },
                 cancel: function () {
                     _this.scan_cell();
@@ -3824,13 +3823,14 @@ var OrderBatchingModule;
         *   Подтверждение количества погруженных коробок
         *
         */
-        OrderBatching.prototype.getConfirm = function () {
+        OrderBatching.prototype.getConfirm = function (value) {
             var _this = this;
             this.menu({
                 caption: "Подтверждение",
-                text: "С адреса: " + this.cell_name + "</br>взято коробок:" + this.value,
+                text: "С адреса: " + this.cell_name + "</br>взято коробок:" + value,
                 buttons: {
                     "Продолжить": function () {
+                        _this.value = value;
                         _this.ok_cell();
                     },
                     "Вернуться": function () {
@@ -3932,8 +3932,7 @@ var OrderBatchingRawModule;
             this.formCount({
                 text: msg,
                 apply: function (value) {
-                    _this.value = value;
-                    _this.getConfirm();
+                    _this.getConfirm(value);
                 },
                 cancel: function () {
                     _this.scan_cell();
@@ -3945,13 +3944,14 @@ var OrderBatchingRawModule;
         *   Подтверждение количества погруженных коробок
         *
         */
-        OrderBatchingRaw.prototype.getConfirm = function () {
+        OrderBatchingRaw.prototype.getConfirm = function (value) {
             var _this = this;
             this.menu({
                 caption: "Подтверждение",
-                text: "С адреса: " + this.cell_name + "</br>взято сырья:" + this.value,
+                text: "С адреса: " + this.cell_name + "</br>взято сырья:" + value,
                 buttons: {
                     "Продолжить": function () {
+                        _this.value = value;
                         _this.scan_party(); ///  отличие от обычной сборки
                     },
                     "Вернуться": function () {
@@ -3971,7 +3971,8 @@ var OrderBatchingRawModule;
                     _this.scan_extra_party();
                 },
                 cancel: function () {
-                    _this.getConfirm();
+                    /*this.getConfirm();*/
+                    _this.stop();
                 }
             });
         };

@@ -74,8 +74,8 @@ module OrderBatchingRawModule {
 					text: msg,					
 					apply: (value) => {
 				    	
-						this.value = value;
-				    	this.getConfirm();
+						
+				    	this.getConfirm(value);
 					},
 					cancel: ()=>{ this.scan_cell(); }// переход обратно - на ввод ШК ячейки									
 			});    	
@@ -91,15 +91,16 @@ module OrderBatchingRawModule {
 	     *   Подтверждение количества погруженных коробок
 	     *   
 	     */   
-	    public getConfirm()
+	    public getConfirm(value)
 		{
 	
 			this.menu({
 				
 				caption: "Подтверждение",
-				text:    "С адреса: "+ this.cell_name + "</br>взято сырья:" + this.value,
+				text:    "С адреса: "+ this.cell_name + "</br>взято сырья:" + value,
 				buttons: { 
 							"Продолжить"  : () => { 
+												     this.value = value;
 							   						 this.scan_party();  ///  отличие от обычной сборки
 							},
 							
@@ -126,7 +127,8 @@ module OrderBatchingRawModule {
 						this.scan_extra_party();								
 			    },
 			    cancel: () => { 
-			    		this.getConfirm();
+			    		/*this.getConfirm();*/
+			    	    this.stop();
 			    } 
 			});
 			
