@@ -9,6 +9,7 @@ module AcceptanceModule {
 		is_btk: number;      //Режим приемки: 0 - обычная приемка, 1 - режим БТК
 		
 		is_party_new: boolean;
+		is_rollout_pallet: boolean;
 		
 		cell_id:   string;		
 		party_id:  string;
@@ -56,7 +57,6 @@ module AcceptanceModule {
 		    
 	    	
 	    	this.caption = "Принято " + this.count_input + " штук из " + this.count_total;
-	    	
 
 			this.menu({
 				
@@ -76,6 +76,11 @@ module AcceptanceModule {
 								this.get_count_total(); 								
 								
 							},
+
+                            "Отменить паллету"   : () => {
+
+                                 this.rollout_pallet();
+                            },
 							
 							"Завершить приемку"   : () => { 								
 
@@ -88,7 +93,24 @@ module AcceptanceModule {
 	    	
 	    	
 	    }
-	    
+
+
+	    public rollout_pallet() {
+
+            this.formPallet({
+                            text:  "Ввод штрих-кода паллеты для отмены",
+                            apply: (value) => {
+                                    this.pallet_id = value;
+
+                                    this.is_rollout_pallet = true;
+                                    this.get_count_total();
+                            },
+                            cancel: () => {
+                                    this.get_type();
+                            }
+                         });
+        }
+
 	    
 	    
 	    
@@ -103,10 +125,17 @@ module AcceptanceModule {
 	 	        success: (resp) => {
 	 	        					this.count_input = resp.count_input;
 	 	        					this.count_total = resp.count_total;
-	 	        					
-	 	        					
+
 	 	        					this.caption = "Принято " + this.count_input + " штук из " + this.count_total;
-	 	        					
+
+
+                                    if (this.is_rollout_pallet){
+
+                                        delete this.is_rollout_pallet;
+                                        this.get_type();
+                                    }
+
+
 	 	        					
 		 	   				    	if ( this.is_btk != 1 ){
 		 	        					/*

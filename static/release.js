@@ -610,7 +610,7 @@ var FormModule;
                 var date = this.get_date();
 
                 var year = this.CURRENT_YEAR;
-                var month = date.getMonth();
+                var month = date.getMonth() + 1;
 
                 var days = null;
 
@@ -3023,9 +3023,28 @@ var AcceptanceModule;
                         _this.is_btk = 1;
                         _this.get_count_total();
                     },
+                    "Отменить паллету": function () {
+                        _this.rollout_pallet();
+                    },
                     "Завершить приемку": function () {
                         _this.end_header();
                     }
+                }
+            });
+        };
+
+        Acceptance.prototype.rollout_pallet = function () {
+            var _this = this;
+            this.formPallet({
+                text: "Ввод штрих-кода паллеты для отмены",
+                apply: function (value) {
+                    _this.pallet_id = value;
+
+                    _this.is_rollout_pallet = true;
+                    _this.get_count_total();
+                },
+                cancel: function () {
+                    _this.get_type();
                 }
             });
         };
@@ -3043,6 +3062,11 @@ var AcceptanceModule;
                     _this.count_total = resp.count_total;
 
                     _this.caption = "Принято " + _this.count_input + " штук из " + _this.count_total;
+
+                    if (_this.is_rollout_pallet) {
+                        delete _this.is_rollout_pallet;
+                        _this.get_type();
+                    }
 
                     if (_this.is_btk != 1) {
                         /*

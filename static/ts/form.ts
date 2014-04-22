@@ -275,7 +275,7 @@ module FormModule {
 				var date = this.get_date();
 			
 				var year  = this.CURRENT_YEAR;
-				var month = date.getMonth();
+				var month = date.getMonth()+1;
 				 
 			    var days=null;
 		
