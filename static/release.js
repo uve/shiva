@@ -1376,9 +1376,6 @@ var InventoryModule;
                 },
                 "Разблокировать ячейку": function () {
                     _this.unblockCell();
-                },
-                "Назад": function () {
-                    _this.stop();
                 }
             };
 
@@ -1421,6 +1418,12 @@ var InventoryModule;
 
                 buttons = this.extend(buttons, rc_buttons);
             }
+
+            buttons = this.extend(buttons, {
+                "Назад": function () {
+                    _this.stop();
+                }
+            });
 
             var form = new FormModule.Form();
             form.FormMenu({

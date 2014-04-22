@@ -97,11 +97,8 @@ module InventoryModule {
 					},
 					"Разблокировать ячейку" : () => {	
 													this.unblockCell(); 
-					},									
-					"Назад"  : () => {
-										this.stop();
 					}
-					
+
 					
 		         };
 				
@@ -136,7 +133,9 @@ module InventoryModule {
 						
 				buttons = this.extend( buttons, msk_buttons);
 			}
-			
+
+
+
 			
 			
 			
@@ -167,7 +166,14 @@ module InventoryModule {
 						
 				buttons = this.extend( buttons, rc_buttons);
 			}
-			
+
+
+			buttons = this.extend( buttons, {
+												"Назад"  : () => {
+                                            						this.stop();
+                                            					}
+                                            });
+                                            			
 			
 			var form = new FormModule.Form();
 			form.FormMenu({				
