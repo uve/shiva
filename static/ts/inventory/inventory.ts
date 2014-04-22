@@ -49,29 +49,40 @@ module InventoryModule {
 	 	public init() {
 
 	 		
-			var buttons = { 		
-					
+			var buttons = {
+
+                    "Взять из ячейки"  : () => {
+                                                    var task = new GetFromCellModule.GetFromCell();
+                    },
+
+
+					"Привязка партии"  : () => {
+													this.plus = 0;
+													this.start();
+												},
+
+
+					"Добавление партии" : () => {
+													this.plus = 1;
+													this.start();
+					},
+
+
+
+                    "Очистка ячейки"  : () => {
+                                                    this.emptyCell();
+                    },
+
+
+
 					"Проверка ячейки"  : () => {	
 												var task = new GetCellInfoModule.GetCellInfo();
 					},		
 					
 					
-					"Привязка партии"  : () => {	
-													this.plus = 0;
-													this.start();    	
-												},		
-					"Добавление партии" : () => {
-													this.plus = 1;
-													this.start();		
-					},			
-					
-					"Очистка ячейки"  : () => {												
-													this.emptyCell(); 
-					},			
-					
-					"Взять из ячейки"  : () => {
-													var task = new GetFromCellModule.GetFromCell();
-					},	
+
+
+
 					"Перемещение ячейки" : () => {				
 													var task = new MovingPalletModule.MovingPallet();
 					},							
@@ -123,7 +134,7 @@ module InventoryModule {
 						};
 		
 						
-				buttons = this.extend(msk_buttons, buttons);
+				buttons = this.extend( buttons, msk_buttons);
 			}
 			
 			
@@ -154,7 +165,7 @@ module InventoryModule {
 						};
 		
 						
-				buttons = this.extend(rc_buttons, buttons);
+				buttons = this.extend( buttons, rc_buttons);
 			}
 			
 			

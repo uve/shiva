@@ -1348,8 +1348,8 @@ var InventoryModule;
         Inventory.prototype.init = function () {
             var _this = this;
             var buttons = {
-                "Проверка ячейки": function () {
-                    var task = new GetCellInfoModule.GetCellInfo();
+                "Взять из ячейки": function () {
+                    var task = new GetFromCellModule.GetFromCell();
                 },
                 "Привязка партии": function () {
                     _this.plus = 0;
@@ -1362,8 +1362,8 @@ var InventoryModule;
                 "Очистка ячейки": function () {
                     _this.emptyCell();
                 },
-                "Взять из ячейки": function () {
-                    var task = new GetFromCellModule.GetFromCell();
+                "Проверка ячейки": function () {
+                    var task = new GetCellInfoModule.GetCellInfo();
                 },
                 "Перемещение ячейки": function () {
                     var task = new MovingPalletModule.MovingPallet();
@@ -1403,7 +1403,7 @@ var InventoryModule;
                     }
                 };
 
-                buttons = this.extend(msk_buttons, buttons);
+                buttons = this.extend(buttons, msk_buttons);
             }
 
             if (main.rc == "1") {
@@ -1419,7 +1419,7 @@ var InventoryModule;
                     }
                 };
 
-                buttons = this.extend(rc_buttons, buttons);
+                buttons = this.extend(buttons, rc_buttons);
             }
 
             var form = new FormModule.Form();
