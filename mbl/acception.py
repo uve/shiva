@@ -119,6 +119,12 @@ class AcceptionHandler(BaseHandler):
                                                 goden_do, is_btk, cell_id])
             return
 
+
+        if param == 'drop_pallet':
+            # Откат паллеты в режиме приемки
+            self.proc("shiva.DropPallet", [pallet_id])
+            return
+
             
         if param == 'addnewpallet_oldparty':        
             # Добавить сушествующую паллету, не бтк            

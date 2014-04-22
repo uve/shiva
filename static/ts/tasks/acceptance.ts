@@ -101,15 +101,36 @@ module AcceptanceModule {
                             text:  "Ввод штрих-кода паллеты для отмены",
                             apply: (value) => {
                                     this.pallet_id = value;
-
-                                    this.is_rollout_pallet = true;
-                                    this.get_count_total();
+                                    this.drop_pallet();
                             },
                             cancel: () => {
                                     this.get_type();
                             }
                          });
         }
+
+
+         //  проверка приёмочной ячейки - можно ли в неё принимать
+        public drop_pallet(){
+
+
+            this.ajax({
+                type: "POST",
+                url: "/mbl/acception/drop_pallet",
+                data: {
+                            pallet_id:   this.pallet_id
+                },
+                success: () => {
+                                    this.is_rollout_pallet = true;
+                                    this.get_count_total();
+                },
+                error:   () => {
+                                    this.get_type();
+                }
+            });
+
+        }
+
 
 	    
 	    

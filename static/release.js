@@ -3039,11 +3039,28 @@ var AcceptanceModule;
                 text: "Ввод штрих-кода паллеты для отмены",
                 apply: function (value) {
                     _this.pallet_id = value;
+                    _this.drop_pallet();
+                },
+                cancel: function () {
+                    _this.get_type();
+                }
+            });
+        };
 
+        //  проверка приёмочной ячейки - можно ли в неё принимать
+        Acceptance.prototype.drop_pallet = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/acception/drop_pallet",
+                data: {
+                    pallet_id: this.pallet_id
+                },
+                success: function () {
                     _this.is_rollout_pallet = true;
                     _this.get_count_total();
                 },
-                cancel: function () {
+                error: function () {
                     _this.get_type();
                 }
             });
