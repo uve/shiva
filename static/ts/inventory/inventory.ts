@@ -173,7 +173,7 @@ module InventoryModule {
                                             						this.stop();
                                             					}
                                             });
-                                            			
+
 			
 			var form = new FormModule.Form();
 			form.FormMenu({				

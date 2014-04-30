@@ -100,6 +100,10 @@ class BaseHandler(RequestHandler):
                 msg = e.message.message
             except:
                 msg = e.message
+
+            text = msg.split("%%")
+            if len(text) > 2:
+                msg = text[1]
             
             self.write({'error': msg })
             self.finish()            
