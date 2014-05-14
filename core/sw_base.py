@@ -9,8 +9,6 @@ from tornado.httpclient import HTTPError
 from tornado.escape import json_encode, json_decode
 
 
-
-
 from core.sessions import SessionManager#Session, uid2sid
 
 from settings import TORNADO_HASH, STATIC_DIR
@@ -53,8 +51,6 @@ class BaseHandler(RequestHandler):
         self.set_header('Access-Control-Max-Age', 604800)
         self.set_header('Access-Control-Allow-Headers', '*')
         
-       
-        
 
     def on_finish(self):
         """Called after the end of a request.
@@ -67,8 +63,6 @@ class BaseHandler(RequestHandler):
         
         close_connection(self)   
 
-
-    
     
     def _handle_request_exception(self, e):
         
