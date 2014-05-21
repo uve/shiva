@@ -1,4 +1,4 @@
-﻿- Python 2.7
+- Python 2.7
 - cx_oracle
 - pytils
 - PIL
