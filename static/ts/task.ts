@@ -148,6 +148,9 @@ module TaskModule {
 		            	case 3:    /* Размещение */
 		            		task = new AllocationModule.Allocation();            	                 	      		                    	                    
 		            		break;
+                        case 9:    /* Размещение */
+		            		task = new AllocationModule.Allocation();
+		            		break;
 		            		
 		            	case 5:   /* Приемка */
 		            		task = new AcceptanceModule.Acceptance();

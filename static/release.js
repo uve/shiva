@@ -982,6 +982,9 @@ var TaskModule;
                         case 3:
                             task = new AllocationModule.Allocation();
                             break;
+                        case 9:
+                            task = new AllocationModule.Allocation();
+                            break;
 
                         case 5:
                             task = new AcceptanceModule.Acceptance();
