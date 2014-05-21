@@ -18,7 +18,6 @@ MAX_SESSIONS = int(os.getenv("MAX_SESSIONS", "1"))
 # DB_SID = "ORASCLAD"
 DB_SID = "FEO"
 
-
 # DB_SERVERS = [  "192.168.0.1:1521", "192.168.0.161:1521", "192.168.0.170:1521", "localhost:1522"]
 
 
@@ -28,7 +27,6 @@ os.environ['NLS_LANG'] = 'RUSSIAN_CIS.UTF8'
 
 
 DEFAULT_CLIENT = "300020301"
-
 
 
 FOR_TESTING = False
