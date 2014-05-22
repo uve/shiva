@@ -75,7 +75,7 @@ class RoleTaskDataHandler(BaseHandler):
         task_to   = self.get_argument("task_to",   default=None)
 
         res = self.proc("shiva_task.set_task_type_priority", [role_id, task_from, task_to])
-
+        
 
 
 
