@@ -20,11 +20,11 @@ class WareAddressHandler(BaseHandler):
 
     def get(self):
 
-        
+
         out = self.cursor.var(cx_Oracle.CURSOR)
-        
-        all_tovar_types = self.proc("shiva.GetTovarTypeList", [self.session.rc, out])                    
-        
+
+        all_tovar_types = self.proc("shiva.GetTovarTypeList", [self.session.rc, out])
+
         # список типов товара
         tovar_types = [{"id": i[0], "type":"button", "text": i[1]} for i in all_tovar_types[-1].fetchall()]
         
@@ -45,7 +45,6 @@ class WareAddressHandler(BaseHandler):
 
                            {'type':"button", 'text':'Выделенные в CSV', 'img':"excel24.png", 'imgdis':"excel24g.png", 'action':'do_csv', 'title':'Сохранить в CSV'},
                            {'type':"button", 'text':'Все в CSV', 'img':"excel24.png", 'imgdis':"excel24g.png", 'action':'do_csv_all', 'title':'Сохранить все в CSV'},
-               
                  ]
     
 
@@ -148,7 +147,6 @@ class WareAddressHandler(BaseHandler):
 #==============================================================================
 class WareAddressDataHandler(BaseHandler):
     urls = r'/warehouse/wareaddr/data'
-
 
     def get(self): 
         

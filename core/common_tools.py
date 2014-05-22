@@ -50,8 +50,12 @@ def init_connection(self):
         self.db.ping()                
     except:
         self.pool   = Pool()
-        self.db     = self.pool.acquire()        
+        self.db     = self.pool.acquire()
+        self.db.autocommit = True
+
         pass
+
+
 
     self.cursor = self.db.cursor()
        

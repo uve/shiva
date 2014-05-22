@@ -7,6 +7,13 @@ from admin.rawsql import RawSQLDATAHandler
 from admin.rawsql import RawSQLHandler
 from admin.rolemod import AdminDataHandler
 from admin.rolemod import RoleModuleHandler
+
+
+from admin.roletask import RoleTaskHandler
+from admin.roletask import RoleTaskDataHandler
+
+
+
 from admin.sys import SysStatDataHandler
 from admin.sys import SysStatDataHandlerStatus
 from admin.sys import SysStatHandler
@@ -129,6 +136,10 @@ handlers = [
                 (r"/admin/rawsql/data", RawSQLDATAHandler),
                 (r"/admin/rolemod", RoleModuleHandler),
                 (r"/admin/rolemod/data", AdminDataHandler),
+
+                (r"/admin/roletask",      RoleTaskHandler),
+                (r"/admin/roletask/data", RoleTaskDataHandler),
+
                 (r"/admin/sys", SysStatHandler),
                 (r"/admin/sys/data", SysStatDataHandler),
                 (r"/admin/sys/status", SysStatDataHandlerStatus),
