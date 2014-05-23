@@ -3,9 +3,9 @@
 var sw_grid = new dhtmlXGridObject({
     parent: "sw_grid1",
     columns:[
-              { type:"ro", align:"left",   width:"0",   label:"Id" },
+              { type:"ro", align:"left",   width:"50",   label:"Id" },
               { type:"ro", align:"left",   width:"200",  label:"Приоритет" },
-              { type:"ro", align:"left",   width:"0",   label:"order" }
+              { type:"ro", align:"left",   width:"50",   label:"order" }
 
     ]});
 
@@ -13,10 +13,22 @@ var sw_grid = new dhtmlXGridObject({
 
 sw_grid.enableDragAndDrop(true);
 
-sw_grid.enableDragOrder(true);
-//sw_grid.setDragText(single,plural);
+sw_grid.setDragBehavior("sibling");
 
-sw_grid.attachEvent("onDrop", function(task_from, task_to){
+sw_grid.rowToDragElement=function(id){
+    //any custom logic here
+    var text = sw_grid.cells(id,1).getValue(); // prepare a text string
+    return text;
+}
+
+sw_grid.setDragBehavior(true);
+
+
+sw_grid.attachEvent("onDrop", function(task_from, task_to, b){
+
+
+    console.log(task_from, task_to, b);
+
 
     var role_id = combo.getSelectedValue();
 
