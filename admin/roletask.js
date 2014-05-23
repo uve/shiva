@@ -3,9 +3,9 @@
 var sw_grid = new dhtmlXGridObject({
     parent: "sw_grid1",
     columns:[
-              { type:"ro", align:"left",   width:"50",   label:"Id" },
+              { type:"ro", align:"left",   width:"0",   label:"Id" },
               { type:"ro", align:"left",   width:"200",  label:"Приоритет" },
-              { type:"ro", align:"left",   width:"50",   label:"order" }
+              { type:"ro", align:"left",   width:"0",   label:"order" }
 
     ]});
 
