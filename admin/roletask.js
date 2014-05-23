@@ -3,16 +3,17 @@
 var sw_grid = new dhtmlXGridObject({
     parent: "sw_grid1",
     columns:[
-              { type:"ro", align:"left",   width:"50",   label:"Id" },
+              { type:"ro", align:"left",   width:"0",   label:"Id" },
               { type:"ro", align:"left",   width:"200",  label:"Приоритет" },
-              { type:"ro", align:"left",   width:"50",   label:"order" }
+              { type:"ro", align:"left",   width:"0",   label:"order" }
 
     ]});
 
 /*sw_grid.attachHeader("#select_filter,#text_filter,#text_filter,&nbsp;,#cspan");*/
 
 sw_grid.enableDragAndDrop(true);
-//sw_grid.enableDragOrder(mode);
+
+sw_grid.enableDragOrder(true);
 //sw_grid.setDragText(single,plural);
 
 sw_grid.attachEvent("onDrop", function(task_from, task_to){
