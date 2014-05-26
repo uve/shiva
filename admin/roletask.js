@@ -7,7 +7,21 @@ var sw_grid = new dhtmlXGridObject({
               { type:"ro", align:"left",   width:"200",  label:"Приоритет" },
               { type:"ro", align:"left",   width:"0",   label:"order" }
 
+
     ]});
+
+
+sw_grid.attachEvent("onMouseOver", function (row,col) {
+
+    var cellObj = sw_grid.cells(row,col);
+
+
+    if (col == 1) {
+        cellObj.cell.style.cursor="pointer";
+    } else {
+        cellObj.cell.style.cursor="default";
+    }
+});
 
 /*sw_grid.attachHeader("#select_filter,#text_filter,#text_filter,&nbsp;,#cspan");*/
 

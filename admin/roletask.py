@@ -29,20 +29,12 @@ class RoleTaskHandler(BaseHandler):
 
 
 
+        notes = loader.load("notes.js").generate()
+
         result = loader.load("roletask.js").generate(all_roles=all_roles)
 
 
-        self.write({'def':[
-                           '''<table style='width:100%'>
-                                <tr>
-                                    <td style="width:130px;">Выберите роль:</td>
-                                    <td><select style="width:300px;" id="combo_zone1"></select></td>
-                                </tr>
-                                <tr><td colspan="2"><div id='sw_grid1' style="width:100%; height: 500px;"></div></td></tr>
-                              </table>
-                           '''
-                           ],
-
+        self.write({'def':[ notes ],
                     'cmd': result
                     })
 
