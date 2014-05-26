@@ -27,7 +27,7 @@ sw_grid.setDragBehavior(true);
 sw_grid.attachEvent("onDrop", function(task_from, task_to, b){
 
 
-    console.log(task_from, task_to, b);
+    /*console.log(task_from, task_to, b);*/
 
 
     var role_id = combo.getSelectedValue();

@@ -18,7 +18,7 @@ class AllTaskHandler(BaseHandler):
     def get(self):
         st = datetime.datetime.now().strftime('%d.%m.%Y')
 
-        loader = template.Loader(os.path.join(ROOT_DIR, 'admin'))
+        loader = template.Loader(os.path.join(ROOT_DIR, 'personnel'))
         
         result = loader.load("alltsk.js").generate(calendar=True)
 
