@@ -178,7 +178,22 @@ class BatchingOrders(BaseHandler):
             
             self.proc("shiva.SetPalletToDelivery", [pallet_id, target_id])                 
             return
-            
+
+
+        if param == 'end_pallet_raw':
+
+            out = self.cursor.var(cx_Oracle.CURSOR)
+            res = self.proc("shiva.EndPallet_Raw", [pallet_id, out])
+
+
+            target_id, target_name = res[-1].fetchone()
+
+            self.write({
+                         'target_id':   target_id,
+                         'target_name': target_name
+            })
+
+            return
                 
         
 

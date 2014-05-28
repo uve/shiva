@@ -714,38 +714,47 @@ var FormModule;
                 select.size = 10;
                 
                 */
+                var input_template = "<label><input type='radio' name='chk_group' value='%d' title='%s' />%s</label>";
+
                 var selectArr = new Array();
-                selectArr.push('<select id="select-1" size=10>');
+                selectArr.push('<div id="select-1" size=10>');
 
                 for (var i = 0; i < settings.options.length; i++) {
-                    selectArr.push("<option value='" + settings.options[i]["id"] + "'>" + settings.options[i]["name"] + "</option>");
+                    var res = input_template;
+                    res = res.replace("%d", settings.options[i]["id"]);
+                    res = res.replace("%s", settings.options[i]["name"]);
+                    res = res.replace("%s", settings.options[i]["name"]);
 
-                    delete settings.options[i];
+                    selectArr.push(res);
+                    /*delete settings.options[i];*/
                 }
 
                 settings.options = null;
 
-                selectArr.push("</select>");
+                selectArr.push("</div>");
 
                 all_options.innerHTML = selectArr.join("");
 
                 var select = document.getElementById("select-1");
 
-                select.onchange = function () {
-                    var item = select.selectedIndex.toString();
+                var form = this;
 
-                    _this.value = select.options[item].value;
-                    _this.text = select.options[item].text;
-                    /*
-                    var item = select.selectedIndex;
-                    this.value = settings.options[item]["id"];
-                    this.text  = settings.options[item]["name"];
-                    */
+                select.onclick = function () {
+                    var radios = document.getElementsByName("chk_group");
+
+                    for (var i = 0; i < radios.length; i++) {
+                        var item = radios[i];
+                        if (item.checked) {
+                            ;
+
+                            form.value = item.value;
+                            form.text = item.title;
+
+                            break;
+                        }
+                    }
                 };
 
-                /*
-                all_options.appendChild(select);
-                */
                 document.getElementById("options-1").style.display = "block";
             }
 
@@ -4050,7 +4059,64 @@ var OrderBatchingRawModule;
                     },
                     "Взять ещё": function () {
                         _this.getCount();
+                    },
+                    "Закончить эту паллету": function () {
+                        _this.end_pallet_raw();
                     }
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.end_pallet_raw = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/batching/end_pallet_raw",
+                data: {
+                    pallet_id: this.pallet_id
+                },
+                success: function (resp) {
+                    _this.target_id = resp.target_id;
+                    _this.target_name = resp.target_name;
+
+                    _this.scan_target_raw();
+                },
+                error: function () {
+                    _this.add_again();
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.scan_target_raw = function () {
+            var _this = this;
+            this.formBarcode({
+                caption: "Ввод штрих-кода целевой ячейки",
+                text: "Поместить на адрес: " + this.target_name,
+                expected: this.target_id,
+                apply: function (value) {
+                    _this.target_id = value;
+                    _this.setPalletToDelivery_raw();
+                },
+                cancel: function () {
+                    _this.add_again();
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.setPalletToDelivery_raw = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/batching/set_pallet",
+                data: {
+                    pallet_id: this.pallet_id,
+                    target_id: this.target_id
+                },
+                success: function (resp) {
+                    _this.getPallet();
+                },
+                error: function () {
+                    _this.get_cell();
                 }
             });
         };

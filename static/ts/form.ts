@@ -404,49 +404,58 @@ module FormModule {
 				select.size = 10;
 		
 				*/
-		
+
+
+		        var input_template = "<label><input type='radio' name='chk_group' value='%d' title='%s' />%s</label>";
 
 				var selectArr = new Array();
-				selectArr.push ('<select id="select-1" size=10>');
+				selectArr.push ('<div id="select-1" size=10>');
 				
 				for (var i = 0; i < settings.options.length; i++){ 
-					
-				    selectArr.push ("<option value='" + settings.options[i]["id"] + "'>" + settings.options[i]["name"] + "</option>");
+
+					var res = input_template;
+					res = res.replace("%d", settings.options[i]["id"]);
+					res = res.replace("%s", settings.options[i]["name"]);
+					res = res.replace("%s", settings.options[i]["name"]);
+
+				    selectArr.push(res);
 				    
-				    delete settings.options[i];
+				    /*delete settings.options[i];*/
 				}
 				
 				settings.options = null;
 				
-				selectArr.push ("</select>");
+				selectArr.push ("</div>");
 
-				all_options.innerHTML = selectArr.join ("");	
-				
-				
-				var select = <HTMLSelectElement>document.getElementById("select-1");		
-					
-				select.onchange = () => { 
-		
+				all_options.innerHTML = selectArr.join("");
 
-					var item = select.selectedIndex.toString();
-								
-					this.value = select.options[item].value;
-					this.text  = select.options[item].text;
-					
-				/*
-					var item = select.selectedIndex;
-					this.value = settings.options[item]["id"];
-					this.text  = settings.options[item]["name"];
-					*/				
-	
-				};
-				
-				
-				
-				/*
-				all_options.appendChild(select);
-				*/
-				
+
+				var select = <HTMLElement>document.getElementById("select-1");
+
+
+				var form = this;
+
+                select.onclick = () => {
+
+                        var radios = document.getElementsByName("chk_group");
+
+                        for (var i = 0; i < radios.length; i++) {
+
+                            var item = <HTMLInputElement> radios[i];
+                            if (item.checked) {;
+
+                                form.value = item.value;
+                                form.text  = item.title;
+
+
+                                break;
+                            }
+                        }
+
+
+                    };
+
+
 				(<HTMLElement>document.getElementById("options-1")).style.display = "block";
 			
 			}

@@ -168,12 +168,83 @@ module OrderBatchingRawModule {
 							},
 							
 							"Взять ещё"   : () => {	 this.getCount();
-							}
+							},
+
+                            "Закончить эту паллету"   : () => {	 this.end_pallet_raw();
+                            }
 				         }
 	
 			});
 			
 		}
+
+		public end_pallet_raw(){
+
+
+			this.ajax({
+        	            type: "POST",
+        	            url: "/mbl/batching/end_pallet_raw",
+        	            data: {
+        	            	    pallet_id: this.pallet_id
+        	                   },
+        	            success: (resp) => {
+
+
+                              this.target_id   = resp.target_id;
+                              this.target_name = resp.target_name;
+
+                              this.scan_target_raw();
+
+        	            },
+        	            error: () => { this.add_again(); }
+        	        });
+
+
+		}
+
+
+
+        public scan_target_raw() {
+
+            this.formBarcode({
+
+                caption: "Ввод штрих-кода целевой ячейки",
+                text:    "Поместить на адрес: " + this.target_name,
+                expected: this.target_id,
+                apply: (value) => {
+                                    this.target_id = value;
+                                    this.setPalletToDelivery_raw();
+                },
+                cancel: () => { this.add_again(); }
+            });
+
+        }
+
+
+
+
+	    public setPalletToDelivery_raw()
+		{
+
+			this.ajax({
+	            type: "POST",
+	            url: "/mbl/batching/set_pallet",
+	            data: {
+	            	    pallet_id: this.pallet_id,
+	            	    target_id: this.target_id
+	                   },
+	            success: (resp) => {
+
+	            	this.getPallet();
+
+	            },
+	            error: () => { this.get_cell(); }
+	        });
+
+		}
+
+
+
 	
 	 
 	   
