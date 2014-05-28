@@ -440,6 +440,8 @@ module FormModule {
 
 				var select = <HTMLElement>document.getElementById("select-1");
 
+				select.style.height = (document.body.clientHeight/2) + "px";
+
 
             /*
 				var labels = document.getElementsByClassName("radio-label");
