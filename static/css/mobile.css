@@ -256,7 +256,7 @@ h3 {
     overflow-y: scroll;
     overflow-x: hidden;
 
-    max-height: 150px;
+    height: 100px;
 }
 
 #select-1 label {
@@ -264,7 +264,7 @@ h3 {
     background-color: #9AD2E9;
     width: 100%;
     float: left;
-    padding: 5px;
+    padding: 1px;
     margin: 2px;
 }
 

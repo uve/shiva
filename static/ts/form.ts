@@ -406,7 +406,7 @@ module FormModule {
 				*/
 
 
-		        var input_template = "<label><input type='radio' name='chk_group' value='%d' title='%s' />%s</label>";
+		        var input_template = "<label class='radio-label' for='b%d'><input id='b%d' type='radio' name='chk_group' value='%d' title='%s' />%s</label>";
 
 				var selectArr = new Array();
 				selectArr.push ('<div id="select-1" size=10>');
@@ -414,9 +414,17 @@ module FormModule {
 				for (var i = 0; i < settings.options.length; i++){ 
 
 					var res = input_template;
+
+
 					res = res.replace("%d", settings.options[i]["id"]);
+					res = res.replace("%d", settings.options[i]["id"]);
+					res = res.replace("%d", settings.options[i]["id"]);
+
 					res = res.replace("%s", settings.options[i]["name"]);
 					res = res.replace("%s", settings.options[i]["name"]);
+					res = res.replace("%s", settings.options[i]["name"]);
+
+					/*res = res.replace("%s", settings.options[i]["name"]);*/
 
 				    selectArr.push(res);
 				    
@@ -432,6 +440,21 @@ module FormModule {
 
 				var select = <HTMLElement>document.getElementById("select-1");
 
+
+            /*
+				var labels = document.getElementsByClassName("radio-label");
+
+
+				for (var j = 0; j < labels.length; j++) {
+
+                    var object = <HTMLElement> labels[i];
+
+                     for(var i=0;i<object.childNodes.length;i++) {
+                        object.childNodes[i].onclick();
+                     }
+                }
+
+                */
 
 				var form = this;
 
