@@ -941,8 +941,15 @@ var TaskModule;
         Task.prototype.start = function () {
         };
 
+        Task.prototype.toogle_status = function () {
+            var point = document.getElementById("point-status");
+            point.style.display = (point.style.display == "none") ? "block" : "none";
+        };
+
         Task.prototype.task_check = function () {
             var _this = this;
+            this.toogle_status();
+
             if (status == "false" || status == false) {
                 return false;
             }

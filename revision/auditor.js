@@ -42,11 +42,18 @@ window.Cleaner.push(sw_grid2);
 var z=dhtmlXComboFromSelect("combo_zone1");
 //z.enableFilteringMode("between");
 
+//z.setSize(50);
+
+
 z.disable(1);
 
 var select_types=dhtmlXComboFromSelect("combo_zone2");
 //select_types.enableFilteringMode("between");
-            
+
+select_types.readonly(true);
+select_types.setOptionHeight(300);
+z.setOptionHeight(300);
+
 {% for item in all_types %}
 	select_types.addOption("{{ item[0] }}", "{{ item[1] }}");
 {% end %}

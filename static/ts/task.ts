@@ -57,14 +57,23 @@ module TaskModule {
 	 	public start() {
 
 	 	}
-	
+
+
+	    public toogle_status(){
+
+            var point = <HTMLElement>document.getElementById("point-status");
+            point.style.display = (point.style.display == "none") ? "block" : "none";
+	    }
 		
 	 	
 	 	public task_check() {	 		
-	 		
-	 		if (status == "false" || status == false ){ 			
+
+            this.toogle_status();
+
+	 		if (status == "false" || status == false ){
 	 			return false; 			
 	 		}
+
 
 			this.ajax({
 	            type: "POST",
