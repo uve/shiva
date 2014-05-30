@@ -36,7 +36,15 @@ class Saldo_GapHandler(BaseHandler):
                            {'type':"button", 'text':'Печать', 'img':"print.gif", 'imgdis':"print_dis.gif", 'action':'do_print'},
                            {'type':"text", 'text':"Подразделение:"},
                            {'id':'departs', 'type':"buttonSelect",  'mode':'select', 'selected': all_departs[0].id,  'items':departs},
-                     ],
+
+                           '''<table style='width:100%'>
+
+                                <tr><td colspan="2"><div id='sw_grid1' style="width:100%; height:250px;"></div></td></tr>
+                                <tr><td colspan="2"><span>Детализация:</span></td></tr>
+                                <tr><td colspan="2"><div id='sw_grid2' style="width:100%; height:300px;"></div></td></tr>
+
+                              </table>
+                           '''],
 
                     'cmd': result
          
@@ -51,6 +59,7 @@ class Saldo_GapDataHandler(BaseHandler):
     def get(self, param):
         
         departs = self.get_argument("departs", None)
+        code    = self.get_argument("code", None)
             
             
         if param == 'list':
@@ -64,4 +73,17 @@ class Saldo_GapDataHandler(BaseHandler):
             
             self.write(all_results)  
             return
-            
+
+
+
+        if param == 'detail':
+
+
+            out = self.cursor.var(cx_Oracle.CURSOR)
+
+            res = self.proc("shiva.tovar_address", [departs, code, out])
+
+            all_results = fetchall(res[-1])
+
+            self.write(all_results)
+            return
