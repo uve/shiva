@@ -40,76 +40,52 @@ window.Cleaner.push(sw_grid2);
 
 
 var z=dhtmlXComboFromSelect("combo_zone1");
-//z.enableFilteringMode("between");
-
-//z.setSize(50);
 
 
-z.disable(1);
+z.enableFilteringMode(true,"dummy");
+z.attachEvent("onDynXLS", myComboFilter);
 
-var select_types=dhtmlXComboFromSelect("combo_zone2");
-//select_types.enableFilteringMode("between");
 
-select_types.readonly(true);
-select_types.setOptionHeight(300);
+function myComboFilter(text){//where 'text' is the text typed by the user in the combo
+    z.clearAll();
+
+    if (text.length < 3)
+        return false;
+
+    dhtmlxAjax.get("/revision/auditor/data/products?mask="+text, function(xml){
+
+          z.loadXMLString(xml.xmlDoc.responseText);
+    })
+};
+
+
 z.setOptionHeight(300);
 
-{% for item in all_types %}
-	select_types.addOption("{{ item[0] }}", "{{ item[1] }}");
-{% end %}
 
 
-
-select_types.attachEvent("onChange",function(){
-      typet = select_types.getSelectedValue();
-     
-      z.disable(1);
-      z.clearAll();
-      
-      
-      dhtmlxAjax.get("/revision/auditor/data/tovars?typet=" + typet,function(loader){
-
-          var results = JSON.parse(loader.xmlDoc.responseText);
-          
-          
-          for (var i=0; i<results.length; i++) {
-        		z.addOption(results[i][0], "[" + results[i][1] + "] " + results[i][2]);
-          }
-          
-          z.disable(0);
-          
-          //var nrQ = document.getElementById("tovarsaldo");
-          //nrQ.innerHTML = loader.xmlDoc.responseText;
-          
-     });
-
-});
-
-
-   
-    function sumColumn(sw_grid, ind) {
-        var out = 0;
-        for (var i = 0; i < sw_grid.getRowsNum(); i++) {
-            out += parseFloat(sw_grid.cells2(i, ind).getValue());
-        }
-        return out;
+function sumColumn(sw_grid, ind) {
+    var out = 0;
+    for (var i = 0; i < sw_grid.getRowsNum(); i++) {
+        out += parseFloat(sw_grid.cells2(i, ind).getValue());
     }
+    return out;
+}
 
-   
-    function grid_update(sw_grid) {
-             
-         row_id = MAXCONST;   //Const                                                                                            
-         
-         sw_grid.deleteRow(row_id);
-         
-         res = sumColumn(sw_grid, 3);       
-         
-         sw_grid.addRow(row_id,["","", "Всего:", res]);
-	     sw_grid.setRowTextBold(row_id);
-	     
-	     sw_grid.lockRow(row_id, 'true');
- 
-     }
+
+function grid_update(sw_grid) {
+
+     row_id = MAXCONST;   //Const
+
+     sw_grid.deleteRow(row_id);
+
+     res = sumColumn(sw_grid, 3);
+
+     sw_grid.addRow(row_id,["","", "Всего:", res]);
+     sw_grid.setRowTextBold(row_id);
+
+     sw_grid.lockRow(row_id, 'true');
+
+ }
     
     
  sw_grid1.attachEvent("onAfterSorting", function(index,type,direction){
@@ -132,9 +108,9 @@ select_types.attachEvent("onChange",function(){
      self.load(sw_grid2, "/revision/auditor/data/cell_history?cell_id=" + id);
      
  });
-                     
- 
- 
+
+
+
       
                     
 z.attachEvent("onChange",function(){
@@ -143,6 +119,8 @@ z.attachEvent("onChange",function(){
       if (!m_product){
     	  return false;
       }
+
+      console.log(m_product);
       
       var depart  = self.Toolbars["def"].getListOptionSelected("departs");
       
@@ -150,15 +128,7 @@ z.attachEvent("onChange",function(){
             grid_update(sw_grid1);  
       });
       
-      
-      /*
-      self.load(sw_grid2, "/revision/auditor/data/head?mode=2&tovar=" + m_product + "&depart="+depart,function() {                                    
-            grid_update(sw_grid2);  
-      });
-      */
-      
-      
-      
+
             
             
     dhtmlxAjax.get("/revision/auditor/data/head?mode=1&tovar=" + m_product + "&depart="+depart,function(loader){

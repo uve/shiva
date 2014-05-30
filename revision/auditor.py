@@ -27,12 +27,13 @@ class AuditorHandler(BaseHandler):
     def get(self):
                                  
 
-        self.execute("select id, name from tehno.type_tovar where hide=1 order by name")     
-        all_types = self.cursor.fetchall()                                        
+
+        #self.execute("select id, name from tehno.type_tovar where hide=1 order by name")
+        #all_types = self.cursor.fetchall()
   
                         
         loader = template.Loader(os.path.join(ROOT_DIR, 'revision'))
-        result = loader.load("auditor.js").generate(all_types=all_types)
+        result = loader.load("auditor.js").generate()#all_types=all_types)
        
         all_departs = RC.get_current(rc=self.session.rc).depart_cls
         # кнопки с департаментами РЦ
@@ -50,8 +51,10 @@ class AuditorHandler(BaseHandler):
                            {'type':"button", 'img':"excel24.png", 'imgdis':"excel24g.png", 'action':'do_tool_revision', 'text':'Отправить задание на терминал'},
                            '''<table style='width:100%'>
                                 <tr>
-                                    <td style="width:200px;"><select style="width:100%;" id="combo_zone2" name="alfa1"></select></td>
-                                    <td style="width:400px;"><select style="width:100%;" id="combo_zone1" name="alfa1"></select></td>                                    
+                                    <!--<td style="width:200px;"><select style="width:100%;" id="combo_zone2" name="alfa1"></select></td>-->
+
+                                    <td style="width:400px;"><select style="width:100%;" id="combo_zone1" name="alfa1"></select></td>
+                                    <td style="width:150px;">Поиск продукта</td>
                                 </tr>
                                 <tr>
                                     <td ><span>Список ячеек с продуктом:</span></td>
@@ -84,8 +87,33 @@ class AuditorDataHandler(BaseHandler):
         tovar = self.get_argument("tovar", "0")
         mode  = self.get_argument("mode",  "0")
 
-        out = self.cursor.var(cx_Oracle.CURSOR) 
-        
+        out = self.cursor.var(cx_Oracle.CURSOR)
+
+
+        if param == 'products':
+
+            pos = int(self.get_argument("pos", 0))
+            mask = self.get_argument("mask", None)
+
+            res = self.proc("shiva.tovar_list", [mask, out])
+
+            all_results = ["\n<complete>"]
+
+            for item in res[-1].fetchall()[pos:]:
+                value = '''<option value="%s">[%s] %s</option>''' % (item[0], item[1], item[2])
+
+                value = value.replace('&', '&amp;')
+
+                all_results.append(value)
+
+            all_results.append("</complete>")
+
+
+            self.write_XML("\n".join(all_results))
+
+            return
+
+
         if param == 'tovars':
                 
             self.execute("select id, code, name from tovar where hide=1 and typet=%s order by name" % typet)     
