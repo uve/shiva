@@ -34,32 +34,22 @@ var sw_grid2 = new dhtmlXGridObject({
         ]
     });
                
-window.Cleaner.push(sw_grid2);       
-               
+window.Cleaner.push(sw_grid2);
 
 
 
-var z=dhtmlXComboFromSelect("combo_zone1");
+
+window.do_tool_print = function(){
+    var m_product = z.getSelectedValue();
+    self.NetSend("/revision/auditor/data/print?mode=1&tovar=" + m_product);
+}
+
+window.do_tool_revision = function(){
+    var m_product = z.getSelectedValue();
+    self.NetSend("/revision/auditor/data/maketaskrevision?tovar=" + m_product);
+}
 
 
-z.enableFilteringMode(true,"dummy");
-z.attachEvent("onDynXLS", myComboFilter);
-
-
-function myComboFilter(text){//where 'text' is the text typed by the user in the combo
-    z.clearAll();
-
-    if (text.length < 3)
-        return false;
-
-    dhtmlxAjax.get("/revision/auditor/data/products?mask="+text, function(xml){
-
-          z.loadXMLString(xml.xmlDoc.responseText);
-    })
-};
-
-
-z.setOptionHeight(300);
 
 
 
@@ -74,40 +64,72 @@ function sumColumn(sw_grid, ind) {
 
 function grid_update(sw_grid) {
 
-     row_id = MAXCONST;   //Const
+    row_id = MAXCONST;   //Const
 
-     sw_grid.deleteRow(row_id);
+    sw_grid.deleteRow(row_id);
 
-     res = sumColumn(sw_grid, 3);
+    res = sumColumn(sw_grid, 3);
 
-     sw_grid.addRow(row_id,["","", "Всего:", res]);
-     sw_grid.setRowTextBold(row_id);
+    sw_grid.addRow(row_id,["","", "Всего:", res]);
+    sw_grid.setRowTextBold(row_id);
 
-     sw_grid.lockRow(row_id, 'true');
+    sw_grid.lockRow(row_id, 'true');
 
- }
-    
-    
- sw_grid1.attachEvent("onAfterSorting", function(index,type,direction){
-       grid_update(sw_grid1);                               
- });
- 
- /*
+}
+
+
+sw_grid1.attachEvent("onAfterSorting", function(index,type,direction){
+    grid_update(sw_grid1);
+});
+
+/*
  sw_grid2.attachEvent("onAfterSorting", function(index,type,direction){
-       grid_update(sw_grid2);                               
+ grid_update(sw_grid2);
  });
- */                     
-     
- 
+ */
 
- sw_grid1.attachEvent("onRowSelect", function(id){
 
-     if (id == MAXCONST){
-    	 return false;
-     } 
-     self.load(sw_grid2, "/revision/auditor/data/cell_history?cell_id=" + id);
-     
- });
+
+sw_grid1.attachEvent("onRowSelect", function(id){
+
+    if (id == MAXCONST){
+        return false;
+    }
+    self.load(sw_grid2, "/revision/auditor/data/cell_history?cell_id=" + id);
+
+});
+
+
+
+
+
+/***********  COMBO ***********/
+
+
+var z= new dhtmlXCombo("combo_zone1");
+z.setOptionHeight(300);
+
+z.attachEvent("onKeyPressed",function(){
+
+    text = z.getComboText();
+
+    if (text.length < 3)
+        return false;
+
+
+    dhtmlxAjax.get("/revision/auditor/data/products?mask="+text, function(xml){
+
+        z.loadXMLString(xml.xmlDoc.responseText);
+    })
+
+
+});
+
+
+
+
+
+
 
 
 
@@ -140,17 +162,3 @@ z.attachEvent("onChange",function(){
 
           
 });            
-
-
-
-window.do_tool_print = function(){
-	var m_product = z.getSelectedValue();
-    self.NetSend("/revision/auditor/data/print?mode=1&tovar=" + m_product);                                                                
-}        
-
-window.do_tool_revision = function(){
-	var m_product = z.getSelectedValue();
-    self.NetSend("/revision/auditor/data/maketaskrevision?tovar=" + m_product);                                                                
-} 
-
-                    

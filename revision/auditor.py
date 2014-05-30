@@ -97,7 +97,7 @@ class AuditorDataHandler(BaseHandler):
 
             res = self.proc("shiva.tovar_list", [mask, out])
 
-            all_results = ["\n<complete>"]
+            all_results = ['\n<complete add="true">']
 
             for item in res[-1].fetchall()[pos:]:
                 value = '''<option value="%s">[%s] %s</option>''' % (item[0], item[1], item[2])
