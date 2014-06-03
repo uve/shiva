@@ -17,9 +17,9 @@ var sw_grid2 = new dhtmlXGridObject({
     parent: "sw_grid2",
     columns: [
         { type:"ro", sort:"str",  align:"center", width:"80",  label:"Адрес" },
-        { type:"ro", sort:"str",  align:"left"  , width:"100", label:"Партия" },
-        { type:"ro", sort:"int",  align:"center", width:"100", label:"Годен ДО"},
-        { type:"ro", sort:"int",  align:"center", width:"100", label:"Количество"},
+        { type:"ro", sort:"str",  align:"center", width:"100", label:"Партия" },
+        { type:"ro", sort:"str",  align:"center", width:"100", label:"Годен ДО"},
+        { type:"ro", sort:"str",  align:"center", width:"100", label:"Количество"},
 
     ]
 });
@@ -41,18 +41,16 @@ update = function(){
     });
 };
 
-                    
-self.Toolbars["def"].attachEvent("onClick", function(id) {
-	update();
-});
-      
+
+
+window.change_depart = function(){
+
+    update();
+
+}
+
 update();
 
-
-window.do_print = function(){
-		
-		sw_grid1.printView("","<script> window.print(); </script>");      
-}
 
 
 sw_grid1.attachEvent("onRowSelect", function(code){
@@ -65,3 +63,57 @@ sw_grid1.attachEvent("onRowSelect", function(code){
     self.load(sw_grid2, "/revision/saldo_gap/data/detail?" + self.serialize(params));
 
 });
+
+
+
+window.do_print = function(){
+
+    sw_grid1.printView("","<script> window.print(); </script>");
+}
+
+
+
+window.do_csv = function(){
+
+    self.GridCSV(sw_grid1);
+
+}
+
+
+
+
+window.do_csv_full = function(){
+    /*print_format("csv");*/
+
+
+    params["departs"]  = self.Toolbars["def"].getListOptionSelected("departs");
+
+
+    if (params["departs"] != '3' && params["departs"] != '31'){
+        return false;
+    }
+
+
+
+
+    var new_grid = new dhtmlXGridObject({
+        /*parent: "sw_grid1",*/
+        columns: [
+            { type:"ro", sort:"str",  align:"center", width:"80",  label:"Код" },
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Наименование" },
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Товарный остаток"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Адрес"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Остаток в ячейке"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Всего на адресах"}
+
+        ]
+    });
+
+
+    self.load(new_grid, "/revision/saldo_gap/data/csv_full?" + self.serialize(params), function() {
+
+        self.GridCSV(new_grid);
+    });
+
+
+}
