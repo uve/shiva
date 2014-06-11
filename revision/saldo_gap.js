@@ -75,7 +75,34 @@ window.do_print = function(){
 
 window.do_csv = function(){
 
-    self.GridCSV(sw_grid1);
+    var params = {};
+
+    params["departs"]  = self.Toolbars["def"].getListOptionSelected("departs");
+
+
+    if (params["departs"] != '3' && params["departs"] != '31'){
+        return false;
+    }
+
+    var new_grid = new dhtmlXGridObject({
+        /*parent: "sw_grid1",*/
+        columns: [
+            { type:"ro", sort:"str",  align:"center", width:"80",  label:"Код" },
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Наименование" },
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Товарный остаток"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Адрес"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Остаток в ячейке"},
+            { type:"ro", sort:"str",  align:"center", width:"100", label:"Всего на адресах"}
+
+        ]
+    });
+
+
+    self.load(new_grid, "/revision/saldo_gap/data/csv?" + self.serialize(params), function() {
+
+        self.GridCSV(new_grid);
+    });
+
 
 }
 
@@ -83,8 +110,6 @@ window.do_csv = function(){
 
 
 window.do_csv_full = function(){
-    /*print_format("csv");*/
-
 
     var params = {};
 

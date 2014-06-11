@@ -80,6 +80,20 @@ class Saldo_GapDataHandler(BaseHandler):
 
 
 
+        if param == 'csv':
+
+
+            out = self.cursor.var(cx_Oracle.CURSOR)
+
+            res = self.proc("shiva.GetSaldoGap", [departs, out])
+
+            all_results = fetchall_by_count(res[-1])
+
+            self.write(all_results)
+            return
+
+
+
         if param == 'csv_full':
 
 
