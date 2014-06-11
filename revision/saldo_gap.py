@@ -12,7 +12,9 @@ from tornado import template
 import cx_Oracle
 
 
-from core.common_tools import fetchall#, fetchone, fetchall_by_name
+from core.common_tools import fetchall, fetchall_by_count
+
+#, fetchone, fetchall_by_name
 
 from avtuk.avtuk_models import RC
 #===  =========================================================
@@ -85,7 +87,7 @@ class Saldo_GapDataHandler(BaseHandler):
 
             res = self.proc("shiva.dif_saldo_tehno_shiva", [departs, out])
 
-            all_results = fetchall(res[-1])
+            all_results = fetchall_by_count(res[-1])
 
             self.write(all_results)
             return

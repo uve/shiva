@@ -136,4 +136,19 @@ def fetchall(item=None, count=0):
     for item in data:            
         results.append({"id": item[count], "data": item })
 
-    return {"rows": results} 
+    return {"rows": results}
+
+
+
+def fetchall_by_count(item=None):
+
+    data = item.fetchall()
+    results = []
+
+    count = 0
+
+    for item in data:
+        results.append({"id": "value_" + str(count), "data": item })
+        count += 1
+
+    return {"rows": results}

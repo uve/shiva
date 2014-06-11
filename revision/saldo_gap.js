@@ -86,15 +86,14 @@ window.do_csv_full = function(){
     /*print_format("csv");*/
 
 
+    var params = {};
+
     params["departs"]  = self.Toolbars["def"].getListOptionSelected("departs");
 
 
     if (params["departs"] != '3' && params["departs"] != '31'){
         return false;
     }
-
-
-
 
     var new_grid = new dhtmlXGridObject({
         /*parent: "sw_grid1",*/

@@ -637,7 +637,16 @@ ShivaApp.prototype.load = function(grid,url, func){
 	var self=this;
 	
 	self.progressOn();
-	grid.clearAll();		
+	grid.clearAll();
+
+
+    if(url.indexOf('?') == -1){
+        url=url+'?time='+new Date().getTime();
+    }else{
+        url=url+'&time='+new Date().getTime();
+    }
+
+
 
 	grid.load(url, function(){
 		
