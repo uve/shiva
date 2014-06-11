@@ -111,9 +111,11 @@ z.setOptionHeight(300);
 
 z.attachEvent("onKeyPressed",function(){
 
+    z.clearAll();
+
     text = z.getComboText();
 
-    if (text.length < 3)
+    if (text.length < 4)
         return false;
 
 
