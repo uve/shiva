@@ -62,7 +62,7 @@ module TaskModule {
 	    public toogle_status(){
 
             var point = <HTMLElement>document.getElementById("point-status");
-            point.style.display = (point.style.display == "none") ? "block" : "none";
+            //point.style.display = (point.style.display == "none") ? "block" : "none";
 	    }
 		
 	 	
@@ -181,11 +181,13 @@ module TaskModule {
 		    	    	case 12:   /* Сборка Сырья*/
 		                    task = new OrderBatchingRawModule.OrderBatchingRaw();      		                   	
 	                   		break;	                   		
-	                   		
+
+
+		    	    	case 13:   /*  Проверка сборки заказа по сырью */
+		                    task = new CheckingRawModule.CheckingRaw();
+	                   		break;
 	            	}
-	            	
-               		
-                 
+
                    	task.task_id   = this.task_id;
                    	task.type_id   = this.type_id;
                    	task.header_id = this.header_id;

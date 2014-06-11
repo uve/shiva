@@ -10,13 +10,14 @@ from datetime import datetime
 
 from core.common_tools import fetchall_by_name
 
+import logging
+
 class InventoryHandler(BaseHandler):
     '''
     Все, что нужно для инвентаризации
     '''
     urls = r'/mbl/inventory/([^/]+)'
 
-    #@gen.coroutine
     def post(self, param):
                 
         delivery_id = self.get_argument("delivery_id", default=None)
@@ -278,7 +279,14 @@ class InventoryHandler(BaseHandler):
         
                        
             value_cursor = self.cursor.var(cx_Oracle.CURSOR)
-            
+
+
+            logging.info("start sleep")
+
+
+            #self.execute('begin DBMS_LOCK.SLEEP(30); end;')
+
+            logging.info("end sleep")
             
             res = self.proc("shiva.GetCellInfo", [cell_id, value_cursor])  
             
@@ -287,8 +295,8 @@ class InventoryHandler(BaseHandler):
                                 
             self.write(results)            
                         
-            return           
-        
+            return
+
         
 class ManualIncrease(BaseHandler):
     '''

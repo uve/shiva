@@ -20,7 +20,9 @@ module MainModule {
 			    setInterval(() => {
 			    					
 			    					task.task_check();
-			    				   } , 5000);
+			    				   } , 2000);
+
+
 			}
 		
 		 	public init() {
@@ -134,6 +136,15 @@ module MainModule {
 					text: "Выберите режим",				
 					buttons: buttons	
 				});
+
+
+				   /* To remove */
+
+                /*
+                var task2 = new GetCellInfoModule.GetCellInfo();
+                task2.cell_id = "3000301210143";
+                task2.checkCell();
+                */
 				
 						
 		 	}	 

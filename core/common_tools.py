@@ -9,6 +9,7 @@ import logging
 
 from operator import itemgetter
 
+
 dsn = cx_Oracle.makedsn(RC_IP, RC_PORT, DB_SID)
 
 CLASS_NAME = "CJDEMO3"
@@ -17,7 +18,7 @@ def callproc(self, args, kwargs):
     
     params = ", ".join([str(k) for k in args[1:]])
     logging.info("Call Proc: %s \tparams: %s", args[0], params)
-    
+
     self.cursor.callproc('shiva.exec_log', [args[0], params, self.session.uid])
     
     return self.cursor.callproc(*args, **kwargs)
@@ -45,7 +46,7 @@ def callexec(self, args, kwargs):
 def init_connection(self):
     
     # DB initialization
-    
+
     try:
         self.db.ping()                
     except:
@@ -62,7 +63,9 @@ def init_connection(self):
     self.proc    = lambda *a, **k: callproc(self, a, k)
     self.func    = lambda *a, **k: callfunc(self, a, k)
     self.execute = lambda *a, **k: callexec(self, a, k)
-    
+
+
+
 
 
 def close_connection(self):
@@ -73,7 +76,8 @@ def close_connection(self):
         self.cursor.close()           
         self.pool.release(self.db)
     except:
-        pass  
+        pass
+
 
 
 
@@ -83,10 +87,10 @@ class Pool(object):
         
     def __new__(cls, *args, **kwargs):
         if not cls._instance or not cls.pool:
-            cls._instance = super(Pool, cls).__new__(cls, *args, **kwargs)        
+            cls._instance = super(Pool, cls).__new__(cls, *args, **kwargs)
             cls.pool = cx_Oracle.SessionPool(user=DB_LOGIN, password=DB_PASSWORD, dsn=dsn, min=1, max=MAX_SESSIONS*2, increment=1, threaded=True)
-            cls.pool.timeout = 300
-        
+            cls.pool.timeout = 100
+
         return cls.pool
     
     

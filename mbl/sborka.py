@@ -45,3 +45,24 @@ class Terminal_Sborka(BaseHandler):
             self.proc("shiva.EndFacturaForShtuka", [header_id])
             
             return
+
+
+
+
+        if param == 'scan_extra_party_raw':
+
+
+            count = self.func('shiva.ScanExtraParty_Raw', returnType=cx_Oracle.NUMBER, parameters=[header_id, party_id])
+
+            self.write({"count" : count})  # отдадим результат обратно
+
+            return
+
+
+        if param == 'is_raw_header_ready':
+
+            count = self.func('shiva.IsRawHeaderReady', returnType=cx_Oracle.NUMBER, parameters=[header_id])
+
+            self.write({"count" : count})  # отдадим результат обратно
+
+            return

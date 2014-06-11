@@ -59,11 +59,13 @@ class BaseHandler(RequestHandler):
         This method is a counterpart to `prepare`.  ``on_finish`` may
         not produce any output, as it is called after the response
         has been sent to the client.
-        """            
-        
-        close_connection(self)   
+        """
 
-    
+        logging.info("on_finish")
+        
+        close_connection(self)
+
+
     def _handle_request_exception(self, e):
         
         close_connection(self)

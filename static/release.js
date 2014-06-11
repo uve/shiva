@@ -229,6 +229,10 @@ var CoreModule;
     var Core = (function () {
         function Core() {
             this.barcode = new Barcode();
+
+            this.SERVER_TIMEOUT = 1000;
+
+            this.timeout_callback = null;
         }
         Core.prototype.write = function (message) {
             try  {
@@ -263,27 +267,26 @@ var CoreModule;
         };
 
         Core.prototype.createRequestObject = function () {
-            if (typeof XMLHttpRequest === 'undefined') {
-                try  {
-                    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-                } catch (e) {
-                }
-                try  {
-                    return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-                } catch (e) {
-                }
-                try  {
-                    return new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                }
-                try  {
-                    return new ActiveXObject("Microsoft.XMLHTTP");
-                } catch (e) {
-                }
-                throw new Error("This browser does not support XMLHttpRequest.");
-                //   };
+            if (typeof XMLHttpRequest != 'undefined') {
+                return new XMLHttpRequest();
             }
-            return new XMLHttpRequest();
+
+            var progIDs = [
+                'Msxml2.XMLHTTP.6.0',
+                'Msxml2.XMLHTTP.5.0',
+                'Msxml2.XMLHTTP.4.0',
+                'Msxml2.XMLHTTP.3.0',
+                'Msxml2.XMLHTTP',
+                'Microsoft.XMLHTTP'];
+
+            for (var i = 0; i < progIDs.length; i++) {
+                try  {
+                    var xmlhttp = new ActiveXObject(progIDs[i]);
+
+                    return xmlhttp;
+                } catch (e) {
+                }
+            }
         };
 
         Core.prototype.start_loading = function () {
@@ -319,17 +322,25 @@ var CoreModule;
 
             var xmlhttp = this.createRequestObject();
 
-            xmlhttp.open(settings.type, settings.url, true);
-
-            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-            //xmlhttp.setRequestHeader("Content-length", settings.data.length);
-            //xmlhttp.setRequestHeader("Connection", "close");
             xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState != 4)
+                var readyState = 9;
+                var status = 9;
+
+                try  {
+                    readyState = xmlhttp.readyState;
+                    status = xmlhttp.status;
+                } catch (e) {
+                }
+
+                /*
+                var point = document.getElementById("point-status");
+                point.innerHTML =  point.innerHTML + readyState + '.' + status + '</br>';
+                */
+                if (readyState != 4)
                     return;
 
-                //clearTimeout(timeout) // очистить таймаут при наступлении readyState 4
+                clearTimeout(_this.timeout_callback);
+
                 if (TORNADO_HASH != xmlhttp.getResponseHeader("tornado_hash")) {
                     IS_RELOAD = true;
                 }
@@ -364,22 +375,21 @@ var CoreModule;
 
                     settings.success(result);
                 } else {
-                    //handleError(xmlhttp.statusText) // вызвать обработчик ошибки с текстом ответа
                     if (settings.hidden) {
                         return false;
                     }
 
-                    var error = new Error(xmlhttp.statusText, "", function () {
+                    var msg = (xmlhttp.statusText != 'Unknown') ? xmlhttp.statusText : "Нет связи с сервером, проверьте интернет-соединение";
+
+                    var error = new Error(msg, "", function () {
                         settings.error();
                     });
-                    /*
-                    var error = new Error(xmlhttp.statusText);
-                    
-                    if (settings.error){
-                    settings.error();
-                    }*/
                 }
             };
+
+            xmlhttp.open(settings.type, settings.url, true);
+
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
             for (var item in settings.data) {
                 if (typeof settings.data[item] === "undefined") {
@@ -388,6 +398,15 @@ var CoreModule;
             }
 
             xmlhttp.send(this.urlEncodeData(settings.data));
+            /*
+            this.timeout_callback = setTimeout( () => {
+            
+            xmlhttp.abort();
+            xmlhttp.abort();
+            
+            }, this.SERVER_TIMEOUT);
+            
+            */
         };
 
         Core.prototype.application_reload = function () {
@@ -943,7 +962,7 @@ var TaskModule;
 
         Task.prototype.toogle_status = function () {
             var point = document.getElementById("point-status");
-            point.style.display = (point.style.display == "none") ? "block" : "none";
+            //point.style.display = (point.style.display == "none") ? "block" : "none";
         };
 
         Task.prototype.task_check = function () {
@@ -1043,6 +1062,10 @@ var TaskModule;
 
                         case 12:
                             task = new OrderBatchingRawModule.OrderBatchingRaw();
+                            break;
+
+                        case 13:
+                            task = new CheckingRawModule.CheckingRaw();
                             break;
                     }
 
@@ -1272,7 +1295,7 @@ var MainModule;
 
             setInterval(function () {
                 task.task_check();
-            }, 5000);
+            }, 2000);
         }
         Main.prototype.init = function () {
             this.user_name = "";
@@ -1366,6 +1389,12 @@ var MainModule;
                 text: "Выберите режим",
                 buttons: buttons
             });
+            /* To remove */
+            /*
+            var task2 = new GetCellInfoModule.GetCellInfo();
+            task2.cell_id = "3000301210143";
+            task2.checkCell();
+            */
         };
         return Main;
     })(TaskModule.Task);
@@ -2018,6 +2047,105 @@ var InventoryModule;
     })(TaskModule.Task);
     InventoryModule.Inventory = Inventory;
 })(InventoryModule || (InventoryModule = {}));
+/// <reference path="../inventory/inventory.ts" />
+var CheckingRawModule;
+(function (CheckingRawModule) {
+    var CheckingRaw = (function (_super) {
+        __extends(CheckingRaw, _super);
+        function CheckingRaw() {
+            _super.call(this);
+            this.class_name = "CheckingRaw";
+
+            this.caption = "Проверка сборки заказа по сырью";
+            this.party_id = "";
+        }
+        CheckingRaw.prototype.scanParty = function () {
+            var _this = this;
+            this.formParty({
+                text: "Ввод экстра-партии",
+                apply: function (value) {
+                    _this.party_id = value;
+                    _this.ScanExtraParty_Raw();
+                },
+                cancel: function () {
+                    _this.scanPallet();
+                }
+            });
+        };
+
+        CheckingRaw.prototype.ScanExtraParty_Raw = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/scan_extra_party_raw",
+                data: {
+                    party_id: this.party_id,
+                    header_id: this.header_id
+                },
+                success: function (resp) {
+                    if (parseInt(resp.count) == 0) {
+                        _this.IsRawHeaderReady();
+                    } else {
+                        _this.scanParty();
+                    }
+                },
+                error: function () {
+                    _this.scanParty();
+                }
+            });
+        };
+
+        CheckingRaw.prototype.IsRawHeaderReady = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/is_raw_header_ready",
+                data: {
+                    header_id: this.header_id
+                },
+                success: function (resp) {
+                    _this.complete("Заказ проверен");
+                },
+                error: function () {
+                    _this.scanParty();
+                }
+            });
+        };
+
+        CheckingRaw.prototype.get_mode = function () {
+            var _this = this;
+            this.menu({
+                caption: "Выберите режим",
+                buttons: {
+                    "Взять ещё с ячейки": function () {
+                        _this.party_id = "";
+                        _this.count = 0;
+                        _this.scanParty();
+                    },
+                    "Завершить подтоварку": function () {
+                        _this.end_factura();
+                    }
+                }
+            });
+        };
+
+        CheckingRaw.prototype.end_factura = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/sborka/end_factura_for_shtuka",
+                data: {
+                    header_id: this.header_id
+                },
+                success: function () {
+                    _this.complete();
+                }
+            });
+        };
+        return CheckingRaw;
+    })(InventoryModule.Inventory);
+    CheckingRawModule.CheckingRaw = CheckingRaw;
+})(CheckingRawModule || (CheckingRawModule = {}));
 /// <reference path="../inventory/inventory.ts" />
 var PodtovarkaShtukaModule;
 (function (PodtovarkaShtukaModule) {

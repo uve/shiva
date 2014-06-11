@@ -285,12 +285,22 @@ module CoreModule {
 	export class Core implements CoreInterface{
 		
 		class_name: string;
-		barcode: Barcode;		
+		barcode: Barcode;
+
+
+		SERVER_TIMEOUT: number;
+
+
+		timeout_callback;
 	
 	
 	    constructor() {
 	    	
 	    	this.barcode = new Barcode();
+
+	    	this.SERVER_TIMEOUT = 1000;
+
+	    	this.timeout_callback = null;
 	                  
 	    }    
 	   	   
@@ -337,21 +347,34 @@ module CoreModule {
 	    
 		
 		private createRequestObject() {
-			  if (typeof XMLHttpRequest === 'undefined') {
-				  //  XMLHttpRequest = () => {
-				      try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); }
-				        catch(e) {}
-				      try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); }
-				        catch(e) {}
-				      try { return new ActiveXObject("Msxml2.XMLHTTP"); }
-				        catch(e) {}
-				      try { return new ActiveXObject("Microsoft.XMLHTTP"); }
-				        catch(e) {}
-				      throw new Error("This browser does not support XMLHttpRequest.");
-				 //   };
-				  }
-				  return new XMLHttpRequest();
-				}
+
+			  if (typeof XMLHttpRequest != 'undefined') {
+			       return new XMLHttpRequest();
+			  }
+
+
+			  var progIDs = [ 'Msxml2.XMLHTTP.6.0',
+			                  'Msxml2.XMLHTTP.5.0',
+			                  'Msxml2.XMLHTTP.4.0',
+			                  'Msxml2.XMLHTTP.3.0',
+			                  'Msxml2.XMLHTTP',
+
+			                  'Microsoft.XMLHTTP' ]; // MSXML5.0, MSXML4.0 and Msxml2.DOMDocument all have issues - be careful when using.  Details below.
+
+              for (var i = 0; i < progIDs.length; i++) {
+                  try {
+
+                      var xmlhttp = new ActiveXObject(progIDs[i]);
+
+                      return xmlhttp;
+                  }
+                  catch (e) {
+                  }
+              }
+
+        }
+
+
 		
 		public start_loading(){
 
@@ -364,10 +387,10 @@ module CoreModule {
 		public stop_loading(){
 	    	var preloader_id = "loading";
 	    	document.getElementById(preloader_id).style.display = 'none';
-				    	
+
 		}
 		
-		
+
 		public new_event(){
 			
 			try{
@@ -392,19 +415,32 @@ module CoreModule {
 	    	
 	    	var xmlhttp = this.createRequestObject();
 
-    		xmlhttp.open(settings.type, settings.url, true);    		
-	    	
-    		
-	    	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	    	//xmlhttp.setRequestHeader("Content-length", settings.data.length);
-	    	//xmlhttp.setRequestHeader("Connection", "close");
-	    	
-	    	
-    		
-    		xmlhttp.onreadystatechange= () => {
-    			
-    		  if (xmlhttp.readyState != 4) return;
-    		  //clearTimeout(timeout) // очистить таймаут при наступлении readyState 4
+
+    		xmlhttp.onreadystatechange = () => {
+
+
+            var readyState  = 9;
+            var status = 9;
+
+
+           try {
+
+                readyState = xmlhttp.readyState;
+                status = xmlhttp.status;
+
+           } catch(e) {
+           }
+
+
+
+            /*
+            var point = document.getElementById("point-status");
+             point.innerHTML =  point.innerHTML + readyState + '.' + status + '</br>';
+             */
+
+    		  if (readyState != 4) return;
+
+    		  clearTimeout(this.timeout_callback) // очистить таймаут при наступлении readyState 4
 
     		  if ( TORNADO_HASH != xmlhttp.getResponseHeader("tornado_hash") ){
     			  IS_RELOAD = true;
@@ -444,23 +480,32 @@ module CoreModule {
     			  
     			  settings.success(result);    		     
     		  } else {
-    		      //handleError(xmlhttp.statusText) // вызвать обработчик ошибки с текстом ответа
+
     			  if (settings.hidden){
     				  return false;
     			  }
-    			  
-    			  var error = new Error(xmlhttp.statusText, "", () => { 
+
+    			  var msg = (xmlhttp.statusText != 'Unknown') ?  xmlhttp.statusText : "Нет связи с сервером, проверьте интернет-соединение";
+
+
+    			  var error = new Error(msg, "", () => {
     				  	settings.error(); 
     			  });
-    			  
-    			  /*
-    			  var error = new Error(xmlhttp.statusText); 
-    			  
-    			  if (settings.error){
-    				  settings.error();
-    			  }*/
+
     		  }
     		}
+
+
+
+    		xmlhttp.open(settings.type, settings.url, true);
+
+
+	    	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	    	//xmlhttp.setRequestHeader("Content-length", settings.data.length);
+	    	//xmlhttp.setRequestHeader("Connection", "close");
+
+
+
 
     		for (var item in settings.data){
 
@@ -468,8 +513,22 @@ module CoreModule {
         			delete settings.data[item];
         		}
     		} 
-    		    		
-    		xmlhttp.send(this.urlEncodeData(settings.data));
+
+
+
+
+            xmlhttp.send(this.urlEncodeData(settings.data));
+
+
+            /*
+    		this.timeout_callback = setTimeout( () => {
+
+                   xmlhttp.abort();
+                   xmlhttp.abort();
+
+    		 }, this.SERVER_TIMEOUT);
+
+    		 */
 
 		}    
 	    
