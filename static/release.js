@@ -4117,6 +4117,8 @@ var OrderBatchingRawModule;
         */
         OrderBatchingRaw.prototype.scan_cell = function () {
             var _this = this;
+            this.party_id = "";
+
             var msg = "Взять коробок: <b>" + this.value + "</b></br>C адреса: " + this.cell_name + "</br>" + this.product_name;
 
             this.formCell({
@@ -4165,7 +4167,12 @@ var OrderBatchingRawModule;
                 buttons: {
                     "Продолжить": function () {
                         _this.value = value;
-                        _this.scan_party(); ///  отличие от обычной сборки
+
+                        if (_this.party_id != "") {
+                            _this.scan_extra_party();
+                        } else {
+                            _this.scan_party(); ///  отличие от обычной сборки
+                        }
                     },
                     "Вернуться": function () {
                         _this.getCount();

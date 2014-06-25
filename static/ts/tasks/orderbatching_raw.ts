@@ -35,6 +35,8 @@ module OrderBatchingRawModule {
 	     */
 	    public scan_cell() {
 	    	
+	    	this.party_id = "";
+	    	
 	    	var msg = "Взять коробок: <b>" + this.value + "</b></br>C адреса: " + this.cell_name + "</br>" + this.product_name;
 	    	
 	    	this.formCell({
@@ -101,7 +103,13 @@ module OrderBatchingRawModule {
 				buttons: { 
 							"Продолжить"  : () => { 
 												     this.value = value;
-							   						 this.scan_party();  ///  отличие от обычной сборки
+												     
+												     if (this.party_id != ""){
+												    	 this.scan_extra_party();
+												     }
+												     else{
+												    	 this.scan_party();  ///  отличие от обычной сборки
+												     }
 							},
 							
 							"Вернуться"   : () => {	 this.getCount();
