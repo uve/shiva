@@ -274,6 +274,9 @@ module OrderBatchingModule {
 	
 		}
 	    
+	    
+	    
+	    
 	
 	    /*
 	     * Вернуться и взять ещё

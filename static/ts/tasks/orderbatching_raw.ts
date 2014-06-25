@@ -211,7 +211,34 @@ module OrderBatchingRawModule {
 			});
 			
 		}
+		
+		
+		public block_cell(){
+			
+			
+			this.ajax({
+	            type: "POST",
+	            url: "/mbl/batching/ok_cell",
+	            data: { 
+		            		pallet_id: 	 this.pallet_id,
+			                cell_id:     this.cell_id,
+			                count:       "0", 
+			                
+			                party_id:        this.party_id,
+			                extra_party_id : this.extra_party_id,
+			                packlist_id    : this.packlist_id 
+			    },	                    
+	            success: () => { this.get_cell(); },
+	            error:   () => { this.get_cell(); }
+	                     
+	        }); 
+			
+		}
 
+		
+		
+		
+		
 		public end_pallet_raw(){
 
 
