@@ -29,6 +29,7 @@ os.environ['NLS_LANG'] = 'RUSSIAN_CIS.UTF8'
 DEFAULT_CLIENT = "300020301"
 
 
+
 FOR_TESTING = False
 # FOR_TESTING = '1'
 
