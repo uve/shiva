@@ -58,7 +58,12 @@ if __name__ == "__main__":
             'static_path': config.STATIC_DIR,
             'default_handler':MissingHandler,
             'debug': False,
-            'gzip' : True
+            'gzip' : True,
+
+            'ssl_options' : {
+                              "certfile": os.path.join("certs/server.crt"),
+                              "keyfile": os.path.join("certs/server.key"),
+                              },
         })
 
 
@@ -69,10 +74,9 @@ if __name__ == "__main__":
 
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     #http_server.listen(config.SHIVA_PORT)
-        
-    
+
     http_server.bind(config.SHIVA_PORT)
-    #loop = tornado.ioloop.IOLoop.instance()
+
 
     http_server.start(MAX_SESSIONS)  # autodetect number of cores and fork a process for each
     IOLoop.instance().start()

@@ -460,19 +460,34 @@ ShivaApp.prototype.PrintURL = function(){
 	this.Incunable( function(doc){
 		for(i in urls)
 			doc.write('<img "width="'+(3.75 * w)+'mm" height="'+(3.75 * h)+'mm" src="'+urls[i]+'">');
-	});
+
+   	});
 }
 
 /*************************************************************************************************
 * Вывод на принтер. Контент генерируется функцией "generator"                                    *
 *************************************************************************************************/
 ShivaApp.prototype.Incunable = function(generator){
-	if(this.PrintFrame){
-		document.body.removeChild(this.PrintFrame);
-	}
 
-	this.PrintFrame=document.createElement('IFRAME');
-	this.PrintFrame.setAttribute('style', "position:absolute;left:-500px; top:-500px; border:0pt none; padding:0;margin:0; width:0px; height:0px;");	
+    var new_window = window.open("about:blank");
+
+    var doc = new_window.document;
+
+    generator(doc);
+
+    setTimeout(function(){
+
+        new_window.document.write('<script> window.focus(); /*window.print(); window.close();*/</script>');
+
+    }, 200);
+
+
+    //var myWindow = window.open('','','width=100,height=100');
+    //myWindow.document.write(doc.innerHTML);
+    //myWindow.document.write("<script>window.print(); window.close()</script>");
+/*
+	this.PrintFrame=document.createElement('iframe');
+	this.PrintFrame.setAttribute('style', "position:absolute;left:-500px; top:-500px; border:0pt none; padding:0;margin:0; width:0px; height:0px;");
 	document.body.appendChild(this.PrintFrame);
 	var doc=this.PrintFrame.contentWindow.document;
 	doc.write('<div style="padding:0; margin:0; border: 0pt none;">');
@@ -482,6 +497,7 @@ ShivaApp.prototype.Incunable = function(generator){
 	
 	this.PrintFrame.contentWindow.focus();
 	this.PrintFrame.contentWindow.print();
+	*/
 }
 
 /*************************************************************************************************
