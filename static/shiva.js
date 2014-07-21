@@ -477,7 +477,7 @@ ShivaApp.prototype.Incunable = function(generator){
 
     setTimeout(function(){
 
-        new_window.document.write('<script> window.focus(); /*window.print(); window.close();*/</script>');
+        new_window.document.write('<script> window.focus(); window.print(); window.close(); </script>');
 
     }, 200);
 
