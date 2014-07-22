@@ -279,23 +279,25 @@ class PrintPassportDataHandler(BaseHandler):
                     new_passport.value = urllib.quote(name.decode('utf-8').encode('koi8-r'))
 
 
-                    new_passport.exist = self.is_exists(new_passport.value)
+                    new_passport.exist = self.is_exists(new_passport.name)
 
                     all_passports.append(new_passport)
+
                                                     
                 
                 loader = template.Loader(TEMPLATE_DIR)
 
-                all_passports[-1].exist = False
-                
+                #all_passports[-1].exist = False    #just for testing..
+
                 RC_IP = '192.168.0.1'
                 if self.request.remote_ip in ["80.89.129.114", "127.0.0.1", "::1"]:
                     RC_IP = IMAGES_SERVER_IP
 
                 results = loader.load("printpassport.html").generate(remote_ip=self.request.remote_ip, RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)), uniq=random.random())
 
-
                 self.write(results)
+                return
+
                 
             # Отгрузочные этикетки
             elif mode == 2:
