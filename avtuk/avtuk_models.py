@@ -421,7 +421,9 @@ class Document(AvtukObject):
 
                 
         return {'cmd':'''self.Incunable(function(doc){ doc.write('%s') })''' % output}       
-    
+
+
+
     def as_print(self, mode=4):
         
         '''

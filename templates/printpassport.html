@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <title>Паспотра Качества</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/default.css?{{uniq}}" >
+
+    <style>
+
+
+        .passport-table {
+            border: 1px solid #000;
+        }
+
+        .passport-table th{
+
+            border-bottom: 1px solid #888;
+            border-right:  1px solid #000;
+        }
+
+        .passport-table td{
+
+            padding: 3px;
+            border-bottom: 1px solid #888;
+            border-right:  1px solid #000;
+        }
+
+
+    </style>
+</head>
+
+<body onload="print_passports()">
+
+
+    <div class="block-print">
+
+        {% for item in all_passports %}
+
+            {% if item.exist %}
+                <a><img src="http://{{ RC_IP }}/{{ item.value }}" /></a>
+            {% end %}
+
+        {% end %}
+
+    </div>
+
+
+    <p>Не найдены паспорта качества:</p>
+    <table class="passport-table">
+        <tr>
+            <th>Партия</th>
+            <th>Код</th>
+            <th>Товар</th>
+            <th>Паспорт</th>
+        </tr>
+
+        {% for item in all_passports %}
+            {% if not item.exist %}
+            <tr>
+                <td>{{ item.category }}</td>
+                <td>{{ item.num }}</td>
+                <td>{{ item.code }}</td>
+                <td>{{ item.name }}</td>
+            </tr>
+            {% end %}
+        {% end %}
+
+        <script>
+
+            function print_passports(){
+
+                console.log('loaded');
+
+                window.print();
+                window.close();
+
+            }
+
+        </script>
+</body>
+</html>
+
+
+
+	

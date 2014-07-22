@@ -10,9 +10,11 @@ RC_IP        = os.getenv("RC_IP",        "192.168.0.161")
 RC_PORT      = os.getenv("RC_PORT",      "1521")
 #CURRENT_RC   = os.getenv("CURRENT_RC",   "1")
 MAX_SESSIONS = int(os.getenv("MAX_SESSIONS", "1"))
-    
- 
- 
+
+
+IMAGES_SERVER_IP = "46.28.129.222"
+
+
 #=== ORACLE =================================================================#
 
 # DB_SID = "ORASCLAD"

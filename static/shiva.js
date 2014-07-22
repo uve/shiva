@@ -453,15 +453,53 @@ ShivaApp.prototype.AddMessage = function(message, type_message){
 * Первые 2 аргумента - ширина и высота каждого изображения в мм. Остальные - урлы с картинками   *
 * например: self.PrintURL(200,100,'/foo','/bar');                                                *
 *************************************************************************************************/
+
+
 ShivaApp.prototype.PrintURL = function(){
 	var arg=[].slice.call(arguments, 0);
 	var w=arg[0]; var h=arg[1];
 	var urls = arg.slice(2);
+
+
+    var new_window = window.open("about:blank");
+    var doc = new_window.document;
+
+
+
+    doc.write("<html> \
+               <body onload='print_passports()'> ");
+
+    for(var i in urls) {
+        doc.write('<img "width="' + (3.75 * w) + 'mm" height="' + (3.75 * h) + 'mm" src="' + urls[i] + '">');
+    }
+
+
+    doc.write("<script>             \
+                                    \
+        function print_passports(){ \
+                                    \
+        console.log('loaded');      \
+                                    \
+        window.print();             \
+        window.close();             \
+                                    \
+                                    \
+        }                           \
+                                    \
+       setTimeout(print_passports, 200); \
+                                    \
+        </script> ");
+
+    doc.write("</body>");
+    doc.write("</html>");
+
+    /*
 	this.Incunable( function(doc){
 		for(i in urls)
 			doc.write('<img "width="'+(3.75 * w)+'mm" height="'+(3.75 * h)+'mm" src="'+urls[i]+'">');
 
    	});
+   	*/
 }
 
 /*************************************************************************************************
