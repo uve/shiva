@@ -288,6 +288,7 @@ class PrintPassportDataHandler(BaseHandler):
                 loader = template.Loader(TEMPLATE_DIR)
 
                 #all_passports[-1].exist = False    #just for testing..
+                
 
                 RC_IP = '192.168.0.1'
                 if self.request.remote_ip in ["80.89.129.114", "127.0.0.1", "::1"]:
