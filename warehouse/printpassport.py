@@ -292,7 +292,7 @@ class PrintPassportDataHandler(BaseHandler):
                 if self.request.remote_ip in ["80.89.129.114", "127.0.0.1", "::1"]:
                     RC_IP = IMAGES_SERVER_IP
 
-                results = loader.load("printpassport.html").generate(RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)), uniq=random.random())
+                results = loader.load("printpassport.html").generate(remote_ip=self.request.remote_ip, RC_IP=RC_IP, all_passports=all_passports, width=str(int(3.47 * w)), uniq=random.random())
 
 
                 self.write(results)
