@@ -265,11 +265,16 @@ class PrintPassportDataHandler(BaseHandler):
           
                 
                 all_passports = []
+
+                index = 1
+
                 for item in good:
                     name = item["sertfile"]
                     if not name: continue
                     
                     new_passport = Passport()
+
+                    new_passport.index = index
 
                     new_passport.category = item["category"]
                     new_passport.code     = item["code"]
@@ -279,7 +284,10 @@ class PrintPassportDataHandler(BaseHandler):
                     new_passport.value = urllib.quote(name.decode('utf-8').encode('koi8-r'))
 
 
-                    new_passport.exist = self.is_exists(new_passport.name)
+                    new_passport.exist = self.is_exists(new_passport.value)
+
+                    if not new_passport.exist:
+                        index = index + 1
 
                     all_passports.append(new_passport)
 

@@ -48,6 +48,7 @@
     <p>Не найдены паспорта качества:</p>
     <table class="passport-table">
         <tr>
+            <th>№</th>
             <th>Партия</th>
             <th>Код</th>
             <th>Товар</th>
@@ -57,6 +58,7 @@
         {% for item in all_passports %}
             {% if not item.exist %}
             <tr>
+                <td>{{ item.index }}</td>
                 <td>{{ item.category }}</td>
                 <td>{{ item.num }}</td>
                 <td>{{ item.code }}</td>
