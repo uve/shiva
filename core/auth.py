@@ -64,10 +64,11 @@ class AuthHandler(BaseHandler):
                             'cmd':'self.NetSend("/auth")'})
             return
         
-        
+
+        '''
         if not "role" in user:
         
-            sql = '''SELECT id, name FROM sw_roles
+            sql = "SELECT id, name FROM sw_roles
                   WHERE id = ( SELECT UNIQUE CASE 
                                  WHEN s.role=1 THEN s.role
                                  WHEN h.role IS NOT NULL THEN h.role
@@ -76,12 +77,12 @@ class AuthHandler(BaseHandler):
                                END
                                FROM sotrud s
                                LEFT JOIN sw_role_history h ON s.id=h.sotrud AND h.role_end IS NULL
-                               WHERE s.id=:id AND ROWNUM<=1 )'''
+                               WHERE s.id=:id AND ROWNUM<=1 )"
             
             self.execute(sql, id=user["id"])
 
             user["role"], user["role_name"] = self.cursor.fetchone()
-            
+        '''
           
         self.session = SessionManager(user["id"], user["role"])
                 
