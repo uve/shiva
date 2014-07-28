@@ -280,13 +280,17 @@ window.do_clear_filters = function(grid){
 }                            
                      
 
-window.do_tool_select = function(sw_grid1,ids){            
+window.do_tool_select = function(sw_grid1,ids){
+
     sw_grid2.clearAll();
+
+
     
-    self.LoadGridAsync(sw_grid1, "/warehouse/assembly/data/head?oper="+window.ids,function() {                                    
+    self.load(sw_grid1, "/warehouse/assembly/data/head?oper="+window.ids,function() {
+
         sw_grid1.selectRowById(ids,true,true,true);
                                          
-        });
+    });
     
 };
 
@@ -324,7 +328,6 @@ window.do_tool_consolidation = function(){
             window.do_tool_select(sw_grid1,results.ids);
         }
 
-        update();
 
     });
 
@@ -368,7 +371,6 @@ window.do_tool_deconsolidation = function(){
         }
 
 
-        update();
 
     });
 
@@ -505,9 +507,3 @@ window.do_tool_3 = function(ids2){
         
 window.do_tool_3();
 
-
-function update(){
-
-    sw_grid2.clearAll();
-    self.load(sw_grid1, "/warehouse/assembly/data/head?oper="+window.ids);
-}

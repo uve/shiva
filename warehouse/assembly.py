@@ -230,7 +230,7 @@ class AssemblyDataHandler(BaseHandler):
             out = self.cursor.var(cx_Oracle.STRING)    
             res = self.proc("tsclad.MakeTotalHeaderNew", [header_id, out])
                 
-            result = str(res)
+            result = res[-1]
             
             self.write({'info':'Консолидация выполнена: фактуры: %s' % result, 'ids': result})
 
