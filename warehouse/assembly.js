@@ -322,12 +322,10 @@ window.do_tool_consolidation = function(){
         if (results.info){
             self.AddMessage(results.info, "info");
 
-        };
-
-        if (results.ids){
-            window.do_tool_select(sw_grid1,results.ids);
         }
 
+
+        window.do_tool_select(sw_grid1,results.ids || "");
 
     });
 
@@ -364,12 +362,9 @@ window.do_tool_deconsolidation = function(){
         if (results.info){
             self.AddMessage(results.info, "info");
 
-        };
-
-        if (results.ids){
-            window.do_tool_select(sw_grid1,results.ids);
         }
 
+        window.do_tool_select(sw_grid1,results.ids || "");
 
 
     });
