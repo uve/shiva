@@ -45,9 +45,11 @@ class AuthHandler(BaseHandler):
             depart, user_id = barcode2depart_sid(barcode)            
         
         elif login and passw:
-            login = str(login).upper()
-            passw = md5passw(login, str(passw))
-                
+            #login = str(login).upper()
+            #passw = md5passw(login, str(passw))
+            login = str(login)
+            passw = str(passw)
+
         else:
             self.write({'error':'Пользователь не найден',
                             'cmd':'self.NetSend("/auth")'})
