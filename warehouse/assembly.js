@@ -320,6 +320,10 @@ window.do_tool_consolidation = function(){
 
         };
 
+        if (results.ids){
+            window.do_tool_select(sw_grid1,results.ids);
+        }
+
         update();
 
     });
@@ -358,6 +362,11 @@ window.do_tool_deconsolidation = function(){
             self.AddMessage(results.info, "info");
 
         };
+
+        if (results.ids){
+            window.do_tool_select(sw_grid1,results.ids);
+        }
+
 
         update();
 
