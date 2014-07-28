@@ -300,12 +300,34 @@ window.do_tool_consolidation = function(){
     //console.log("selected ids: " + ids);
     
     window.do_clear_filters(sw_grid1);
-    
+    /*
     sw_grid2.editStop();
     self.NetSendAsync("/warehouse/assembly/data/consolidation", "ids="+ids,function(resp) {
-        window.do_tool_select(sw_grid1,resp.ids);                                 
-        });
-                               
+        window.do_tool_select(sw_grid1,resp.ids);
+    });
+
+    */
+
+
+
+
+    dhtmlxAjax.post("/warehouse/assembly/data/consolidation",  "ids="+ids, function(resp){
+
+        var results = JSON.parse(resp.xmlDoc.responseText);
+
+        if (results.info){
+            self.AddMessage(results.info, "info");
+
+        };
+
+        update();
+
+    });
+
+
+
+
+
 }
 
 
@@ -318,12 +340,30 @@ window.do_tool_deconsolidation = function(){
     //console.log("selected ids: " + ids);
     
     window.do_clear_filters(sw_grid1);
-    
+
+    /*
     sw_grid2.editStop();
     self.NetSendAsync("/warehouse/assembly/data/deconsolidation", "ids="+ids, func = function() {
         
         window.do_tool_3(); 
+    });*/
+
+
+
+    dhtmlxAjax.post("/warehouse/assembly/data/deconsolidation",  "ids="+ids, function(resp){
+
+        var results = JSON.parse(resp.xmlDoc.responseText);
+
+        if (results.info){
+            self.AddMessage(results.info, "info");
+
+        };
+
+        update();
+
     });
+
+
 }                         
 
 
@@ -454,5 +494,11 @@ window.do_tool_3 = function(ids2){
     
   
         
-    window.do_tool_3();
-    
+window.do_tool_3();
+
+
+function update(){
+
+    sw_grid2.clearAll();
+    self.load(sw_grid1, "/warehouse/assembly/data/head?oper="+window.ids);
+}
