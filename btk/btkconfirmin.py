@@ -94,8 +94,12 @@ class BTKConfirmInData(BaseHandler):
             self.write({"cmd": "self.Incunable(function(doc){ doc.write('%s') })" % output})
             
             return
-        
-        
+
+
+    def post(self, param):
+
+        header_id = self.get_argument("head",  None)
+
         
         if param == "confirm":
             

@@ -140,10 +140,21 @@ sw_grid1.columns([
     
     window.do_confirm = function(){
 
-    	self.NetSend("/btk/btkconfirmin/data/confirm?head=" + window.btk_head, false , function(){
-    		
-    		update();
+
+        dhtmlxAjax.post("/btk/btkconfirmin/data/confirm", "head=" + window.btk_head, function(resp){
+
+            var results = JSON.parse(resp.xmlDoc.responseText);
+
+            if (results.error){
+                self.AddMessage(results.error, "error");
+            }
+            else{
+                update();
+            }
+
     	});
+
+
 
     }
     

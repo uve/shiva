@@ -293,9 +293,10 @@ class Document(AvtukObject):
         
         # № -     header.numb
         # "от:" - tsclad.datatovarheader(header.id
-                                        
-                                    
-        ot = self.func('tsclad.datatovarheader', returnType=cx_Oracle.DATETIME, parameters=[self.head]).strftime("%d.%m.%Y")                                   
+
+
+        ot = self.func('tsclad.datatovarheader', returnType=cx_Oracle.STRING, parameters=[self.head])
+        #ot = self.func('tsclad.datatovarheader', returnType=cx_Oracle.DATETIME, parameters=[self.head]).strftime("%d.%m.%Y")
  
   
         sql = '''select id,code,name,valume,round(summ_nds*100/118/valume,2) price,summ_nds,round(summ_nds*18/118,2) nds,
