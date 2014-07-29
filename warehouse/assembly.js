@@ -97,7 +97,9 @@ window.Cleaner.push(sw_grid2);
 
 sw_grid1.attachEvent("onRowSelect", function(id){
 
-        self._messager.clearAll();
+        //self._messager.clearAll();
+
+
 
         self.LoadGrid(sw_grid2, "/warehouse/assembly/data/tovar?head="+id);
 

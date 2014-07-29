@@ -238,7 +238,8 @@ ShivaApp.prototype._make_content = function(response){
 		
 		//--- user_info ---//
 		// для правого верхнего дива с инфой о пользователе
-		if(resp.user_name) document.getElementById('user_name').innerHTML=resp.user_name;
+		//if(resp.user_name) document.getElementById('user_name').innerHTML=resp.user_name;
+        if(resp.name) document.getElementById('user_name').innerHTML=resp.name;
 		if(resp.depart_name) document.getElementById('depart_name').innerHTML=resp.depart_name;		
 		if(resp.role_name){
 			document.getElementById('role_name').innerHTML=resp.role_name;
