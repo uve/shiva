@@ -97,8 +97,7 @@ window.Cleaner.push(sw_grid2);
 
 sw_grid1.attachEvent("onRowSelect", function(id){
 
-        //self._messager.clearAll();
-
+        self._messager.clearAll();
 
 
         self.LoadGrid(sw_grid2, "/warehouse/assembly/data/tovar?head="+id);
@@ -321,13 +320,14 @@ window.do_tool_consolidation = function(){
 
         var results = JSON.parse(resp.xmlDoc.responseText);
 
+
+        window.do_tool_select(sw_grid1,results.ids || "");
+
         if (results.info){
             self.AddMessage(results.info, "info");
 
         }
 
-
-        window.do_tool_select(sw_grid1,results.ids || "");
 
     });
 
@@ -361,12 +361,14 @@ window.do_tool_deconsolidation = function(){
 
         var results = JSON.parse(resp.xmlDoc.responseText);
 
+        window.do_tool_select(sw_grid1,results.ids || "");
+
+
         if (results.info){
             self.AddMessage(results.info, "info");
 
         }
 
-        window.do_tool_select(sw_grid1,results.ids || "");
 
 
     });
