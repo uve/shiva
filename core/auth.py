@@ -97,7 +97,7 @@ class AuthHandler(BaseHandler):
         self.set_cookie('role',str(user["role"]))
         self.set_cookie('rc',  str(user["rc"]))
 
-        self.set_cookie('name', str(user["name"]))
+        #self.set_cookie('name', str(user["name"]))
         
         #user["user_name"]   = user["name"]        
         #user["role_name"]   = user["role_name"]
