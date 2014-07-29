@@ -118,9 +118,10 @@ var ShivaApp = function(){
 	var d1 = document.createElement("div");
 	d1.setAttribute('style', "background-color:#eaf2fb;width:100%;height:100%;position:relative;padding:0;margin:0;");	
 	d1.innerHTML = '<div id="user_info" style="color:#0f4161; font:bold 10px verdana; float:left; padding:7px 0 0 4px;">'+
-						'<div id="user_name"></div>'+
+
 						'<div id="depart_name"></div>'+
 						'<div id="role_name"></div>'+
+                        '<div id="user_name"></div>'+
 					'</div>'+
 					'<div style="position:absolute; top:5px; right:3px; padding:0;">'+
 						'<a style="text-decoration:none; color:#eaf2fb; background-color:#4985b7; padding:2px 4px; font:bold 11px verdana;" href="/logout">Выход</a>'+
