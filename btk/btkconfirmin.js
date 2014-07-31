@@ -66,9 +66,7 @@ sw_grid1.columns([
     	    	
     	window.btk_head = id;
     	
-    	
-    	
-    	    	
+
 
         self.load(sw_grid2, "/btk/btkconfirmin/data/list?head="+id, 
         
@@ -143,13 +141,17 @@ sw_grid1.columns([
 
         dhtmlxAjax.post("/btk/btkconfirmin/data/confirm", "head=" + window.btk_head, function(resp){
 
-            var results = JSON.parse(resp.xmlDoc.responseText);
+            update();
 
-            if (results.error){
-                self.AddMessage(results.error, "error");
+            try{
+                var results = JSON.parse(resp.xmlDoc.responseText);
+
+                if (results.error){
+                    self.AddMessage(results.error, "error");
+                }
             }
-            else{
-                update();
+            catch(e){
+
             }
 
     	});
