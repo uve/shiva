@@ -149,6 +149,8 @@ update();
 
             self.Toolbars["def"].enableItem('id_confirm');
 
+            window.btk_head = "";
+
             try{
                 var results = JSON.parse(resp.xmlDoc.responseText);
 
