@@ -16,12 +16,7 @@ sw_grid1.columns([
   ]);
 
 
-	function update(){ 
-	
-		self.load(sw_grid1, "/btk/btkconfirmin/data/head");
-	}
-	
-	update();
+
 	
 	
     var sw_grid2 = sw_btk.cells("b").attachGrid();
@@ -48,6 +43,14 @@ sw_grid1.columns([
           
     ]);
     window.Cleaner.push(sw_grid2);
+
+function update(){
+
+    self.load(sw_grid1, "/btk/btkconfirmin/data/head");
+    sw_grid2.clearAll();
+}
+
+update();
                         
                         
     
