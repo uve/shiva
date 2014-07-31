@@ -141,10 +141,13 @@ update();
     
     window.do_confirm = function(){
 
+        self.Toolbars["def"].disableItem('id_confirm');
 
         dhtmlxAjax.post("/btk/btkconfirmin/data/confirm", "head=" + window.btk_head, function(resp){
 
             update();
+
+            self.Toolbars["def"].enableItem('id_confirm');
 
             try{
                 var results = JSON.parse(resp.xmlDoc.responseText);
