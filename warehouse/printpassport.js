@@ -39,6 +39,8 @@ window.ids = 0;
 // print passport
 window.do_tool_4 = function(ids2){
 
+
+
     var ids = sw_grid.getSelectedRowId();
 
     if(!ids) {
@@ -47,6 +49,8 @@ window.do_tool_4 = function(ids2){
     }
 
     var mode = ids2.substr(3);
+
+
 
     //Отгрузочные этикетки
     if(mode == '2'){
@@ -110,4 +114,6 @@ window.do_tool_3 = function(ids2){
     var d2=calendar2.getDate().valueOf();
     self.LoadGrid(sw_grid, "/warehouse/printpassport/data/head?oper="+window.ids+"&d1="+d1+"&d2="+d2);
 }
+
+
 window.do_tool_3("opr0");

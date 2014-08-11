@@ -416,7 +416,11 @@ window.do_tool_4 = function(ids2){
         if(m==2){
             var d=prompt('Диапазон мест разделенные пробелом','').split(' ');
         }
-        self.NetSend("/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d);
+        /*self.NetSend("/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d);*/
+
+        var url = "/warehouse/printpassport/data/print?head="+ids+"&mode="+m+"&d="+d;
+
+        window.open(url);
     }                                
 }
 
