@@ -110,7 +110,7 @@ class PrintPassportDataHandler(BaseHandler):
             return response.status == 200
 
         except Exception, e:
-            logging.error('Failed to get passport image: '+ str(e))
+            logging.error('Failed to get passport image: %s \t Reason: %s', path, str(e))
 
             return False
 
