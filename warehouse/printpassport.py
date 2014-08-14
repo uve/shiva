@@ -94,11 +94,6 @@ class PrintPassportDataHandler(BaseHandler):
 
     def is_exists(self, path):
 
-
-        RC_IP = '192.168.0.1'
-        if self.request.remote_ip in ["80.89.129.114", "127.0.0.1", "::1"]:
-            RC_IP = IMAGES_SERVER_IP
-
         #path = path + '55'
 
         conn = httplib.HTTPConnection(RC_IP)
@@ -110,12 +105,12 @@ class PrintPassportDataHandler(BaseHandler):
             conn.close()
 
             if response.status != 200:
-                logging.error('Failed to get passport image: %s \t Reason: %s', path, response.reason)
+                logging.error('Failed to get passport image: http://%s/%s \t Reason: %s', IMAGES_SERVER_IP, path, response.reason)
 
             return response.status == 200
 
         except Exception, e:
-            logging.error('Failed to get passport image: %s \t Reason: %s', path, str(e))
+            logging.error('Failed to get passport image: http://%s/%s \t Reason: %s', IMAGES_SERVER_IP, path, str(e))
 
             return False
 
