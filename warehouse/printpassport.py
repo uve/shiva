@@ -96,7 +96,7 @@ class PrintPassportDataHandler(BaseHandler):
 
         #path = path + '55'
 
-        conn = httplib.HTTPConnection(RC_IP)
+        conn = httplib.HTTPConnection(IMAGES_SERVER_IP)
 
         try:
 
