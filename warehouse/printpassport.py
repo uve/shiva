@@ -30,6 +30,7 @@ import cStringIO, os.path, logging, Image, ImageFilter
 from avtuk.executor import Executor
 
 from settings import SHIVA_PASSPORT, IMAGES_SERVER_IP, TEMPLATE_DIR
+import httplib
 
 
 #=== Печать паспортов =========================================================
@@ -85,7 +86,7 @@ class Passport:
     pass
 
 
-import httplib
+
 
 
 class PrintPassportDataHandler(BaseHandler):
@@ -93,12 +94,14 @@ class PrintPassportDataHandler(BaseHandler):
 
     def is_exists(self, path):
 
-        path = path + '55'
+        #path = path + '55'
+
+        conn = httplib.HTTPConnection(IMAGES_SERVER_IP)
 
         try:
-            conn = httplib.HTTPConnection(IMAGES_SERVER_IP)
+
             conn.request('HEAD', "/" + path)
-            response = conn2.getresponse()
+            response = conn.getresponse()
             conn.close()
 
             if response.status != 200:
@@ -108,8 +111,10 @@ class PrintPassportDataHandler(BaseHandler):
 
         except Exception, e:
             logging.error('Failed to get passport image: '+ str(e))
+
             return False
 
+        conn.close()
 
 
 
