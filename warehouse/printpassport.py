@@ -93,14 +93,21 @@ class PrintPassportDataHandler(BaseHandler):
 
     def is_exists(self, path):
 
+        path = path + '55'
+
         try:
             conn = httplib.HTTPConnection(IMAGES_SERVER_IP)
             conn.request('HEAD', "/" + path)
-            response = conn.getresponse()
+            response = conn2.getresponse()
             conn.close()
+
+            if response.status != 200:
+                logging.error('Failed to get passport image: %s \t Reason: %s', path, response.reason)
+
             return response.status == 200
 
-        except:
+        except Exception, e:
+            logging.error('Failed to get passport image: '+ str(e))
             return False
 
 
