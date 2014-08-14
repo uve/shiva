@@ -94,9 +94,14 @@ class PrintPassportDataHandler(BaseHandler):
 
     def is_exists(self, path):
 
+
+        RC_IP = '192.168.0.1'
+        if self.request.remote_ip in ["80.89.129.114", "127.0.0.1", "::1"]:
+            RC_IP = IMAGES_SERVER_IP
+
         #path = path + '55'
 
-        conn = httplib.HTTPConnection(IMAGES_SERVER_IP)
+        conn = httplib.HTTPConnection(RC_IP)
 
         try:
 
