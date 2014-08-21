@@ -70,7 +70,7 @@ class AssemblyHandler(BaseHandler):
                               
                            {'id':"btnactions", 'type':"buttonSelect", 'text':'Действия', 'openAll': 'true', 'renderSelect': 'false', 'items':
                             [                             
-                             {"id":"act1", 'type':"button", 'text':'Собрать фактуру', 'img':"accept24.png", 'imgdis':"accept24g.png", 'action':'do_tool_save'},
+                             {"id":"act1", 'type':"button", 'text':'Подтвердить', 'img':"accept24.png", 'imgdis':"accept24g.png", 'action':'do_tool_save'},
                              {"id":"act2", "type":"button", "text":"Консолидировать", "action":"do_tool_consolidation"},
                              
                              {'type':"separator"},

@@ -15,16 +15,16 @@ sw_grid1.columns([
 	  { type:"ro", sort:"int",  align:"right", width:"66", id:"5555555",  label:["ID", "#text_filter"] },
 	  { type:"ro", sort:"int",  align:"right", width:"45",  label:["Номер", "#text_filter"] },
 	  { type:"ro", sort:"date", align:"right", width:"66",  label:["Дата", "#text_filter"] },
-	  { type:"ro", sort:"str",  align:"left",  width:"276", label:"Получатель"},
-	  { type:"ro", sort:"str",  align:"left",  width:"286", label:"Операция" },
+	  { type:"ro", sort:"str",  align:"left",  width:"220", label:"Получатель"},
+	  { type:"ro", sort:"str",  align:"left",  width:"240", label:"Операция" },
 	  { type:"ro", sort:"str",  align:"left",  width:"76",  label:["Статус", "#select_filter"]},
-	  { type:"ro", sort:"str",  align:"left",  width:"76",  label:["N отправки"]},
+	  { type:"ro", sort:"str",  align:"left",  width:"76",  label:["Упаковочный"]},
 	  { type:"ro", sort:"str",  align:"left",  width:"0"},
 	  
-	  { type:"ro", sort:"str",  align:"left",  width:"96",  label:["Оклейка", "#select_filter"]},
+	  { type:"ro", sort:"str",  align:"left",  width:"0",  label:["Оклейка", "#select_filter"]},
 	  
-	  { type:"ro", sort:"str",  align:"left",  width:"10"},
-	  { type:"ro", sort:"str",  align:"left",  width:"10"}
+	  { type:"ro", sort:"str",  align:"left",  width:"0"},
+	  { type:"ro", sort:"str",  align:"left",  width:"0"}
 ]);
                             
 sw_grid1.enableMultiselect(true);

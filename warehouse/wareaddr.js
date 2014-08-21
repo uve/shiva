@@ -23,7 +23,7 @@ var sw_grid = new dhtmlXGridObject({
 	  { type:"ro", sort:"str",  align:"right", width:"50",  label:["Партия","#text_filter"] },
 	  { type:"ro", sort:"date", align:"left",  width:"64",  label:"Годен до" },
 	  { type:"ro", sort:"str",  align:"left",  width:"64",  label:["Статус","#text_filter"] }, 
-	  { type:"ro", sort:"int",  align:"right", width:"80",  label:"Палета" },  
+	  { type:"ro", sort:"int",  align:"right", width:"80",  label:["Палета","#text_filter"] },
 	  { type:"ro", sort:"date", align:"left",  width:"64",  label:"С даты" },
 	  
 	  { type:"ro", sort:"str",  align:"left",  width:"0",   label:"ID2" },
