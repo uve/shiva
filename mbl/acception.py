@@ -66,6 +66,14 @@ class AcceptionHandler(BaseHandler):
             goden_do = datetime.fromtimestamp(float(goden_do)).strftime('%d.%m.%Y')
 
 
+
+        date_from = self.get_argument("date_from", default=None)
+
+        if date_from:
+            date_from = datetime.fromtimestamp(float(date_from)).strftime('%d.%m.%Y')
+
+
+
         box = self.get_argument("box", default=1)  #количество мест на паллете
 
 
@@ -115,13 +123,22 @@ class AcceptionHandler(BaseHandler):
         if param == 'end_header':
             self.proc("shiva.OkInput", [header_id])
             return
-        
-        
-            
-        if param == 'addnewpallet':        
+
+        '''
+          -- Добавление факта приемки паллеты
+          procedure AddNewPallet(pHeader in integer, pTovar in integer, pValume in varchar2,
+                                 pPallet in integer, pInBox in integer, pParty in integer,
+                                 pNum in varchar2, pDataDo in date, pBTK in integer default 0,
+                                                                                            pCell in varchar2, pDataFrom in date, pBox in integer default 1); --, vRet out integer);
+          --------------------------------------------------
+        '''
+
+
+
+        if param == 'addnewpallet':
             # Добавить сушествующую паллету, не бтк            
             self.proc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
-                                                goden_do, is_btk, cell_id, box])
+                                                goden_do, is_btk, cell_id, date_from, box])
             return
 
 

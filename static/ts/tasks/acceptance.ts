@@ -31,8 +31,15 @@ module AcceptanceModule {
 		product_id:   string;
 		product_name: string;
 		party_number: string;
+
+
 		goden_do:     string;
-		
+
+
+
+		date_from: string;
+		box:       string;
+
 		
 		
 	    public start() {
@@ -46,7 +53,11 @@ module AcceptanceModule {
 	    	 this.count_total = "?";
 	    	 
 	    	 this.get_type();
-	    	
+
+
+	    	  this.date_from = "";
+	    	  this.box       = "1";
+
 	    	 //this.get_all_products();
 	    	 
 	    }    
@@ -186,12 +197,7 @@ module AcceptanceModule {
 	    
 	    
 	    
-	    
 
-	    
-
-	    
-	    
 
 	    
 	    
@@ -447,7 +453,62 @@ module AcceptanceModule {
 	    	
 	    }
 	    
-	    
+
+
+	    /**** Для сырья  ****/
+
+	    public get_date_from(){
+
+            var form = new FormModule.Form();
+
+            form.FormMenu({
+
+                caption: "Введите дату производства",
+                date: true,
+                buttons: {
+                            "Продолжить"  : () => {
+
+                                this.date_from = form.get_timestamp();
+
+                                this.get_box();
+                            },
+
+                            "Вернуться"   : () => {
+                                this.getDateValid();
+                            }
+                         }
+
+            });
+
+        }
+
+
+        public get_box(){
+
+        	    	var form = new FormModule.Form();
+
+        			form.FormMenu({
+
+        				caption: "Введите кол-во мест на паллете",
+        				input: true,
+        				buttons: {
+        							"Продолжить"  : () => {
+
+        									this.box = form.value;
+
+        									this.get_count();
+        							},
+
+        							"Вернуться"   : () => {
+
+        							        this.get_date_from();
+        							}
+        				         }
+
+        			});
+
+        	    }
+
 	    
 	    /**
 	     *   Ввод количества товара в коробоке
@@ -462,7 +523,10 @@ module AcceptanceModule {
 	    	if (parseInt(this.type_id) == 10){
 	    	
 	    		this.count_inbox = "1";
-	    		this.get_count();
+
+                this.get_date_from();
+
+	    		//this.get_count();
 	    		return true;
 	    	}
 	    	
@@ -570,6 +634,12 @@ module AcceptanceModule {
 		 	       		product_id:   this.product_id,
 		 	       		party_number: this.party_number,
 		 	       		goden_do:     this.goden_do,
+
+
+                        /*   Для сырья  */
+		 	       		date_from:    this.date_from,
+		 	       		box:          this.box,
+
 	 	        },             	 	        
 	 	        success: () => {
 	 	        					

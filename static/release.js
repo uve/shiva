@@ -3177,6 +3177,9 @@ var AcceptanceModule;
             this.count_total = "?";
 
             this.get_type();
+
+            this.date_from = "";
+            this.box = "1";
             //this.get_all_products();
         };
 
@@ -3482,6 +3485,47 @@ var AcceptanceModule;
             });
         };
 
+        /**** Для сырья  ****/
+        Acceptance.prototype.get_date_from = function () {
+            var _this = this;
+            var form = new FormModule.Form();
+
+            form.FormMenu({
+                caption: "Введите дату производства",
+                date: true,
+                buttons: {
+                    "Продолжить": function () {
+                        _this.date_from = form.get_timestamp();
+
+                        _this.get_box();
+                    },
+                    "Вернуться": function () {
+                        _this.getDateValid();
+                    }
+                }
+            });
+        };
+
+        Acceptance.prototype.get_box = function () {
+            var _this = this;
+            var form = new FormModule.Form();
+
+            form.FormMenu({
+                caption: "Введите кол-во мест на паллете",
+                input: true,
+                buttons: {
+                    "Продолжить": function () {
+                        _this.box = form.value;
+
+                        _this.get_count();
+                    },
+                    "Вернуться": function () {
+                        _this.get_date_from();
+                    }
+                }
+            });
+        };
+
         /**
         *   Ввод количества товара в коробоке
         *
@@ -3493,7 +3537,10 @@ var AcceptanceModule;
             */
             if (parseInt(this.type_id) == 10) {
                 this.count_inbox = "1";
-                this.get_count();
+
+                this.get_date_from();
+
+                //this.get_count();
                 return true;
             }
 
@@ -3570,7 +3617,10 @@ var AcceptanceModule;
                     count_inbox: this.count_inbox,
                     product_id: this.product_id,
                     party_number: this.party_number,
-                    goden_do: this.goden_do
+                    goden_do: this.goden_do,
+                    /*   Для сырья  */
+                    date_from: this.date_from,
+                    box: this.box
                 },
                 success: function () {
                     _this.get_count_total();
