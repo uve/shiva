@@ -31,7 +31,7 @@ from avtuk.executor import Executor
 
 from settings import SHIVA_PASSPORT, IMAGES_SERVER_IP, TEMPLATE_DIR
 import httplib
-
+import cx_Oracle
 
 #=== Печать паспортов =========================================================
 class PrintPassportHandler(BaseHandler):
@@ -146,7 +146,7 @@ class PrintPassportDataHandler(BaseHandler):
         elif param == 'print':
             try: mode = int(inp.mode)
             except: raise HTTPError(404)
-            
+
             
 
             # Накладная
@@ -164,11 +164,18 @@ class PrintPassportDataHandler(BaseHandler):
                          client_from, -- от кого
                          client_to      -- кому
                  '''
-                
-        
-     
-                new_document = Document(self.request.arguments, rc=self.session.rc)                
-                return self.write(new_document.as_print())
+
+                header_id   = head#self.get_argument("head",   None)
+                out = self.cursor.var(cx_Oracle.STRING)
+
+                results = self.proc("shiva_tehno.header_printing_form", [header_id, out])
+
+
+                return self.write(results[1])
+
+
+                #new_document = Document(self.request.arguments, rc=self.session.rc)
+                #return self.write(new_document.as_print())
                                                           
 
             # Сборочные

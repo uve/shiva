@@ -64,6 +64,11 @@ class AcceptionHandler(BaseHandler):
         
         if goden_do:
             goden_do = datetime.fromtimestamp(float(goden_do)).strftime('%d.%m.%Y')
+
+
+        box = self.get_argument("box", default=1)  #количество мест на паллете
+
+
   
         if param == 'check_cell':
             
@@ -116,7 +121,7 @@ class AcceptionHandler(BaseHandler):
         if param == 'addnewpallet':        
             # Добавить сушествующую паллету, не бтк            
             self.proc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
-                                                goden_do, is_btk, cell_id])
+                                                goden_do, is_btk, cell_id, box])
             return
 
 
@@ -128,7 +133,7 @@ class AcceptionHandler(BaseHandler):
             
         if param == 'addnewpallet_oldparty':        
             # Добавить сушествующую паллету, не бтк            
-            self.proc("shiva.AddNewPallet_OldParty", [header_id, count, pallet_id, party_id, is_btk, cell_id, count_all])
+            self.proc("shiva.AddNewPallet_OldParty", [header_id, count, pallet_id, party_id, is_btk, cell_id, count_all, box])
             return
 
 
