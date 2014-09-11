@@ -37,8 +37,9 @@ module AcceptanceModule {
 
 
 
-		date_from: string;
+		date_from: string;  // для сырья
 		box:       string;
+		months:    string;
 
 		
 		
@@ -57,6 +58,7 @@ module AcceptanceModule {
 
 	    	  this.date_from = "";
 	    	  this.box       = "1";
+	    	  this.months    = "0";
 
 	    	 //this.get_all_products();
 	    	 
@@ -470,7 +472,7 @@ module AcceptanceModule {
 
                                 this.date_from = form.get_timestamp();
 
-                                this.get_box();
+                                this.get_months();
                             },
 
                             "Вернуться"   : () => {
@@ -483,31 +485,61 @@ module AcceptanceModule {
         }
 
 
+
+
+        public get_months(){
+
+            var form = new FormModule.Form();
+
+            form.FormMenu({
+
+                caption: "Введите кол-во месяцев годен",
+                input: true,
+                buttons: {
+                            "Продолжить"  : () => {
+
+                                    this.months = form.value;
+
+                                    this.get_box();
+                            },
+
+                            "Вернуться"   : () => {
+
+                                    this.get_date_from();
+                            }
+                         }
+
+            });
+
+        }
+
+
+
         public get_box(){
 
-        	    	var form = new FormModule.Form();
+            var form = new FormModule.Form();
 
-        			form.FormMenu({
+            form.FormMenu({
 
-        				caption: "Введите кол-во мест на паллете",
-        				input: true,
-        				buttons: {
-        							"Продолжить"  : () => {
+                caption: "Введите кол-во мест на паллете",
+                input: true,
+                buttons: {
+                            "Продолжить"  : () => {
 
-        									this.box = form.value;
+                                    this.box = form.value;
 
-        									this.get_count();
-        							},
+                                    this.get_count();
+                            },
 
-        							"Вернуться"   : () => {
+                            "Вернуться"   : () => {
 
-        							        this.get_date_from();
-        							}
-        				         }
+                                    this.get_months();
+                            }
+                         }
 
-        			});
+            });
 
-        	    }
+        }
 
 	    
 	    /**
@@ -639,6 +671,7 @@ module AcceptanceModule {
                         /*   Для сырья  */
 		 	       		date_from:    this.date_from,
 		 	       		box:          this.box,
+		 	       		months:       this.months
 
 	 	        },             	 	        
 	 	        success: () => {

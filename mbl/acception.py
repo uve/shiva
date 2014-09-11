@@ -75,6 +75,7 @@ class AcceptionHandler(BaseHandler):
 
 
         box = self.get_argument("box", default=1)  #количество мест на паллете
+        months = self.get_argument("months", default=0)  #количество мест на паллете
 
 
   
@@ -138,7 +139,7 @@ class AcceptionHandler(BaseHandler):
         if param == 'addnewpallet':
             # Добавить сушествующую паллету, не бтк            
             self.proc("shiva.AddNewPallet", [header_id, product_id, count, pallet_id, count_inbox, party_id, party_number,
-                                                goden_do, is_btk, cell_id, date_from, box])
+                                                goden_do, is_btk, cell_id, date_from, box, months])
             return
 
 
