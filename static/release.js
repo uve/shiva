@@ -3180,6 +3180,7 @@ var AcceptanceModule;
 
             this.date_from = "";
             this.box = "1";
+            this.months = "0";
             //this.get_all_products();
         };
 
@@ -3497,10 +3498,30 @@ var AcceptanceModule;
                     "Продолжить": function () {
                         _this.date_from = form.get_timestamp();
 
-                        _this.get_box();
+                        _this.get_months();
                     },
                     "Вернуться": function () {
                         _this.getDateValid();
+                    }
+                }
+            });
+        };
+
+        Acceptance.prototype.get_months = function () {
+            var _this = this;
+            var form = new FormModule.Form();
+
+            form.FormMenu({
+                caption: "Введите кол-во месяцев годен",
+                input: true,
+                buttons: {
+                    "Продолжить": function () {
+                        _this.months = form.value;
+
+                        _this.get_box();
+                    },
+                    "Вернуться": function () {
+                        _this.get_date_from();
                     }
                 }
             });
@@ -3520,7 +3541,7 @@ var AcceptanceModule;
                         _this.get_count();
                     },
                     "Вернуться": function () {
-                        _this.get_date_from();
+                        _this.get_months();
                     }
                 }
             });
@@ -3620,7 +3641,8 @@ var AcceptanceModule;
                     goden_do: this.goden_do,
                     /*   Для сырья  */
                     date_from: this.date_from,
-                    box: this.box
+                    box: this.box,
+                    months: this.months
                 },
                 success: function () {
                     _this.get_count_total();

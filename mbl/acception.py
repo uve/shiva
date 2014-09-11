@@ -75,7 +75,7 @@ class AcceptionHandler(BaseHandler):
 
 
         box = self.get_argument("box", default=1)  #количество мест на паллете
-        months = self.get_argument("months", default=0)  #количество мест на паллете
+        months = self.get_argument("months", default=1)  #количество мест на паллете
 
 
   
