@@ -68,6 +68,17 @@ def pallet(pallet_id, type_result='svg'):
 
 #=============================================================================#
 party_size = (49, 36) # размер этикетки в мм.
+def barcode(code, rem='', type_result='svg'):
+    '''Партионные этикетки'''
+    return render(type_result, party_size,
+                  ZText((0, 0.5, 42.7, 5), 'party:'),
+                  ZText((0, 0.5, 49, 5), rem, align='right', weight=True),
+                  ZEan13((1, 8, 47, 26), code),
+                  )
+
+
+#=============================================================================#
+party_size = (49, 36) # размер этикетки в мм.
 def party(party_id, rem='', type_result='svg'):
     '''Партионные этикетки'''
     return render(type_result, party_size,

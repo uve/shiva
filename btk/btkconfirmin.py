@@ -74,24 +74,30 @@ class BTKConfirmInData(BaseHandler):
         
         
         if param == "print":
-            
+
+
             res = self.proc("tehno.shiva.GetPartyInfo", [party_id, header_id, out])  
             
-            results = fetchone(res[-1])
+            info = fetchone(res[-1])
             
-            print results
-            
-            results["ids"] = party2barcode(results["party"])
-            
-            pages = 1
+
+            res = self.proc("tehno.shiva.extra_party_barcode_for_party", [party_id, out])
+
+
+            pages = fetchall_by_name(res[-1])
+
+            #results["ids"] = party2barcode(results["party"])
+
                         
             loader = template.Loader(TEMPLATE_DIR)         
-            output = loader.load("tovar_label.html").generate(results=results, pages=pages)    
+            output = loader.load("tovar_label.html").generate(results=info, pages=pages)
             #self.write(output) 
             #return     
         
-            output = output.replace('\n', '').replace('\r', '')        
+            output = output.replace('\n', '').replace('\r', '')
+
             self.write({"cmd": "self.Incunable(function(doc){ doc.write('%s') })" % output})
+            #self.write(output)
             
             return
 

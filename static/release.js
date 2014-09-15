@@ -3180,7 +3180,7 @@ var AcceptanceModule;
 
             this.date_from = "";
             this.box = "1";
-            this.months = "0";
+            this.months = "1";
             //this.get_all_products();
         };
 

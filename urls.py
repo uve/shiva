@@ -108,6 +108,9 @@ from warehouse.wareaddr import WareAddressDataHandler
 from warehouse.wareaddr import WareAddressHandler
 
 
+from warehouse.print_barcode import PrintBarcode
+
+
 from warehouse.sborka import SborkaDataHandler
 from warehouse.sborka import SborkaHandler
 
@@ -177,8 +180,7 @@ handlers = [
                 (r"/mbl/increase/([^/]+)", ManualIncrease),
                 (r"/mbl/inventory/([^/]+)", InventoryHandler),
                 
-                (r"/warehouse/prnpart", PrintPartHandler),
-                (r"/warehouse/prnpart/data/(.*)", PrintParDataHandler),
+
                 
                 
                 (r"/mbl/items", ItemListHandler),
@@ -234,9 +236,15 @@ handlers = [
                 (r"/warehouse/prncell/data", PrintCellDataHandler),
                 (r"/warehouse/prnpalet", PrintPalletHandler),
                 (r"/warehouse/prnpalet/data", PrintPalletDataHandler),
-                
-                
-                
+
+
+                (r"/warehouse/prnpart", PrintPartHandler),
+                (r"/warehouse/prnpart/data/(.*)", PrintParDataHandler),
+
+                (r"/warehouse/print_barcode/(.*)", PrintBarcode),
+
+
+
                 (r"/warehouse/sborka", SborkaHandler),
                 (r"/warehouse/sborka/data/([^/]+)", SborkaDataHandler),            
                 

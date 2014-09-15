@@ -19,7 +19,7 @@
  <body>
  
  
- {% for i in range(pages) %} 
+ {% for item in pages %}
  
   <div class="more">
 
@@ -31,7 +31,7 @@
 	<b>Поставщик: </b>{{ results["provider"] }}</br>
 	<!-- <b>Ответственный: </b>{{ results["responsible"] }}</br>  -->
 		
-	<img src="/warehouse/prnpart/data/?ids={{ results['ids'] }}&party=party">
+	<img src="/warehouse/print_barcode/?code={{ int(item['barcode']) }}&party=party">
 	
 	</div>
 {% end %}
