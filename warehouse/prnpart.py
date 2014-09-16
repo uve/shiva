@@ -39,9 +39,9 @@ class PrintParDataHandler(BaseHandler):
     def get(self, param):
                 
         ids = self.get_argument("ids", None)
-                
+
         rem = ""
-                
+
         p = self.get_argument("party", None)
         if p == "extra":
             rem = "ex"
@@ -55,10 +55,10 @@ class PrintParDataHandler(BaseHandler):
         ids = []        
         for _ in range(10):
             
-            if param == "extra":
+            if param == "extra_party":
                 x = ExtraPartyTemp()
                 x.save()
-                ids.append(party2barcode(x.id))
+                ids.append(party2barcode(x.id, '8'))
                 
             elif param == "party":
                 x = PartyTemp()

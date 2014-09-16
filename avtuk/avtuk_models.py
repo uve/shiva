@@ -859,7 +859,7 @@ class ExtraPartyTemp(AvtukObject):
     __live__ = 0
     __table__ = 'extra_party'
 
-    id = Col(primary=True, default=Sequence('sqEXTRAPARTY'))
+    id = Col(primary=True, default=Sequence('sqExtra_party'))
 
 #=============================================================================#
 class Tovar(AvtukObject):

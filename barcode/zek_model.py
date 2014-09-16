@@ -68,10 +68,15 @@ def pallet(pallet_id, type_result='svg'):
 
 #=============================================================================#
 party_size = (49, 36) # размер этикетки в мм.
-def barcode(code, rem='', type_result='svg'):
+def barcode(code, party='', rem='', type_result='svg'):
     '''Партионные этикетки'''
+
+    title = 'party'
+    if code.startswith('8'):
+        title = 'extra_party'
+
     return render(type_result, party_size,
-                  ZText((0, 0.5, 42.7, 5), 'party:'),
+                  ZText((0, 0.5, 42.7, 5), '%s:%s' % (title,party)),
                   ZText((0, 0.5, 49, 5), rem, align='right', weight=True),
                   ZEan13((1, 8, 47, 26), code),
                   )
@@ -244,16 +249,16 @@ def barcode2party(barcode):
     try:
         print barcode
         barcode = str(barcode)[:12]
-        if barcode[0] != '7' or len(barcode) != 12:
+        if not barcode[0] in ['7', '8'] or len(barcode) != 12:
             raise EZInvalidBarcode(barcode)
         print int(barcode[1:])        
         return int(barcode[1:])
     except EZInvalidBarcode: return 0
     except ValueError: return 0
 
-def party2barcode(party_id):
+def party2barcode(party_id, start='7'):
     '''ID партии -> Штрихкод'''
-    return '7%011d' % int(party_id)
+    return '%s%011d' % (start, int(party_id))
 
 
 #=============================================================================#

@@ -9,15 +9,14 @@ var sw_grid = new dhtmlXGridObject({
      });
      window.Cleaner.push(sw_grid);
 
-     
+
      function print_party(party){
          sw_grid.clearAll();
          sw_grid.csv.row = ",";
          
          
          var url = "/warehouse/prnpart/data/";
-         
-         
+
          dhtmlxAjax.post(url + party, "", function(response) {
          	
          	
@@ -30,10 +29,12 @@ var sw_grid = new dhtmlXGridObject({
             var urs = [{{ size[0] }}, {{ size[0] }}];
            
             for(i in data){
-                urs.push( url + "?ids="+data[i] + "&random=" + rand + "&party=" + party);
-                /*urs.push( "/warehouse/prnpart/data?rem=БТК&ids="+data[i] );*/
+
+                urs.push( "/warehouse/print_barcode/?code="+data[i] + "&random=" + rand);
+
+
             }
-            self.PrintURL.apply(self, urs);  
+            self.PrintURL.apply(self, urs);
 
      	});
   	 
@@ -45,6 +46,6 @@ var sw_grid = new dhtmlXGridObject({
      }
      
      window.do_tool_print_extra_party = function(){     
-    	 print_party("extra");
+    	 print_party("extra_party");
      }
                        

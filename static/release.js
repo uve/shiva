@@ -3457,13 +3457,31 @@ var AcceptanceModule;
                     "Продолжить": function () {
                         _this.party_number = form.value;
 
-                        _this.getDateValid();
+                        _this.check_if_raw();
                     },
                     "Вернуться": function () {
                         _this.getConfirmProduct();
                     }
                 }
             });
+        };
+
+        Acceptance.prototype.check_if_raw = function () {
+            /*
+            * Если принимаем сырье, то не спрашивать количество в упаковке, а отправлять 1
+            * Не спрашивать дату годности, а только дату изготовления и количество месяцев годности
+            */
+            if (parseInt(this.type_id) == 10) {
+                this.count_inbox = "1";
+
+                this.get_date_from();
+
+                return true;
+            }
+
+            this.getDateValid();
+
+            return true;
         };
 
         Acceptance.prototype.getDateValid = function () {
@@ -3501,7 +3519,7 @@ var AcceptanceModule;
                         _this.get_months();
                     },
                     "Вернуться": function () {
-                        _this.getDateValid();
+                        _this.getPartyNumber();
                     }
                 }
             });
@@ -3553,18 +3571,6 @@ var AcceptanceModule;
         */
         Acceptance.prototype.getCountInBox = function () {
             var _this = this;
-            /*
-            * Если принимаем сырье, то не спрашивать количество в упаковке, а отправлять 1
-            */
-            if (parseInt(this.type_id) == 10) {
-                this.count_inbox = "1";
-
-                this.get_date_from();
-
-                //this.get_count();
-                return true;
-            }
-
             var form = new FormModule.Form();
 
             form.FormCount({
@@ -3575,7 +3581,7 @@ var AcceptanceModule;
                     _this.get_count();
                 },
                 cancel: function () {
-                    _this.getDateValid();
+                    _this.getPartyNumber();
                 }
             });
         };
@@ -3603,7 +3609,7 @@ var AcceptanceModule;
                     }
                 },
                 cancel: function () {
-                    _this.getCountInBox();
+                    _this.getPartyNumber();
                 }
             });
         };
