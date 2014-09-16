@@ -23,13 +23,16 @@
  
   <div class="more">
 
-	<b>Наименование: </b>{{ results["name"] }}</br>
-	<b>Партия: </b>{{ results["num"] }}</br>
-	<b>Срок годности: </b>{{ results["best_before"] }}</br>
-	<b>Дата производства: </b>{{ results["production_date"] }}</br>
+	<b>Наименование: </b>{% if "name" in results %} {{ results["name"] }} {% end %}</br>
+
+	<b>Партия: </b>{% if "num" in results %} {{ results["num"] }} {% end %}</br>
+
+	<b>Срок годности: </b>{% if "best_before" in results %} {{ results["best_before"] }} {% end %}</br>
+
+	<b>Дата производства: </b>{% if "production_date" in results %} {{ results["production_date"] }} {% end %}</br>
 	{{ results["prim"] or "" }}</br>
-	<b>Поставщик: </b>{{ results["provider"] }}</br>
-	<!-- <b>Ответственный: </b>{{ results["responsible"] }}</br>  -->
+	<b>Поставщик: </b>{% if "provider" in results %} {{ results["provider"] }} {% end %}</br>
+	<!-- <b>Ответственный: </b>{% if "responsible" in results %} {{ results["responsible"] }} {% end %}</br>  -->
 		
 	<img src="/warehouse/print_barcode/?code={{ int(item['barcode']) }}">
 	
