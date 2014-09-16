@@ -524,7 +524,6 @@ module CoreModule {
     		this.timeout_callback = setTimeout( () => {
 
                    xmlhttp.abort();
-                   xmlhttp.abort();
 
     		 }, this.SERVER_TIMEOUT);
 
