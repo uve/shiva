@@ -163,6 +163,7 @@ module CoreModule {
 	    BCTCELL     = 3;						// константа - режим ввода ШК ячейки
 	    BCTDELIVERY = 5;						// константа - режим ввода ШК ячейки
 	    BCTPARTY    = 7;						// константа - режим ввода ШК партии
+	    BCTEXTRAPARTY = 8;						// константа - режим ввода ШК подпартии
 		
 	    
 	    constructor() {
@@ -229,6 +230,10 @@ module CoreModule {
 			            break;
 	     			case this.BCTPARTY:    throw "ожидается ШК партии";
 			            break;
+
+                    case this.BCTEXTRAPARTY:  throw "ожидается ШК подпартии";
+                        break;
+
 			        default:               throw "Неизвестная ошибка ШК";
 	    		}
 	    		//NewInnerText("EnterBarcodeErrText", errtext);
@@ -265,6 +270,10 @@ module CoreModule {
 			            break;
 	     			case this.BCTPARTY:    throw "Введён неправильный штрих-код партии";
 			            break;
+
+			        case this.BCTEXTRAPARTY:  throw "Введён неправильный штрих-код подпартии";
+                        break;
+
 			        default:               throw "Неизвестная ошибка ШК";
 	    		}
 	    		//NewInnerText("EnterBarcodeErrText", errtext);

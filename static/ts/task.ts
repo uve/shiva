@@ -18,6 +18,8 @@ module TaskModule {
 	    BCTCELL     = 3;						// константа - режим ввода ШК ячейки
 	    BCTDELIVERY = 5;						// константа - режим ввода ШК ячейки
 	    BCTPARTY    = 7;						// константа - режим ввода ШК партии
+
+	    BCTEXTRAPARTY = 8;						// константа - режим ввода ШК подпартии
 	    
 	    task_id: string;
 		type_id: string;
@@ -376,17 +378,30 @@ module TaskModule {
 	    }
 	    
 	    
-	    public formParty(settings) {		
-	    	
+	    public formParty(settings) {
+
 	    	settings.type = this.BCTPARTY;
 	    	settings.id = "FormBarcodeParty";
-	    	
+
 	    	if (!settings.text){
 	    		settings.text = "Ввод штрих-кода партии";
 	    	}
-	    	
-	    	this.formBarcode(settings);			
+
+	    	this.formBarcode(settings);
 	    }
+
+
+        public formExtraParty(settings) {
+
+            settings.type = this.BCTEXTRAPARTY;
+            settings.id = "FormBarcodeParty";
+
+            if (!settings.text){
+                settings.text = "Ввод штрих-кода подпартии";
+            }
+
+            this.formBarcode(settings);
+        }
 	    
 	    
 	    

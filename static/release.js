@@ -118,6 +118,7 @@ var CoreModule;
             this.BCTCELL = 3;
             this.BCTDELIVERY = 5;
             this.BCTPARTY = 7;
+            this.BCTEXTRAPARTY = 8;
         }
         Barcode.prototype.set = function (value) {
             try  {
@@ -175,6 +176,11 @@ var CoreModule;
                     case this.BCTPARTY:
                         throw "ожидается ШК партии";
                         break;
+
+                    case this.BCTEXTRAPARTY:
+                        throw "ожидается ШК подпартии";
+                        break;
+
                     default:
                         throw "Неизвестная ошибка ШК";
                 }
@@ -213,6 +219,11 @@ var CoreModule;
                     case this.BCTPARTY:
                         throw "Введён неправильный штрих-код партии";
                         break;
+
+                    case this.BCTEXTRAPARTY:
+                        throw "Введён неправильный штрих-код подпартии";
+                        break;
+
                     default:
                         throw "Неизвестная ошибка ШК";
                 }
@@ -402,7 +413,6 @@ var CoreModule;
             this.timeout_callback = setTimeout( () => {
             
             xmlhttp.abort();
-            xmlhttp.abort();
             
             }, this.SERVER_TIMEOUT);
             
@@ -516,6 +526,7 @@ var FormModule;
             //         2 - паллета
             //         3 - ячейка
             //         7 - партия
+            //         8 - подпартия
             //     ApplyOnScan - Флаг: вызов обработчика apply сразу после сканирования
             //     minlength - минимальная длина строки, содержащей ШК (по умолчанию = 1)
             //     maxlength - максимальная длина строки, содержащей ШК (по умолчанию = 13)
@@ -940,6 +951,7 @@ var TaskModule;
             this.BCTCELL = 3;
             this.BCTDELIVERY = 5;
             this.BCTPARTY = 7;
+            this.BCTEXTRAPARTY = 8;
 
             status = false; // статус - выполняется
         }
@@ -1207,6 +1219,17 @@ var TaskModule;
 
             if (!settings.text) {
                 settings.text = "Ввод штрих-кода партии";
+            }
+
+            this.formBarcode(settings);
+        };
+
+        Task.prototype.formExtraParty = function (settings) {
+            settings.type = this.BCTEXTRAPARTY;
+            settings.id = "FormBarcodeParty";
+
+            if (!settings.text) {
+                settings.text = "Ввод штрих-кода подпартии";
             }
 
             this.formBarcode(settings);
@@ -4277,7 +4300,7 @@ var OrderBatchingRawModule;
 
         OrderBatchingRaw.prototype.scan_extra_party = function () {
             var _this = this;
-            this.formParty({
+            this.formExtraParty({
                 text: "Введите штрих-код <b>ПОДПАРТИИ</b> сырья",
                 apply: function (value) {
                     _this.extra_party_id = value;

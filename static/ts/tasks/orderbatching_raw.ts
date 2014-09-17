@@ -146,7 +146,7 @@ module OrderBatchingRawModule {
 	    public scan_extra_party() {
 	    	
 
-	    	this.formParty({
+	    	this.formExtraParty({
 
 				text: "Введите штрих-код <b>ПОДПАРТИИ</b> сырья",
 			    apply: (value) => {
