@@ -4314,59 +4314,10 @@ var OrderBatchingRawModule;
                 apply: function (value) {
                     _this.extra_party_id = value;
 
-                    _this.check_value();
+                    _this.ok_cell();
                 },
                 cancel: function () {
                     _this.scan_party();
-                }
-            });
-        };
-
-        OrderBatchingRaw.prototype.check_value = function () {
-            if (parseFloat(this.value_taken) >= parseFloat(this.value)) {
-                this.next_cell();
-                return;
-            } else {
-                this.ok_cell();
-            }
-        };
-
-        /* Вызвать OkCellValFromPackList и запросить новую ячейку  */
-        OrderBatchingRaw.prototype.next_cell = function () {
-            var _this = this;
-            this.ajax({
-                type: "POST",
-                url: "/mbl/batching/ok_cell",
-                data: {
-                    pallet_id: this.pallet_id,
-                    cell_id: this.cell_id,
-                    count: this.value_taken,
-                    party_id: this.party_id,
-                    extra_party_id: this.extra_party_id,
-                    packlist_id: this.packlist_id
-                },
-                success: function () {
-                    _this.next_pallet();
-                },
-                error: function () {
-                    _this.next_pallet();
-                }
-            });
-        };
-
-        OrderBatchingRaw.prototype.next_pallet = function () {
-            var _this = this;
-            this.menu({
-                caption: "Подтверждение",
-                buttons: {
-                    "Cледующая позиция": function () {
-                        /* Получить новую ячейку для сборки*/
-                        _this.get_cell();
-                    },
-                    "Закончить эту паллету": function () {
-                        /* Если на паллете закончилось место, то берем новую паллету */
-                        _this.end_pallet_raw();
-                    }
                 }
             });
         };
@@ -4403,6 +4354,23 @@ var OrderBatchingRawModule;
                 this.next_pallet();
                 return;
             }
+        };
+
+        OrderBatchingRaw.prototype.next_pallet = function () {
+            var _this = this;
+            this.menu({
+                caption: "Подтверждение",
+                buttons: {
+                    "Cледующая позиция": function () {
+                        /* Получить новую ячейку для сборки*/
+                        _this.get_cell();
+                    },
+                    "Закончить эту паллету": function () {
+                        /* Если на паллете закончилось место, то берем новую паллету */
+                        _this.end_pallet_raw();
+                    }
+                }
+            });
         };
 
         OrderBatchingRaw.prototype.menu_repeat = function () {

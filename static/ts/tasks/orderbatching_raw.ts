@@ -173,7 +173,7 @@ module OrderBatchingRawModule {
 			    		this.extra_party_id = value;
 
 
-						this.check_value();
+						this.ok_cell();
 			    },
 			    cancel: () => { 
 			    		this.scan_party();
@@ -183,80 +183,6 @@ module OrderBatchingRawModule {
 	    }
 
 
-
-
-	    public check_value() {
-
-
-             if ( parseFloat(this.value_taken) >= parseFloat(this.value) ){
-
-                    this.next_cell();
-                    return;
-             }
-             else{
-
-
-
-
-                   this.ok_cell();
-             }
-
-	    }
-
-
-
-
-	    /* Вызвать OkCellValFromPackList и запросить новую ячейку  */
-	    public next_cell() {
-
-	    			this.ajax({
-        	            type: "POST",
-        	            url: "/mbl/batching/ok_cell",
-        	            data: {
-        		            		pallet_id: 	 this.pallet_id,
-        			                cell_id:     this.cell_id,
-        			                count:       this.value_taken,
-
-        			                party_id:        this.party_id,
-        			                extra_party_id : this.extra_party_id,
-        			                packlist_id    : this.packlist_id
-        			    },
-        	            success: () => { this.next_pallet(); },
-        	            error:   () => { this.next_pallet(); }
-
-        	        });
-
-	    }
-
-
-        public next_pallet() {
-
-
-
-            this.menu({
-
-				caption: "Подтверждение",
-				buttons: {
-							"Cледующая позиция"  : () => {
-
-                                /* Получить новую ячейку для сборки*/
-					         	 this.get_cell();
-							},
-
-
-
-                            "Закончить эту паллету"   : () => {
-
-                            	/* Если на паллете закончилось место, то берем новую паллету */
-                            	this.end_pallet_raw();
-                            }
-
-
-				         }
-
-			});
-
-        }
 
 
 
@@ -306,6 +232,40 @@ module OrderBatchingRawModule {
 
 	    
 	    }
+
+
+
+
+
+        public next_pallet() {
+
+
+
+            this.menu({
+
+                caption: "Подтверждение",
+                buttons: {
+                            "Cледующая позиция"  : () => {
+
+                                /* Получить новую ячейку для сборки*/
+                                 this.get_cell();
+                            },
+
+
+
+                            "Закончить эту паллету"   : () => {
+
+                                /* Если на паллете закончилось место, то берем новую паллету */
+                                this.end_pallet_raw();
+                            }
+
+
+                         }
+
+            });
+
+        }
+
 
 		    
 		public menu_repeat(){
