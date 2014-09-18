@@ -91,8 +91,7 @@ module OrderBatchingModule {
 				         }
 	
 			});
-	    	
-	
+
 		}	
 	
 	    

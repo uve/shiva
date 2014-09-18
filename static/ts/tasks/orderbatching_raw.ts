@@ -19,7 +19,8 @@ module OrderBatchingRawModule {
 		party_id       : string;
 		extra_party_id : string;
 		
-		
+
+		value_taken    : string;
 		value		   : string;
 		count 	 	   : string;
 		count_total    : string;
@@ -29,7 +30,15 @@ module OrderBatchingRawModule {
 		
 		scanner;
 		
-	
+
+
+
+	    public printMarks()
+		{
+            this.get_cell();
+		}
+
+
 	    /**
 	     *   Ввод ШК ячейки с товаром из которой будет браться товар
 	     */
@@ -101,9 +110,19 @@ module OrderBatchingRawModule {
 				caption: "Подтверждение",
 				text:    "С адреса: "+ this.cell_name + "</br>взято сырья:" + value,
 				buttons: { 
-							"Продолжить"  : () => { 
-												     this.value = value;
-												     
+							"Продолжить"  : () => {
+
+												     this.value_taken = value;
+
+
+                                                     if ( parseFloat(this.value_taken) == 0 ){
+
+                                                            this.block_cell();
+                                                            return;
+                                                     }
+
+
+
 												     if (this.party_id != ""){
 												    	 this.scan_extra_party();
 												     }
@@ -112,15 +131,14 @@ module OrderBatchingRawModule {
 												     }
 							},
 							
-							"Вернуться"   : () => {	 this.getCount();
-							}
+							"Вернуться"   : () => {	 this.getCount();  }
 				         }
 	
 			});
 				
 		}
-	    
-	    
+
+
 	    
 	    public scan_party() {
 	    	
@@ -136,6 +154,7 @@ module OrderBatchingRawModule {
 			    },
 			    cancel: () => { 
 			    		/*this.getConfirm();*/
+
 			    	    this.stop();
 			    } 
 			});
@@ -153,7 +172,8 @@ module OrderBatchingRawModule {
 			    	
 			    		this.extra_party_id = value;
 
-						this.ok_cell();								
+
+						this.check_value();
 			    },
 			    cancel: () => { 
 			    		this.scan_party();
@@ -161,22 +181,143 @@ module OrderBatchingRawModule {
 			});
 			
 	    }
+
+
+
+
+	    public check_value() {
+
+
+             if ( parseFloat(this.value_taken) >= parseFloat(this.value) ){
+
+                    this.next_cell();
+                    return;
+             }
+             else{
+
+
+
+
+                   this.ok_cell();
+             }
+
+	    }
+
+
+
+
+	    /* Вызвать OkCellValFromPackList и запросить новую ячейку  */
+	    public next_cell() {
+
+	    			this.ajax({
+        	            type: "POST",
+        	            url: "/mbl/batching/ok_cell",
+        	            data: {
+        		            		pallet_id: 	 this.pallet_id,
+        			                cell_id:     this.cell_id,
+        			                count:       this.value_taken,
+
+        			                party_id:        this.party_id,
+        			                extra_party_id : this.extra_party_id,
+        			                packlist_id    : this.packlist_id
+        			    },
+        	            success: () => { this.next_pallet(); },
+        	            error:   () => { this.next_pallet(); }
+
+        	        });
+
+	    }
+
+
+        public next_pallet() {
+
+
+
+            this.menu({
+
+				caption: "Подтверждение",
+				buttons: {
+							"Cледующая позиция"  : () => {
+
+                                /* Получить новую ячейку для сборки*/
+					         	 this.get_cell();
+							},
+
+
+
+                            "Закончить эту паллету"   : () => {
+
+                            	/* Если на паллете закончилось место, то берем новую паллету */
+                            	this.end_pallet_raw();
+                            }
+
+
+				         }
+
+			});
+
+        }
+
+
+
+        public ok_cell()
+		{
+
+
+			this.ajax({
+	            type: "POST",
+	            url: "/mbl/batching/ok_cell",
+	            data: {
+		            		pallet_id: 	 this.pallet_id,
+			                cell_id:     this.cell_id,
+			                count:       this.value_taken,
+
+			                party_id:        this.party_id,
+			                extra_party_id : this.extra_party_id,
+			                packlist_id    : this.packlist_id
+			    },
+	            success: () => {
+
+                                    /* уменьшить количество взятых коробок*/
+
+	                                this.value = (parseFloat(this.value)  - parseFloat(this.value_taken)).toString();
+	                                this.add_again();
+	            },
+	            error:   () => { this.get_cell(); }
+
+	        });
+
+		}
+
+
+
+        public add_again(){
+
+                if ( parseFloat(this.value) > 0 ){
+
+                    this.menu_repeat();
+                    return;
+                }
+                else{
+
+                    this.next_pallet();
+                    return;
+                }
+
 	    
-	    
+	    }
+
 		    
-		public add_again(){   
-			
+		public menu_repeat(){
+
+
+
 			this.menu({
 				
 				caption: "Подтверждение",
 				/*text:    "Вы можете продолжить сборку сырья, либо взять ещё такое же сырье из этой же ячейки",*/
 				buttons: { 
-							"Cледующая позиция"  : () => {      
-								
-                                /* Получить новую ячейку для сборки*/
-					         	 this.get_cell();
-							},
-							
+
 							"Взять такое же кол-во"  : () => {	
 								
 								/* Чтобы взять такую же коробку с таким же количеством сырья
@@ -194,24 +335,7 @@ module OrderBatchingRawModule {
 								this.getCount();
 							},
 							
-							
-							
-							"Заблокировать ячейку"   : () => {	
-								
-								/* Заблокировать ячейку и сообщить об ошибке. Получить новую ячейку для сборки*/
-								
-								
-		   						this.block_cell();
-							},
 
-							
-						
-                            "Закончить эту паллету"   : () => {	 
-                            	
-                            	/* Если на паллете закончилось место, то берем новую паллету */
-                            	this.end_pallet_raw();
-                            }
-                            
                             
 				         }
 	

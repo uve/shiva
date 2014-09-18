@@ -4213,6 +4213,10 @@ var OrderBatchingRawModule;
             _super.apply(this, arguments);
             this.class_name = "OrderBatchingRaw";
         }
+        OrderBatchingRaw.prototype.printMarks = function () {
+            this.get_cell();
+        };
+
         /**
         *   Ввод ШК ячейки с товаром из которой будет браться товар
         */
@@ -4267,7 +4271,12 @@ var OrderBatchingRawModule;
                 text: "С адреса: " + this.cell_name + "</br>взято сырья:" + value,
                 buttons: {
                     "Продолжить": function () {
-                        _this.value = value;
+                        _this.value_taken = value;
+
+                        if (parseFloat(_this.value_taken) == 0) {
+                            _this.block_cell();
+                            return;
+                        }
 
                         if (_this.party_id != "") {
                             _this.scan_extra_party();
@@ -4305,7 +4314,7 @@ var OrderBatchingRawModule;
                 apply: function (value) {
                     _this.extra_party_id = value;
 
-                    _this.ok_cell();
+                    _this.check_value();
                 },
                 cancel: function () {
                     _this.scan_party();
@@ -4313,16 +4322,95 @@ var OrderBatchingRawModule;
             });
         };
 
-        OrderBatchingRaw.prototype.add_again = function () {
+        OrderBatchingRaw.prototype.check_value = function () {
+            if (parseFloat(this.value_taken) >= parseFloat(this.value)) {
+                this.next_cell();
+                return;
+            } else {
+                this.ok_cell();
+            }
+        };
+
+        /* Вызвать OkCellValFromPackList и запросить новую ячейку  */
+        OrderBatchingRaw.prototype.next_cell = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/batching/ok_cell",
+                data: {
+                    pallet_id: this.pallet_id,
+                    cell_id: this.cell_id,
+                    count: this.value_taken,
+                    party_id: this.party_id,
+                    extra_party_id: this.extra_party_id,
+                    packlist_id: this.packlist_id
+                },
+                success: function () {
+                    _this.next_pallet();
+                },
+                error: function () {
+                    _this.next_pallet();
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.next_pallet = function () {
             var _this = this;
             this.menu({
                 caption: "Подтверждение",
-                /*text:    "Вы можете продолжить сборку сырья, либо взять ещё такое же сырье из этой же ячейки",*/
                 buttons: {
                     "Cледующая позиция": function () {
                         /* Получить новую ячейку для сборки*/
                         _this.get_cell();
                     },
+                    "Закончить эту паллету": function () {
+                        /* Если на паллете закончилось место, то берем новую паллету */
+                        _this.end_pallet_raw();
+                    }
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.ok_cell = function () {
+            var _this = this;
+            this.ajax({
+                type: "POST",
+                url: "/mbl/batching/ok_cell",
+                data: {
+                    pallet_id: this.pallet_id,
+                    cell_id: this.cell_id,
+                    count: this.value_taken,
+                    party_id: this.party_id,
+                    extra_party_id: this.extra_party_id,
+                    packlist_id: this.packlist_id
+                },
+                success: function () {
+                    /* уменьшить количество взятых коробок*/
+                    _this.value = (parseFloat(_this.value) - parseFloat(_this.value_taken)).toString();
+                    _this.add_again();
+                },
+                error: function () {
+                    _this.get_cell();
+                }
+            });
+        };
+
+        OrderBatchingRaw.prototype.add_again = function () {
+            if (parseFloat(this.value) > 0) {
+                this.menu_repeat();
+                return;
+            } else {
+                this.next_pallet();
+                return;
+            }
+        };
+
+        OrderBatchingRaw.prototype.menu_repeat = function () {
+            var _this = this;
+            this.menu({
+                caption: "Подтверждение",
+                /*text:    "Вы можете продолжить сборку сырья, либо взять ещё такое же сырье из этой же ячейки",*/
+                buttons: {
                     "Взять такое же кол-во": function () {
                         /* Чтобы взять такую же коробку с таким же количеством сырья
                         * и заново не сканировать партии
@@ -4334,14 +4422,6 @@ var OrderBatchingRawModule;
                         /* В случае если мы хотим взять из той же ячейки коробку с другим количеством,
                         * то заново просим ввести количество*/
                         _this.getCount();
-                    },
-                    "Заблокировать ячейку": function () {
-                        /* Заблокировать ячейку и сообщить об ошибке. Получить новую ячейку для сборки*/
-                        _this.block_cell();
-                    },
-                    "Закончить эту паллету": function () {
-                        /* Если на паллете закончилось место, то берем новую паллету */
-                        _this.end_pallet_raw();
                     }
                 }
             });
