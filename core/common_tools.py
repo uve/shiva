@@ -89,7 +89,7 @@ class Pool(object):
         if not cls._instance or not cls.pool:
             cls._instance = super(Pool, cls).__new__(cls, *args, **kwargs)
             cls.pool = cx_Oracle.SessionPool(user=DB_LOGIN, password=DB_PASSWORD, dsn=dsn, min=1, max=MAX_SESSIONS*2, increment=1, threaded=True)
-            cls.pool.timeout = 100
+            cls.pool.timeout = 10000
 
         return cls.pool
     
